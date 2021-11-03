@@ -1,0 +1,9 @@
+#ignore all files:
+*
+#exclude following files:
+!/*
+!*.h
+!*.cpp
+!*.c
+!*.md
+!.gitignore
