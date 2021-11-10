@@ -19,17 +19,35 @@ void ArrayCopy(int len1, int *ptr_old, int *ptr_new);
 /* Testing an array copy function */
 int TestArrayCopy(void);
 
+
+/*Checking addresses in memory of various variables*/
+void CheckingAddresses();
+
 /*A function that accepts two values ​​and switches between them.
 To return value*/
 void SwapToSizeT(size_t *a, size_t *b);
 
 
-/*Test functions for the replacement function Swapvall*/
+/*Test functions for the replacement function Swapval*/
 int TestwapToSizeT();
 
-/*Test functions for the replacement function Swapvall*/
+/*Test functions for the replacement function Swapval*/
 int TestSwapToSizeTPointers();
 
+/*A function that receives a pointer to a string and returns the character 
+association in the string*/
+unsigned int StrLen(const char *s);
+
+/*Test function on the strlen library function*/
+void TestToStrLen();
+
+
+/*A function that checks if strings are equal to each other, if returns 0 
+then they are equal*/
+int StrCmp(const char *first_string, const char *second_string);
+
+void TestToStrCmp();
+	
 
 /******************************************************************************/
 
@@ -39,31 +57,25 @@ int TestSwapToSizeTPointers();
 int main ()
 {
 	
+	
 	printf("test for SwapVal() 0 is sucsses 1 is fail--->%d\n",TestSwapVal());
+	
 	printf("test for TestArrayCopy() 0 is sucsses 1 is fail--->%d\n",
-	                                                        TestArrayCopy());
+	                                                       TestArrayCopy());
+	
+	CheckingAddresses();
+	
 	printf("test for TestwapToSizeT() 0 is sucsses 1 is fail--->%d\n",
 	                                                       TestwapToSizeT());
 	printf("test for TestSwapToSizeTPointers() 0 is sucsses 1 is fail--->%d\n",
 	                                             TestSwapToSizeTPointers());
-	
+	TestToStrLen();                                         
+ 	
+    	TestToStrCmp();
+		
+	                                             
 	return (0);	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -155,11 +167,34 @@ int TestArrayCopy(void)
 	return flag;
 }
 
+
 /******************************question 3************************************/
 
+/*Checking addresses in memory of various variables*/
+void CheckingAddresses()
+{
+	static int s_i = 7;
+	int  i = 7;
+	int *ptr = &i;
+	int *ptr2 = (int *)malloc(sizeof(int));
+
+	printf("&s_i%20p\n",&s_i);
+	printf("&ptr%25p\n",&ptr);
+	printf("ptr%25p\n",ptr);
+	printf("*ptr%25d\n",*ptr);
+	printf("*ptr2%25p\n",ptr);
+	free(ptr2);
+
+}
 
 
-/*A function that accepts two values ​​and switches between them.*/
+
+
+/******************************question 4************************************/
+
+
+
+/*A function that accepts two values of size_t type ​​and switches between them.*/
 void SwapToSizeT(size_t *a, size_t *b)
 {
 	size_t tmp = *a;
@@ -168,7 +203,7 @@ void SwapToSizeT(size_t *a, size_t *b)
 
 }
 
-/*Test functions for the replacement function Swapvall*/
+/*Test functions for the replacement function Swapval*/
 int TestwapToSizeT()
 {
 	size_t x = 5, y = 7;
@@ -179,14 +214,15 @@ int TestwapToSizeT()
 	
 	
 	if ((7 == x) && (5 == y))
-	flag = 0;/*success*/
-
-return flag;	
+	{
+		flag = 0;/*success*/
+	}
+	return flag;	
 
 }
 
 
-/******************************question 4************************************/
+/******************************question 4.2************************************/
 
 
 /*A function that accepts two pointers ​​and switches between them.*/
@@ -200,14 +236,11 @@ void SwapToSizeTPointers(size_t **a, size_t **b)
 /*Test functions for the replacement function Swapvall*/
 int TestSwapToSizeTPointers()
 {
-size_t num1 = 5, num2 = 7;
-	
+	size_t num1 = 5, num2 = 7;
 	size_t *p1 = &num1, *p2 = &num2; 
-	
-	size_t  **g1 = &p1;
-	size_t  **g2 = &p2;
+	size_t **g1 = &p1;
+	size_t **g2 = &p2;
 	int flag = 0;
-	
 	
 	SwapToSizeTPointers(g1, g2);
 	
@@ -215,8 +248,78 @@ size_t num1 = 5, num2 = 7;
 	{
 		flag = 1;
 	}
-return flag;
+	return flag;
 
+}
+
+
+
+/******************************my strlen (: **********************************/
+
+/*A function that receives a pointer to a string and returns the character 
+association in the string*/
+unsigned int StrLen(const char *PointerToString)
+{
+    unsigned int number_of_characters = 0;
+    while(*PointerToString != '\0')
+    {
+        number_of_characters++;
+        PointerToString++;
+    }
+    return number_of_characters;
+}
+
+/*Test function on the strlen library function*/
+void TestToStrLen()
+{
+	char str[]="helloow daniel";
+	printf("Length of string a = %u \n",StrLen(str));  
+}
+
+
+/******************************my strcmp (: **********************************/
+
+
+/*A function that checks if strings are equal to each other, if returns 0 
+then they are equal*/
+int StrCmp(const char *first_string, const char *second_string)
+{
+    while (*first_string) 
+    {
+        if (*first_string != *second_string) 
+        { 
+            break;
+        }
+        first_string++;
+        second_string++;
+    }
+ 
+ /*Calculation to return the difference of the husky value of the two strings*/
+	return
+	*(const unsigned char*)first_string - *(const unsigned char*)second_string;
+}
+
+
+
+void TestToStrCmp()
+{
+	char *str1 = "michael";
+	char *str2 = "kolet";
+
+	int ret = strcmp(str1, str2);
+
+	if (ret > 0) 
+	{
+	   printf("%s", "str1 is greater than str2\n");
+	}
+	else if (ret < 0) 
+	{
+	   printf("%s", "str1 is less than str2\n");
+	}
+	else 
+	{
+	   printf("%s", "str1 is equal to str2\n");
+	}
 }
 
 
