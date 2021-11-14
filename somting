@@ -2,6 +2,7 @@
 *
 #exclude following files:
 !/*
+!./*
 !*.h
 !*.cpp
 !*.c

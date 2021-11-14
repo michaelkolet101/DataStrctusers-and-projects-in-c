@@ -260,8 +260,8 @@ int TestSwapToSizeTPointers()
 
 /*A function that receives a pointer to a string and returns the character 
 association in the string*/
-/*צריכה להחזיר משתנה מסוג סייז טי*/
-unsigned int StrLen(const char *pointer_to_string)
+
+size_t StrLen(const char *pointer_to_string)
 {
     unsigned int number_of_characters = 0;
     while('\0' != *pointer_to_string)
@@ -288,19 +288,14 @@ then they are equal*/
 int StrCmp(const char *first_string, const char *second_string)
 {
 
-    while (*first_string) 
+    while (*first_string && *first_string != *second_string) 
     {
-        if (*first_string != *second_string) 
-        { 
-            break;
-        }
-        first_string++;
-        second_string++;
+        ++first_string;
+        ++second_string;
     }
  
  /*Calculation to return the difference of the husky value of the two strings*/
-	return
-	*first_string - *second_string;
+	return *first_string - *second_string;
 }
 
 
@@ -339,3 +334,4 @@ void TestToStrCmp()
 
 
 
+	
