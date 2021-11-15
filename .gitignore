@@ -1,10 +1,10 @@
-#ignore all files:
 *
-#exclude following files:
-!/*
-!./*
-!*.h
-!*.cpp
+!/**/
 !*.c
+!*.gitignore
+!*.cpp
+!*.h
+!*.hpp
 !*.md
-!.gitignore
+!*.sh
+
