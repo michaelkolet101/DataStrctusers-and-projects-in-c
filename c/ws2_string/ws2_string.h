@@ -51,6 +51,8 @@ size_t StrSpn(const char *s1, const char *s2);
 
 /*A function to check if a string str is palindrome*/
 void IsPalindrome(char *str);
+
+char* SpaceX(char *some_string);
 /**********************      TESTS      **************************************/
 
 
@@ -68,7 +70,7 @@ void TestStrStr();
 void TestStrSpn();
 void TestisPalindrome();
 
-
+void TestSpace();
 
 
 

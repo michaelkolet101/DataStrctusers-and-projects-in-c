@@ -283,3 +283,82 @@ void IsPalindrome(char *str)
 
 
 
+
+
+char* SpaceX(char *some_string)
+{
+char *start = some_string;
+char *temp = NULL;
+char *end = NULL;
+char *ptr_new = NULL;
+int count;
+end = some_string + strlen(some_string) - 1;
+
+
+while ( isspace(*start))
+{
+
+ ++start;
+}	
+
+while (isspace(*end))
+{
+puts;
+ --end;
+
+}
+	++end;
+	*end = '\0';
+
+temp = (char *)malloc(sizeof(start));
+
+ptr_new = start;
+
+while(*start )
+{
+
+	while (!(isspace(*start)))
+	{
+	/**/  *temp = *start;
+	  ++temp;
+	  ++start;
+	  count = 0;
+	}	
+	
+	count = 1;
+	*temp = *start;
+	
+	  
+	while (count == 1 && isspace(*start))
+	{
+	  
+	  ++temp;
+	  ++start; 
+	}	
+
+
+}
+
+*temp = '\0';
+
+free(temp);
+return ptr_new;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

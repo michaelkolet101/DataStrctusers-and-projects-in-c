@@ -237,7 +237,15 @@ IsPalindrome(str);
 
 
 
+void TestSpace()
+{
+char str[] = "     michuela      lea   hcik   fgdgdfgdg      gdfg    ";
 
+SpaceX(str);
+
+printf("%s",str);
+
+}
 
 
 
@@ -255,6 +263,7 @@ int main(void)
 	TestStrStr();
 	TestStrSpn();
 	TestisPalindrome();
+	TestSpace();
     return 0;
 }
 
