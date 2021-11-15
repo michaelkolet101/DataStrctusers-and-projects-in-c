@@ -239,7 +239,7 @@ IsPalindrome(str);
 
 void TestSpace()
 {
-	char str[] = "  !!   michael   kolet    !!    ";
+	char str[] = "     s        a       a         ";
 
 	char *str1 = SpaceX(str);
 

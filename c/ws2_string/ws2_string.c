@@ -285,7 +285,7 @@ void IsPalindrome(char *str)
 
 
 
-
+/*Function for deleting unnecessary spaces from a string*/
 char* SpaceX(char *some_string)
 {
 	char *temp = some_string;
@@ -293,37 +293,41 @@ char* SpaceX(char *some_string)
 	char *ptr_new = NULL;
 	int count;
 
-
-	while (*some_string && isspace(*some_string) > 0)
+	/*Skip the spaces from the beginning*/
+	while (*some_string && isspace(*some_string))
 	{
 	 	some_string++;
 	}
-
+	
+	/*Skip the spaces from the end*/
 	while (isspace(*end))
 	{
 		*end = '\0';
 		 --end;
-	
 	}
 	
 	
 	ptr_new = temp;
-
+	/*main loop as long as we have not reached the end of the string*/
 	while(*some_string )
 	{
-
+		
+		/*A loop that makes sure the character is not spaced*/
 		while ((!(isspace(*some_string))) && (*some_string))
 		{
 			*temp = *some_string;
+			
 			++temp;
 			++some_string;
 			count = 0;
 		}	
 		
 		count = 1;
+		/*++some_string;*/
 		*temp = *some_string;
 		++temp;
-		  
+		
+		/*A loop that skips unnecessary spaces between words*/ 
 		while (count == 1 && isspace(*some_string))
 		{ 
 			 ++some_string; 
