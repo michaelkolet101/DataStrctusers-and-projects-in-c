@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>/*לרשום את הפונקציות שבהם השתמשנו*/
 #include <assert.h>
+#include <ctype.h> /*isspace */
 #include <stddef.h>
 #include "ws2_string.h"
 
@@ -287,62 +288,55 @@ void IsPalindrome(char *str)
 
 char* SpaceX(char *some_string)
 {
-char *start = some_string;
-char *temp = NULL;
-char *end = NULL;
-char *ptr_new = NULL;
-int count;
-end = some_string + strlen(some_string) - 1;
+	char *temp = some_string;
+	char *end = some_string + strlen(some_string) - 1;
+	char *ptr_new = NULL;
+	int count;
 
 
-while ( isspace(*start))
-{
-
- ++start;
-}	
-
-while (isspace(*end))
-{
-puts;
- --end;
-
-}
-	++end;
-	*end = '\0';
-
-temp = (char *)malloc(sizeof(start));
-
-ptr_new = start;
-
-while(*start )
-{
-
-	while (!(isspace(*start)))
+	while (*some_string && isspace(*some_string) > 0)
 	{
-	/**/  *temp = *start;
-	  ++temp;
-	  ++start;
-	  count = 0;
-	}	
-	
-	count = 1;
-	*temp = *start;
-	
-	  
-	while (count == 1 && isspace(*start))
+	 	some_string++;
+	}
+
+	while (isspace(*end))
 	{
-	  
-	  ++temp;
-	  ++start; 
-	}	
+		*end = '\0';
+		 --end;
+	
+	}
+	
+	
+	ptr_new = temp;
+
+	while(*some_string )
+	{
+
+		while ((!(isspace(*some_string))) && (*some_string))
+		{
+			*temp = *some_string;
+			++temp;
+			++some_string;
+			count = 0;
+		}	
+		
+		count = 1;
+		*temp = *some_string;
+		++temp;
+		  
+		while (count == 1 && isspace(*some_string))
+		{ 
+			 ++some_string; 
+		}	
 
 
-}
+	}
 
-*temp = '\0';
+	*temp = '\0';
 
-free(temp);
-return ptr_new;
+
+	
+	return ptr_new ;
 }
 
 

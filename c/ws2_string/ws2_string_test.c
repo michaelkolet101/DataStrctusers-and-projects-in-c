@@ -168,7 +168,7 @@ void TestStrnCat()
 	strcpy(dest, "michael ");
 	
 	strncat(dest, src, 10); 	
-	puts("פונקציה מקורית");
+	
 	puts(dest);
     
     StrnCat(dest, src, 10);
@@ -239,12 +239,12 @@ IsPalindrome(str);
 
 void TestSpace()
 {
-char str[] = "     michuela      lea   hcik   fgdgdfgdg      gdfg    ";
+	char str[] = "  !!   michael   kolet    !!    ";
 
-SpaceX(str);
+	char *str1 = SpaceX(str);
 
-printf("%s",str);
-
+	printf("%s\n",str1);
+	printf("end\n");
 }
 
 
@@ -253,7 +253,7 @@ printf("%s",str);
 
 int main(void)
 {
-	TestStrCmp(); /*לוודא שכל ההתחלה באותיות גדולות*/
+	TestStrCmp(); 
 	TestStrCpy();
 	TestStrnCpy();
 	test2StrCaseCmp();
