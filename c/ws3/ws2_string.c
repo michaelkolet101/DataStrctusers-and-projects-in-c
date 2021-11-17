@@ -1,4 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>/**/
+#include <assert.h>
+#include <ctype.h> /*isspace */
+#include <stddef.h> /*size_t*/
+
+#include "ws2_string.h"
+
+/*****************************StrCmp**************************************/
+
+
 
 
 int CalcoletRow(int *result , matrix[][] int number_of_arrays int number_of_element_in_array)
@@ -22,3 +33,17 @@ int main (void)
 	
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
