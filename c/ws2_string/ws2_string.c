@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>/*לרשום את הפונקציות שבהם השתמשנו*/
+#include <string.h>/**/
 #include <assert.h>
 #include <ctype.h> /*isspace */
-#include <stddef.h>
+#include <stddef.h> /*size_t*/
+
 #include "ws2_string.h"
 
 /*****************************StrCmp**************************************/
@@ -53,7 +54,7 @@ char* StrCpy(char *destination, const char *source)
 
 	
 	/*Indicates a destination to which the string will be copied*/
-	char *ptr = destination;/*לתת משמעות למשתנה*/
+	char *start_dest = destination;/*לתת משמעות למשתנה*/
 	
 
 	while ('\0' != *source)/*A loop that passes over the original string*/
@@ -65,7 +66,7 @@ char* StrCpy(char *destination, const char *source)
 	    
 	    *destination = '\0';/*Add the NULL character*/
 	    
-	    return ptr;
+	    return start_dest;
 }
     
 /**********************************StrnCpy()**********************************/
@@ -76,7 +77,7 @@ char* StrCpy(char *destination, const char *source)
 char* StrnCpy(char *destination, const char *source, size_t num)
 {
 	
-	char* ptr = destination;
+	char *start_dest = destination;
 
 
 
@@ -85,12 +86,13 @@ char* StrnCpy(char *destination, const char *source, size_t num)
 	    {
 		    --num;
 		    *destination = *source;/*Upload by one to two pointres*/
-			destination++;
-			source++;
+			++destination;
+			++source;
 	    }
+	    ++destination;
 	    *destination = '\0';/*Add the NULL character*/
-		                                                                         /*להוסיף עוד תווים של NULL שיתחמו את שאר המחרוזת עד N*/
-	    return ptr;
+		                                                                        
+	    return start_dest;
 
 }
 
@@ -105,7 +107,7 @@ int StrCaseCmp(const char *s1, const char *s2)
     }
  
  /*Calculation to return the difference of the husky value of the two strings*/
-	return *s1 - *s2;
+	return toupper(*s1) - toupper(*s2);
     
  } 
    
@@ -140,8 +142,11 @@ char *StrChr(const char *some_string, int ch)
 char *StrDup(const char *str)
 
 {
-	char *dest = malloc(strlen(str) + 1);  
-	if (dest == NULL) return NULL;          
+	char *dest = malloc(StrLen(str) + 1);  
+	if (dest == NULL)
+	{
+	 	return NULL;
+	}          
 	StrCpy(dest, str);                     
 	return dest; 
 
@@ -156,7 +161,7 @@ char *StrDup(const char *str)
 char *StrCat(char *destination, const char *source)
 {
 /*Set a pointer that will point to the end of the target string*/
-	char *ptr = destination + strlen(destination);
+	char *ptr = destination + StrLen(destination);
 /*Go through the loop on the copied string as long as it does not end and copy 
 it to the destination*/
 	while (*source != '\0')
@@ -184,10 +189,11 @@ it to the destination*/
 	 {
         *ptr++ = *source++;
         --number_of_char;
-   }
+      }
 	 *ptr = '\0';/*Enter the NULL value at the end of the string*/
 	return destination;
 }
+
 
 /*Auxiliary function to check if the strings are the same*/
 int compare(const char *first_string, const char *second_string)
@@ -227,7 +233,6 @@ char* StrStr(const char *large_string, const char *the_little_string)
  
     return NULL;
 }
-
 
 
 

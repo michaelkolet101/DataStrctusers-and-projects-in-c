@@ -5,7 +5,49 @@
 
 #include "ws2_string.h"
 
+/**********************      TESTS      **************************************/
 
+
+void TestStrCmp();
+void testStrCpy();/*Test for StrCpy function*/
+void TestStrnCpy();/*Test for StrnCpy function*/
+void testStrCaseCmp(const char *s1, const char *s2);
+int test2StrCaseCmp();
+void TestStrChr();
+
+void TestStrDup();
+void TestStrCat();
+void TestStrnCat();
+void TestStrStr();
+void TestStrSpn();
+void TestisPalindrome();
+void TestLen();
+void TestSpace();
+
+
+
+
+/*******************************main()***************************************/
+
+
+
+
+int main(void)
+{
+	/*TestStrCmp(); 
+	TestStrCpy();
+	TestStrnCpy();
+	test2StrCaseCmp();*/
+	TestStrDup();
+	/*TestStrCat();
+	TestStrnCat();
+	TestStrStr();
+	TestStrSpn();
+	TestisPalindrome();
+	TestSpace();
+	TestLen();*/
+    return 0;
+}
 /********************************TestStrCpy()********************************/
 
 int TestStrCpy()
@@ -133,7 +175,7 @@ void TestStrDup()
 
 	puts(p);
 
-	free(p);
+	/*free(p);*/
 
 }
 
@@ -247,25 +289,19 @@ void TestSpace()
 	printf("end\n");
 }
 
-
-
-
-
-int main(void)
+void TestLen()
 {
-	TestStrCmp(); 
-	TestStrCpy();
-	TestStrnCpy();
-	test2StrCaseCmp();
-	TestStrDup();
-	TestStrCat();
-	TestStrnCat();
-	TestStrStr();
-	TestStrSpn();
-	TestisPalindrome();
-	TestSpace();
-    return 0;
+	char str[] = "jhghgfdrty";
+	
+	
+
+	printf("%lu\n",StrLen(str));
+	
 }
+
+
+
+
 
 
 
