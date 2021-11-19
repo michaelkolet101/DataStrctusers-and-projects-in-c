@@ -19,7 +19,7 @@ int JosephusProblem(int len);
 void DataTypes();
 
 
-
+void  VariableEnvironment(char** envp);
 
 
 

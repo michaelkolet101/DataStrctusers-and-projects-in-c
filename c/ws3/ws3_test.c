@@ -7,8 +7,11 @@
 #define COLS 3  
 #define ROWS 3   
 /**********************      TESTS      **************************************/
-
 void TestCalcoletRow();
+
+
+
+
 
 
 /*******************************main()***************************************/
@@ -16,8 +19,13 @@ void TestCalcoletRow();
 
 
 
-int main (void)
+int main (int argc, char **argv, char** envp)
 {
+	
+	StoringAndPrinting (envp);
+
+
+
 	/*printf("%d\n",JosephusProblem(100));*/
 	/*TestCalcoletRow();*/
 	/*DataTypes();*/
@@ -61,6 +69,23 @@ int i;
 	}
 	puts("\n");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

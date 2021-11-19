@@ -2,14 +2,20 @@
 #include <stdlib.h>/*size_t*/
 #include <string.h>
 #include <assert.h>
-
+#include <ctype.h>
 
 
 #include "ws3.h"
 
+extern char **environ;
 
 /**/
 static void printarry(int arr[], int len);
+static int Length(char** envp);
+static char* LwoStr(char *str);
+static size_t StrLen(const char *pointer_to_string);
+static char* StrCpy(char *destination, const char *source);
+static char *StrDup(const char *str);
 
 /*******************************************************************/
 
@@ -124,6 +130,154 @@ void DataTypes()
 	fprintf( stdout, "size of unsigned char  %5lu\n",sizeof(int*));
 	
 }
+/**/
+void  StoringAndPrinting(char** envp)
+{
+	char **buffer = NULL;
+	char **start_envp = NULL;
+	char **start_buffer = NULL;
+	char **start_to_free = NULL;
+	
+	
+	int width;
+	int count = Length(envp);/*אורך שורות המחרוזת של משתני הסביבה, בעצם זה המערך החיצוני שמכיל את כל המחרוזות*/
+	
+	start_envp = envp; /*שומר על תחילת משתנה הסביבה*/
+	
+	buffer = (char **)malloc(sizeof(char) * count  - 1);/*מגדירים מקום להכיל את ההעתקה*/ 
+	
+	if (NULL == buffer)
+	{
+	 	puts("malloc fail");
+	 	
+	}
+	
+	while (NULL != envp)
+	{
+		*buffer = LwoStr(StrDup(*envp));
+		printf("%s",*buffer);
+		free(*buffer[0]);
+		
+		++envp;
+	}	
+	
+	start_buffer = buffer;
+	free(buffer);
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static int Length(char** envp)
+{
+	int count = 0;
+	while (*envp) 
+		{
+			
+			++count;
+			*envp++;
+		}
+		
+	return (count);
+
+}
+
+
+static char* LwoStr(char *str)
+{
+	char *start = str;
+	while('\0' != *start)
+	{
+		*start = tolower(*start);
+		++start;
+	}
+	return str;
+}
+
+
+
+
+static char *StrDup(const char *str)
+
+{
+	char *dest = malloc(StrLen(str) + 1);  
+	if (dest == NULL)
+	{
+	 	return NULL;
+	}          
+	StrCpy(dest, str);                     
+	return dest; 
+
+}
+
+
+static size_t StrLen(const char *pointer_to_string)
+{
+	
+    unsigned int number_of_characters = 0;
+    while('\0' != *pointer_to_string)
+    {
+        ++number_of_characters;
+        ++pointer_to_string;
+    }
+    return (size_t)number_of_characters;
+}
+
+static char* StrCpy(char *destination, const char *source)
+{
+
+	
+	/*Indicates a destination to which the string will be copied*/
+	char *start_dest = destination;/*לתת משמעות למשתנה*/
+	
+
+	while ('\0' != *source)/*A loop that passes over the original string*/
+	    {
+		   *destination = tolower(*source);
+		   ++destination;/*Upload by one to two pointres*/
+		   ++source;
+	    }
+	    
+	    *destination = '\0';/*Add the NULL character*/
+	    
+	    return start_dest;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
