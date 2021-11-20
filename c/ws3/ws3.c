@@ -140,11 +140,14 @@ void  StoringAndPrinting(char** envp)
 	
 	
 	int width;
-	int count = Length(envp);/*אורך שורות המחרוזת של משתני הסביבה, בעצם זה המערך החיצוני שמכיל את כל המחרוזות*/
+	int count = Length(envp);			/*The length of the string rows
+	 		of the environment variables, in fact it is the outer array that 
+	 									contains all the strings*/
 	
-	start_envp = envp; /*שומר על תחילת משתנה הסביבה*/
+	start_envp = envp; /*Maintains the beginning of the environment variable*/
 	
-	buffer = (char **)malloc(sizeof(char) * count  - 1);/*מגדירים מקום להכיל את ההעתקה*/ 
+	buffer = (char **)malloc(sizeof(char) * count  - 1);/*Define a place to
+												 hold the copy*/ 
 	
 	if (NULL == buffer)
 	{
@@ -152,11 +155,13 @@ void  StoringAndPrinting(char** envp)
 	 	
 	}
 	
-	while (NULL != envp)
+	while (envp)
 	{
 		*buffer = LwoStr(StrDup(*envp));
+		
 		printf("%s",*buffer);
-		free(*buffer[0]);
+		
+		
 		
 		++envp;
 	}	
