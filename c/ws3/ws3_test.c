@@ -1,9 +1,10 @@
 #include <stdio.h> /*printf*/
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
+#include <stdlib.h>/**/
+#include <assert.h>/**/
+#include <string.h>/**/
 
 #include "ws3.h"
+
 #define COLS 3  
 #define ROWS 3   
 /**********************      TESTS      **************************************/
@@ -23,13 +24,9 @@ int main (int argc, char **argv, char** envp)
 {
 	
 	StoringAndPrinting (envp);
-
-
-
-	/*printf("%d\n",JosephusProblem(100));*/
-	/*TestCalcoletRow();*/
-	/*DataTypes();*/
-	
+	printf("%d\n",JosephusProblem(100));
+	TestCalcoletRow();
+	DataTypes();
 	
 	return 0;
 	
