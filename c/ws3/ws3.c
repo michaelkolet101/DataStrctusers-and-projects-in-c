@@ -4,12 +4,10 @@
 #include <assert.h>
 #include <ctype.h>
 
-
 #include "ws3.h"
 
-extern char **environ;
 
-/**/
+/*usefull functions*/
 static void printarry(int arr[], int len);
 static int Length(char** envp);
 static char* LwoStr(char *str);
@@ -46,7 +44,9 @@ int* CalcoletRow(int array[ROWS][COLS], int sum[ROWS])
 
 
 
-/*Function for  Joseph's problem */
+/*Function for  Joseph's problem 
+Receives the number of soldiers and prints the index that you want 
+to have in order to stay alive*/
 int JosephusProblem(int len)
 {
 	/*TO DO creat pointer with malloc and len*/
@@ -81,13 +81,13 @@ int JosephusProblem(int len)
 		{
 			count = 1;
 		}	
-		/*kidum magali*/
+		/*Circular promotion*/
 		i = (i + 1) % len;
 		
 	
 	}
 	
-	/*to do out it to extern function*/
+	/*TODO out it to extern function*/
 	for (i = 0; i < len; ++i)
 	{
 		if (arr[i] == 1)
@@ -130,7 +130,9 @@ void DataTypes()
 	fprintf( stdout, "size of unsigned char  %5lu\n",sizeof(int*));
 	
 }
-/**/
+
+/*Gets an array of environment variables
+Keeps it in an array and prints them in small print*/
 void  StoringAndPrinting(char** envp)
 {
 	char **buffer = NULL;
