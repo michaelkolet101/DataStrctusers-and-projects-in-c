@@ -4,29 +4,19 @@
 
 #include <stdlib.h>/*size_t*/
 
-/*progmer name: michael kolet
-  reviewer's name: tal cohen*/
+/*progmer name: Michael Kolet
+  reviewer's name: Maoz Mordehai Shechtman */
 
 
 
  
 /***************************  My functions   ********************************/
 
-/*remove a file from the computer*/
-void Removed(const char *user_input, const char *file_path);
+/*ex 1 the function print index of structes*/
+void PrintFunction(void);
 
-/*close the program*/
-int Exit(const char *user_input, const char *file_path);
 
-/*print the count of lines in the file*/
-int PrintCountLine(const char *user_input, const char *file_path);
-
-/*append a string to the beging of thr file*/
-int Prepend(const char *user_input, const char *file_path);
-
-/*append a string to the beginning of the file*/
-int Append(const char *user_input, const char *file_path);
-
+void Logger(char *file_name);
 
 #endif /*__WS5_H__*/
 
