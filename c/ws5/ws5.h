@@ -1,22 +1,16 @@
 #ifndef __WS5_H__
 #define __WS5_H__
 
-
-#include <stdlib.h>/*size_t*/
-
 /*progmer name: Michael Kolet
-  reviewer's name: Maoz Mordehai Shechtman */
-
-
-
- 
+  reviewer's name: Shulamit Mordechay  */
+   
 /***************************  My functions   ********************************/
 
-/*ex 1 the function print index of structes*/
+/*exercise 1: the function print index of structes*/
 void PrintFunction(void);
 
-
-void Logger(char *file_name);
+/*The function receives a file and prints into it strings from the user ,TODO continu*/
+int Logger(char *file_name);
 
 #endif /*__WS5_H__*/
 
