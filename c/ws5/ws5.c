@@ -4,7 +4,6 @@
 #include <stdlib.h>/*exit*/
 #include <string.h> /*strncmp strlen */
 
-
 #include "ws5.h"
 
 #define EXIT_STATUS -5
@@ -12,11 +11,11 @@
 #define SUCSSES 0
 #define FAIL 1
 
-typedef int ( *cmp_f_ty)(const char* user_input, const char *cmd, size_t num);
+typedef int (*cmp_f_ty)(const char* user_input, const char *cmd, size_t num);
 typedef int (*op_ft_ty)(const char* file_path, const char* user_input );
 typedef void(*func)(int);
 
-enum status{sucsses, open_file_fail, malloc_fail, remove_fail, exit_logger};
+enum enum_status {sucsses, open_file_fail, malloc_fail, remove_fail, exit_logger};
 
 typedef struct print_me
 	{
@@ -30,8 +29,6 @@ typedef struct
 		cmp_f_ty Compar;
 		op_ft_ty Opration;	
 	} special;
-
-
 
 /*usefull functions*/
 /*print int number*/
@@ -91,61 +88,65 @@ void Print(int number)
 int Logger(char *file_name)
 {
 	char ch = '\0';
-	char *ptr_to_string = NULL;
+	char *user_input = NULL;
 	char *start_string = NULL;
 	int i = 0;
-	int len = 0, flag = 0;
+	int len = 0, status = 0;
 	size_t cmd_len = 0;
 	
 	special srtuct_arry[ARRY_SIZE]; /*TODO: change the name to someting else*/
-	
+
 	/*clear the screen*/
 	system("clear");
 	
 	/* init arry */ /*TODO init?*/
 	InitArrayOfCommand(srtuct_arry);
 	
-	ptr_to_string = (char*)malloc(sizeof(char) * 100); /*TODO*/
-	if (NULL == ptr_to_string)
+	user_input = (char*)malloc(sizeof(char) * 100); /*TODO*/
+	if (NULL == user_input)
 	{
 		return  malloc_fail;
 	}
+	start_string = user_input;
 	
-	while (0 == flag)
+	while (0 == status)
 	{
 		/* less then 100 char */
 		puts("enter a command or string to the logger -remove, -count, >, or -exit ");
-		fgets(ptr_to_string, 100, stdin);
-		
-		/*the len of the input string*/
-		len = strlen(ptr_to_string);
+		fgets(user_input, 100, stdin);
 		
 		/*loop over the array*/
-		for (i = 0; i < len; ++i)
+		for (i = 0; i < 5; ++i)
 		{
 			/*the len of the command*/
 			cmd_len = strlen(srtuct_arry[i].cmd);
 			
 			/*compere and opret the currect function*/
-			if (srtuct_arry[i].Compar(srtuct_arry[i].cmd, ptr_to_string, 
+			if (srtuct_arry[i].Compar(srtuct_arry[i].cmd, user_input, 
 			cmd_len) == 0 )
 			{	
-				/*the flag get the status of the function SUCSSES OR FAIL*/
-				flag = srtuct_arry[i].Opration(ptr_to_string, file_name);
+				/*the status get the status of the function SUCSSES OR FAIL*/
+				status = srtuct_arry[i].Opration(user_input, file_name);
 				break;
 			}
 		}
 	}
 	free(start_string);
-	return flag;
+	start_string = NULL;
+	
+	return status;
 }
 
 static int Removed(const char *user_input, const char *file_path)
 {
-	if (remove(file_path) == 0)
+	int status = sucsses;
+	
+	status = remove(file_path);
+	
+	if (status == 0)
 	{
 		printf("Deleted successfully\n");
-		return SUCSSES;
+		return sucsses;
 	}
 	else
 	{
@@ -193,20 +194,20 @@ static int PrintCountLine(const char *user_input, const char *file_path)
 
 static int Prepend(const char *user_input, const char *file_path)
 {
-	int statu = sucsses;
+	int status = sucsses;
 	/*creat a new file to swap data and copy the file to a tmp file*/
-	statu = CopyFileToFile(file_path, "tmpfile.txt");
+	status = CopyFileToFile(file_path, "tmp_file.txt");
 	
 	/* append the input string to the new file */ 
-	statu = AppendToStart(user_input, file_path);
+	status = AppendToStart(user_input, file_path);
 	
 	/*copy the temp file to my sorce file*/
-	statu = CopyFileToFile( "tmpfile.txt", file_path);
+	status = CopyFileToFile( "tmp_file.txt", file_path);
 	
 	/*delet the tmp file*/
-	statu = Removed(user_input, "tmpfile.txt");
+	status = remove("tmp_file.txt");
 	
-	return sucsses;
+	return status;
 }
 
 static int Append(const char *user_input, const char *file_path)
@@ -214,10 +215,12 @@ static int Append(const char *user_input, const char *file_path)
 	FILE *fp;
 	
 	fp = fopen(file_path, "a");
+	
 	if (NULL == fp)
 	{
 		return open_file_fail;
 	}
+	
 	fputs(user_input, fp);
 	fclose(fp);
 	return sucsses;
@@ -231,7 +234,7 @@ static int Compare(const char* user_input, const char *cmd, size_t number)
 
 static int CopyFileToFile(const char *source_name, const char *target_name)
 {
-	char ch = ' ';
+	char ch = '\0';
 	FILE *source, *target;
 	
 	source = fopen(source_name, "r");
