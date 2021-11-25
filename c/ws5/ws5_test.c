@@ -1,3 +1,4 @@
+#include <stdio.h>/*printf*/
 #include "ws5.h"
 
 /**********************      TESTS      **************************************/
@@ -10,7 +11,7 @@ int main (int argc, char *argv[])
 {
 	int status = 0;
 	
-	PrintFunction();
+	/*PrintFunction();*/
 	status = TestLogger(*(argv+1));
 	printf("the status of test logger is %d \n",status);
 	

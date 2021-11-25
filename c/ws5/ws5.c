@@ -4,9 +4,10 @@
 #include <stdlib.h>/*exit*/
 #include <string.h> /*strncmp strlen */
 
+
 #include "ws5.h"
 
-#define EXIT_STATUS -5 
+#define EXIT_STATUS -5
 #define ARRY_SIZE 5
 #define SUCSSES 0
 #define FAIL 1
@@ -15,46 +16,53 @@ typedef int ( *cmp_f_ty)(const char* user_input, const char *cmd, size_t num);
 typedef int (*op_ft_ty)(const char* file_path, const char* user_input );
 typedef void(*func)(int);
 
+enum status{sucsses, open_file_fail, malloc_fail, remove_fail, exit_logger};
 
 typedef struct print_me
 	{
 		int number;
-		func ptr_func; /*TODO: change the name of var*/
+		func ptr_func;
 	} print_me;
 	
 typedef struct
 	{
 		char *cmd;
-		cmp_f_ty Comper;
+		cmp_f_ty Compar;
 		op_ft_ty Opration;	
 	} special;
 
 
 
 /*usefull functions*/
-
+/*print int number*/
 void Print(int number);
+
 /*remove a file from the computer*/
-int Removed(const char *user_input, const char *file_path); /*TODO static*/
+static int Removed(const char *user_input, const char *file_path); 
 
 /*close the program*/
-int Exit(const char *user_input, const char *file_path);
+static int Exit(const char *user_input, const char *file_path);
 
 /*print the count of lines in the file*/
-int PrintCountLine(const char *user_input, const char *file_path);
+static int PrintCountLine(const char *user_input, const char *file_path);
 
 /*append a string to the beging of thr file*/
-int Prepend(const char *user_input, const char *file_path);
+static int Prepend(const char *user_input, const char *file_path);
 
 /*append a string to the beginning of the file*/
-int Append(const char *user_input, const char *file_path);
+static int Append(const char *user_input, const char *file_path);
 
 /*comper betweem to strings*/
-int Compere(const char *user_input, const char *cmd, size_t number);
+static int Compare(const char* user_input, const char *cmd, size_t number);
 
+/*init the arry command*/
 static void InitArrayOfCommand(special srtuct_arry[ARRY_SIZE]);
+
+
 static int CopyFileToFile(const char *source,const char *target);
 
+/*append a string to the beginning of the file*/
+static int AppendToStart(const char *user_input, const char *file_path);
 /******************************************************************************/
 
 void PrintFunction()
@@ -70,7 +78,7 @@ void PrintFunction()
 	
 	for (i = 0; i < 10; ++i)
 	{
-		srtuct_arry[i].ptr_func(srtuct_arry[i].number);	/*TODO: change the name to someting else*/
+		srtuct_arry[i].ptr_func(srtuct_arry[i].number);/*TODO: change the name to someting else*/
 	}
 }
 
@@ -85,12 +93,14 @@ int Logger(char *file_name)
 	char ch = '\0';
 	char *ptr_to_string = NULL;
 	char *start_string = NULL;
-	int count = 1;
 	int i = 0;
 	int len = 0, flag = 0;
 	size_t cmd_len = 0;
 	
 	special srtuct_arry[ARRY_SIZE]; /*TODO: change the name to someting else*/
+	
+	/*clear the screen*/
+	system("clear");
 	
 	/* init arry */ /*TODO init?*/
 	InitArrayOfCommand(srtuct_arry);
@@ -98,15 +108,13 @@ int Logger(char *file_name)
 	ptr_to_string = (char*)malloc(sizeof(char) * 100); /*TODO*/
 	if (NULL == ptr_to_string)
 	{
-		return FAIL;
+		return  malloc_fail;
 	}
-	
-
-	/* less then 100 char */
-	puts("enter a command: ");
 	
 	while (0 == flag)
 	{
+		/* less then 100 char */
+		puts("enter a command or string to the logger -remove, -count, >, or -exit ");
 		fgets(ptr_to_string, 100, stdin);
 		
 		/*the len of the input string*/
@@ -118,9 +126,11 @@ int Logger(char *file_name)
 			/*the len of the command*/
 			cmd_len = strlen(srtuct_arry[i].cmd);
 			
-			if (srtuct_arry[i].Comper(srtuct_arry[i].cmd, ptr_to_string, 
+			/*compere and opret the currect function*/
+			if (srtuct_arry[i].Compar(srtuct_arry[i].cmd, ptr_to_string, 
 			cmd_len) == 0 )
-			{
+			{	
+				/*the flag get the status of the function SUCSSES OR FAIL*/
 				flag = srtuct_arry[i].Opration(ptr_to_string, file_name);
 				break;
 			}
@@ -130,27 +140,28 @@ int Logger(char *file_name)
 	return flag;
 }
 
-int Removed(const char *user_input, const char *file_path)
+static int Removed(const char *user_input, const char *file_path)
 {
-/*TODO: Change Signture  to return status*/
 	if (remove(file_path) == 0)
 	{
-		printf("Deleted successfully");
+		printf("Deleted successfully\n");
 		return SUCSSES;
 	}
 	else
 	{
-		printf("Unable to delete the file");
-		return FAIL;
+		printf("Unable to delete the file\n");
+		return remove_fail;
 	}
 }
 
-int Exit(const char *user_input, const char *file_path)
+static int Exit(const char *user_input, const char *file_path)
 {
-	return (EXIT_STATUS);
+	/*clear the screen*/
+	system("clear");
+	return (exit_logger);
 }
 
-int PrintCountLine(const char *user_input, const char *file_path)
+static int PrintCountLine(const char *user_input, const char *file_path)
 {
 	char ch = '\0';
 	int lines = 0;
@@ -160,7 +171,7 @@ int PrintCountLine(const char *user_input, const char *file_path)
 	
 	if (NULL == fp)
 	{
-		return 1;
+		return open_file_fail;
 	}
 	
 	while(!feof(fp))
@@ -174,17 +185,19 @@ int PrintCountLine(const char *user_input, const char *file_path)
 	}
 	
 	fclose(fp);
-	printf("%d",lines);
-	return 0;
+	
+	printf("\nlines in file: %d\n\n",lines);
+	
+	return sucsses;
 }
 
-int Prepend(const char *user_input, const char *file_path)
+static int Prepend(const char *user_input, const char *file_path)
 {
 	/*creat a new file to swap data and copy the file to a tmp file*/
 	CopyFileToFile(file_path, "tmpfile.txt");
 	
 	/* append the input string to the new file */ 
-	Append(user_input, "tmpfile.txt");
+	AppendToStart(user_input, file_path);
 	
 	/*copy the temp file to my sorce file*/
 	CopyFileToFile( "tmpfile.txt", file_path);
@@ -192,32 +205,30 @@ int Prepend(const char *user_input, const char *file_path)
 	/*delet the tmp file*/
 	Removed(user_input, "tmpfile.txt");
 	
-	return 0;
+	return sucsses;
 }
 
-int Append(const char *user_input, const char *file_path)
+static int Append(const char *user_input, const char *file_path)
 {
 	FILE *fp;
 	
 	fp = fopen(file_path, "a");
 	if (NULL == fp)
 	{
-		return 1;
+		return open_file_fail;
 	}
 	fputs(user_input, fp);
-
-	
 	fclose(fp);
-	return 0;
+	return sucsses;
 }
 
-int Compere(const char* user_input, const char *cmd, size_t number)
+/*TODO: Compare*/
+static int Compare(const char* user_input, const char *cmd, size_t number)
 {
 	return (strncmp(user_input, cmd, number));
 }
 
-
-int CopyFileToFile(const char *source_name, const char *target_name)
+static int CopyFileToFile(const char *source_name, const char *target_name)
 {
 	char ch = ' ';
 	FILE *source, *target;
@@ -225,13 +236,13 @@ int CopyFileToFile(const char *source_name, const char *target_name)
 	source = fopen(source_name, "r");
 	if( source == NULL )
 	{
-		 return 1;
+		 return open_file_fail;
 	}
    
    	target = fopen(target_name, "w");
-	if( target == NULL )
+	if( target == NULL)
 	{
-		 return 1;
+		 return open_file_fail;
 	}
 	
 	while((ch = fgetc(source)) != EOF )
@@ -242,30 +253,44 @@ int CopyFileToFile(const char *source_name, const char *target_name)
 	fclose(source);
 	fclose(target);
 
-	return 0;
+	return sucsses;
 }
 
 static void InitArrayOfCommand(special srtuct_arry[ARRY_SIZE])
 {
 	srtuct_arry[0].cmd = "-remove";
-	srtuct_arry[0].Comper = Compere;
+	srtuct_arry[0].Compar = Compare;
 	srtuct_arry[0].Opration = Removed;
 	
 	srtuct_arry[1].cmd = "-count";
-	srtuct_arry[1].Comper = Compere;
+	srtuct_arry[1].Compar = Compare;
 	srtuct_arry[1].Opration = PrintCountLine;
 	
 	srtuct_arry[2].cmd = "-exit";
-	srtuct_arry[2].Comper = Compere;
+	srtuct_arry[2].Compar = Compare;
 	srtuct_arry[2].Opration = Exit;
 	
 	srtuct_arry[3].cmd = ">";
-	srtuct_arry[3].Comper = Compere;
+	srtuct_arry[3].Compar = Compare;
 	srtuct_arry[3].Opration = Prepend;
 	
-	srtuct_arry[4].cmd=""  ;/*defult*/
-	srtuct_arry[4].Comper = Compere;
+	srtuct_arry[4].cmd="";/*defult*/
+	srtuct_arry[4].Compar = Compare;
 	srtuct_arry[4].Opration = Append;
 
 }
 
+
+static int AppendToStart(const char *user_input, const char *file_path)
+{
+	FILE *fp;
+	
+	fp = fopen(file_path, "w");
+	if (NULL == fp)
+	{
+		return open_file_fail;
+	}
+	fputs(user_input, fp);
+	fclose(fp);
+	return sucsses;
+}
