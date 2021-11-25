@@ -193,17 +193,18 @@ static int PrintCountLine(const char *user_input, const char *file_path)
 
 static int Prepend(const char *user_input, const char *file_path)
 {
+	int statu = sucsses;
 	/*creat a new file to swap data and copy the file to a tmp file*/
-	CopyFileToFile(file_path, "tmpfile.txt");
+	statu = CopyFileToFile(file_path, "tmpfile.txt");
 	
 	/* append the input string to the new file */ 
-	AppendToStart(user_input, file_path);
+	statu = AppendToStart(user_input, file_path);
 	
 	/*copy the temp file to my sorce file*/
-	CopyFileToFile( "tmpfile.txt", file_path);
+	statu = CopyFileToFile( "tmpfile.txt", file_path);
 	
 	/*delet the tmp file*/
-	Removed(user_input, "tmpfile.txt");
+	statu = Removed(user_input, "tmpfile.txt");
 	
 	return sucsses;
 }
