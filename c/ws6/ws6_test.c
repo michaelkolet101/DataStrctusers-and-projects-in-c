@@ -26,18 +26,18 @@ static int Input();
 
 int main ()
 {
-	/*TestAddOneToNum();*/
-	/*TestToPow2();*/
-	/*TestCheckPowerTwo();*/
-	/*TestOnlyWithTreeBytes();*/
-	/*TestByteMirrorLoop();*/
-	/*TestByteMirrorNoLoop();*/
-	/*TestcheckOnBytes();*/
-	/*TestcheckOnBytesOr();*/
-	/*TestLowerNumberDividedBy16();*/
-	/*TestCountBitsOne();*/
-	/*TestCountBitsOneOnLoop();*/
-	/*TestSwapValNumbers();*/
+	TestAddOneToNum();
+	TestToPow2();
+	TestCheckPowerTwo();
+	TestOnlyWithTreeBytes();
+	TestByteMirrorLoop();
+	TestByteMirrorNoLoop();
+	TestcheckOnBytes();
+	TestcheckOnBytesOr();
+	TestLowerNumberDividedBy16();
+	TestCountBitsOne();
+	TestCountBitsOneOnLoop();
+	TestSwapValNumbers();
 	TestSwapBytes();
 	return 0;
 	
@@ -47,6 +47,8 @@ static int TestToPow2()
 {
 	unsigned int x = 2, y = 64;
 	long int num = 0;
+	
+	puts("TestToPow2\n");
 	num = Pow2(x, y);
 	printf("%lu\n",num);
 	return 0;
@@ -66,6 +68,7 @@ static int TestCheckPowerTwo()
 {
 	int n = 0;
 	
+	puts("TestCheckPowerTwo\n");
 	n = Input();
 	
 	n = CheckPowerTwoWithLoop(n);
@@ -86,8 +89,9 @@ static void TestAddOneToNum()
 {
 	int number = 0;
 	int *ptx = NULL;
-
+	
 	number = Input();
+	puts("TestAddOneToNum\n");
 	ptx = &number;
 	AddOneToNum(ptx);
 	printf("%d\n",number);
@@ -97,6 +101,7 @@ static void TestOnlyWithTreeBytes()
 {
 	unsigned int num_arry[] = {1,12,13,15,43,23,65,23,2,7,15,27,31,23,32};
 	unsigned int len = 15;
+	puts("TestOnlyWithTreeBytes\n");
 	OnlyWithTreeBytes(num_arry, len);
 }
 
@@ -105,6 +110,7 @@ static void TestByteMirrorLoop()
 	unsigned int n = 0;
 	
 	n = Input();
+	puts("TestByteMirrorLoop\n");
 	
 	PrintInBinary(n);
 		
@@ -121,6 +127,8 @@ static void TestByteMirrorNoLoop()
 	
 	n = Input();
 	
+	puts("TestByteMirrorNOLoop\n");
+	
 	PrintInBinary(n);
 		
 	n = ByteMirrorNoLoop(n);
@@ -133,11 +141,11 @@ static void TestByteMirrorNoLoop()
 
 static void PrintInBinary(unsigned char n)
 {
-	short int iPos;
+	int index;
 	
-	for (iPos = (INT_BITS - 1) ; iPos >= 0 ; --iPos)
+	for (index = (INT_BITS - 1) ; index >= 0 ; --index)
 	{
-		(n & (1 << iPos))? printf("1"): printf("0");	
+		(n & (1 << index))? printf("1"): printf("0");	
 	}
 	puts("\n");
 }
@@ -147,6 +155,8 @@ static void TestcheckOnBytesAnd()
 	unsigned int n = 0;
 	
 	n = Input();
+	
+	puts("TestcheckOnBytesAnd\n");
 	
 	PrintInBinary(n);
 		
@@ -161,6 +171,8 @@ static void TestcheckOnBytesOr()
 	
 	n = Input();
 	
+	puts("TestcheckOnBytesOr\n");
+	
 	PrintInBinary(n);
 		
 	n = checkOnBytesOr(n);
@@ -174,6 +186,8 @@ static void TestLowerNumberDividedBy16()
 	
 	n = Input();
 	
+	puts("TestLowerNumberDividedBy16\n");
+	
 	n = LowerNumberDividedBy16(n);
 	
 	printf("%d\n", n);
@@ -184,6 +198,8 @@ static void TestCountBitsOne()
 	unsigned int n = 0;
 	
 	n = Input();
+	
+	puts("TestCountBitsOne\n");
 	
 	n = CountBitsOne(n);
 	
@@ -196,6 +212,8 @@ static void TestCountBitsOneOnLoop()
 	
 	n = Input();
 	
+	puts("TestCountBitsOneOnLoop()\n");
+	
 	n = CountBitsOneOnLoop(n);
 	
 	printf("%d\n", n);
@@ -205,6 +223,7 @@ static void TestSwapValNumbers()
 {
 	int x = 5, y = 7;
 	
+	puts("TestSwapValNumbers\n");
 	printf("first %d , second %d\n", x, y);
 	SwapValNumbers(&x ,&y);
 	printf("first %d , second %d\n", x, y);
@@ -215,6 +234,8 @@ static void TestSwapBytes()
 	unsigned char n = '\0';
 	
 	n = Input();
+	
+	puts("TestSwapBytes\n");
 	
 	PrintInBinary(n);	
 	
