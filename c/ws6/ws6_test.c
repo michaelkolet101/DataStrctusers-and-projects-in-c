@@ -10,13 +10,16 @@ static int TestToPow2();
 static int TestCheckPowerTwo();
 static void TestAddOneToNum();
 static void TestOnlyWithTreeBytes();
-static void PrintInBinary(unsigned n);
+static void PrintInBinary(unsigned char n);
 static void TestByteMirrorLoop();
 static void TestByteMirrorNoLoop();
 static void TestcheckOnBytes();
 static void TestcheckOnBytesOr();
 static void TestLowerNumberDividedBy16();
 static void TestCountBitsOne();
+static void TestCountBitsOneOnLoop();
+static void TestSwapValNumbers();
+static void TestSwapBytes();
 static int Input();
 /*******************************main()***************************************/
 
@@ -32,7 +35,10 @@ int main ()
 	/*TestcheckOnBytes();*/
 	/*TestcheckOnBytesOr();*/
 	/*TestLowerNumberDividedBy16();*/
-	TestCountBitsOne();
+	/*TestCountBitsOne();*/
+	/*TestCountBitsOneOnLoop();*/
+	/*TestSwapValNumbers();*/
+	TestSwapBytes();
 	return 0;
 	
 }
@@ -125,7 +131,7 @@ static void TestByteMirrorNoLoop()
 }
 
 
-static void PrintInBinary(unsigned n)
+static void PrintInBinary(unsigned char n)
 {
 	short int iPos;
 	
@@ -184,6 +190,40 @@ static void TestCountBitsOne()
 	printf("%d\n", n);
 }
 
+static void TestCountBitsOneOnLoop()
+{
+	unsigned int n = 0;
+	
+	n = Input();
+	
+	n = CountBitsOneOnLoop(n);
+	
+	printf("%d\n", n);
+}
+
+static void TestSwapValNumbers()
+{
+	int x = 5, y = 7;
+	
+	printf("first %d , second %d\n", x, y);
+	SwapValNumbers(&x ,&y);
+	printf("first %d , second %d\n", x, y);
+}
+
+static void TestSwapBytes()
+{
+	unsigned char n = '\0';
+	
+	n = Input();
+	
+	PrintInBinary(n);	
+	
+	n = SwapBytes(n);
+	
+	PrintInBinary(n);
+	
+	printf("%d\n", n);
+}
 
 
 

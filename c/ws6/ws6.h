@@ -53,8 +53,10 @@ unsigned int LowerNumberDividedBy16(unsigned int num);
 /*Gets an integer positive number Returns the number of times
  the digit 1 appears in the binary representation*/
 unsigned int CountBitsOne(unsigned int number);
+unsigned int CountBitsOneOnLoop(unsigned int number);
 
-
+/*Function Replace two variables with XOR*/
+void SwapValNumbers(int *num_1, int *num_2);
 
 #endif /*__WS6_H__*/
 

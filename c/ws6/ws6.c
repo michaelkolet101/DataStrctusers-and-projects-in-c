@@ -146,7 +146,12 @@ int checkOnBytesOr(unsigned char ch)
 
 unsigned char SwapBytes(unsigned char ch)
 {
-	;
+	/* calcol contains xor of two sets */
+	unsigned int calcol = ((ch >> 2) ^ (ch >> 4)) & ((1U << 1) - 1);
+	
+	/* To swap two sets, we need to again XOR the calcol with original sets */
+	return ch ^ ( (calcol << 2) | (calcol << 4));
+	
 }
 
 static unsigned int subtractOne(unsigned int x)
@@ -180,7 +185,27 @@ unsigned int LowerNumberDividedBy16(unsigned int num)
 	return num;
 }
 
+unsigned int CountBitsOneOnLoop(unsigned int number)
+{
+	unsigned int count = 0;
+	
+	/*reuse input as temporary*/
+	number = number - ((number >> 1) & 0x55555555);
 
+	/*temp*/
+	number = (number & 0x33333333) + ((number >> 2) & 0x33333333);
+	/*count*/
+	count = ((number + (number >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+	
+	return count;
+}
+
+void SwapValNumbers(int *num_1, int *num_2)
+{
+	*num_1 = *num_1 ^ *num_2;
+	*num_2 = *num_1 ^ *num_2;
+	*num_1 = *num_1 ^ *num_2;
+}
 
 
 
