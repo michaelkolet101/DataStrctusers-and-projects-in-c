@@ -1,12 +1,12 @@
 #ifndef __WS6_H__
 #define __WS6_H__
 
-/*progmer name: michael kolet
-reviewer's name: shiran reichenberg */
+/*programmer name: michael kolet
+reviewer's name: Alexanfer Chashka */
 
 /***************************  My functions   ********************************/
 
-/*gets two positive and integer numbers
+/*gets two unsigned integer numbers
 Returns the product of X by 2 to the power of Y*/
 long Pow2( unsigned int x,  unsigned int y);
 
@@ -15,16 +15,16 @@ int CheckPowerTwo(unsigned int n);
 
 /*check if the number is power of two*/
 /*get number in type unsigned int
-and return 1 for secsses or 0 to fail*/
+and return 1 for success or 0 to fail*/
 int CheckPowerTwoWithLoop(unsigned int n);
 
-/*Add to number 1 without using the + operator in C.
-Receives an integer pointer and doing it plus 1*/
+/*Add 1 to a number without using the + operator in C.
+Receives an integer pointer and incrementing it's deref. */
 void AddOneToNum(int *number);
 
 /*receives an array of positive and integer numbers, And the size of the array.
 prints only the numbers whose binary representation has three bits on*/
-void OnlyWithTreeBytes(unsigned int *array_of_numbers, unsigned int len_of_array);
+void OnlyWithThreeBytes(unsigned int *array_of_numbers, unsigned int len_of_array);
 
 /*reverse bits of an integer
 Gets a positive and integer number
@@ -53,7 +53,7 @@ unsigned int LowerNumberDividedBy16(unsigned int num);
 /*Gets an integer positive number Returns the number of times
  the digit 1 appears in the binary representation*/
 unsigned int CountBitsOne(unsigned int number);
-unsigned int CountBitsOneOnLoop(unsigned int number);
+unsigned int CountBitsOneNoLoop(unsigned int number);
 
 /*Function Replace two variables with XOR*/
 void SwapValNumbers(int *num_1, int *num_2);

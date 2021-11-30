@@ -18,6 +18,11 @@ static unsigned int DivBy16(int n);
 
 long Pow2( unsigned int num,  unsigned int y)
 {	
+	/* what happens if y = 100 ?*/
+	if (y >= 31)
+	{
+		return 1;
+	}
 	return (num << y);
 }
 
@@ -25,16 +30,16 @@ int CheckPowerTwoWithLoop(unsigned int n)
 {  
     unsigned int count = 0;
     unsigned int check = 1;
-    
-    unsigned int temp;
+    unsigned int temp = 0;
     int i = 0;
     
-    for(i = 1; i < sizeof(int)*8; i++ )
+    for(i = 1; i < sizeof(int) * 8; ++i )
     {
         temp = n & (check << i);
         if(0 != temp)
         {
             ++count;
+            /* TODO : check if not > 1 ???*/
         }
     }
     if (1 == count)
@@ -49,6 +54,12 @@ int CheckPowerTwoWithLoop(unsigned int n)
 
 int CheckPowerTwo(unsigned int n)
 {
+	
+	
+	if (0 == n)
+	{
+		return 0;	
+	}
 	/*check if the binary val equal to something like 11111 */
 	if ((n & (n - 1)) == 0)
 	{
@@ -66,7 +77,7 @@ void AddOneToNum(int *number)
 	*number = -~(*number);	
 }
 
-void OnlyWithTreeBytes(unsigned int *array_of_numbers, unsigned int len_of_array)
+void OnlyWithThreeBytes(unsigned int *array_of_numbers, unsigned int len_of_array)
 {
 	unsigned int *start_of_arry = NULL;
 	unsigned int count = 0;
@@ -83,6 +94,9 @@ void OnlyWithTreeBytes(unsigned int *array_of_numbers, unsigned int len_of_array
 		}
 		
 		++start_of_arry;
+		
+		/* maybe write a function that recieves a 
+		needed number as an argument? */
 	}
 	
 	start_of_arry = NULL;
@@ -91,6 +105,9 @@ void OnlyWithTreeBytes(unsigned int *array_of_numbers, unsigned int len_of_array
 unsigned int CountBitsOne(unsigned int number)
 {
     unsigned int count = 0;
+    
+    /* what about Kernighan's Algorithm? */
+    
     while (number) 
     {
         count += number & 1;
@@ -101,10 +118,12 @@ unsigned int CountBitsOne(unsigned int number)
 
 unsigned int ByteMirrorLoop(unsigned int num)
 {
-    unsigned int count = (INT_BITS -1); 
+    unsigned int count = (INT_BITS - 1); 
     unsigned int tmp = num;         /* Assign num to the tmp*/ 
 	     
-    num >>= 1; /* shift num because LSB already assigned to tmp */
+    /* maybe use SWAP ????*/
+    
+    num >>= 1; /* shift num because it already assigned to tmp */
     
     while(num)
     {
@@ -136,6 +155,7 @@ unsigned int ByteMirrorNoLoop(unsigned int num)
 
 int checkOnBytesAnd(unsigned char ch)
 {
+	/* (ch>>1)&(1) & (ch>>5)&(1); */
 	return ((ch & (1<<1) && (ch &(1 << 5))));
 }
 
@@ -154,23 +174,6 @@ unsigned char SwapBytes(unsigned char ch)
 	
 }
 
-static unsigned int subtractOne(unsigned int x)
-{
-    int m = 1;
- 
-    /* Flip all the set bits
-    until we find a 1*/
-    while (!(x & m)) 
-    {
-        x = x ^ m;
-        m <<= 1;
-    }
- 
-    /* flip the rightmost 1 bit*/
-    x = x ^ m;
-    return x;
-}
-
 static unsigned int DivBy16(int n)
 {
     return (((n >> 4) << 4) == n);
@@ -183,10 +186,13 @@ unsigned int LowerNumberDividedBy16(unsigned int num)
 		num = subtractOne(num);	
 	}
 	return num;
+	/*return ((n >> 4) << 4) ???????????????????*/
 }
 
-unsigned int CountBitsOneOnLoop(unsigned int number)
+unsigned int CountBitsOneNoLoop(unsigned int number)
 {
+	/* TODO change the name */
+	
 	unsigned int count = 0;
 	
 	/*reuse input as temporary*/
@@ -207,7 +213,21 @@ void SwapValNumbers(int *num_1, int *num_2)
 	*num_1 = *num_1 ^ *num_2;
 }
 
-
+static unsigned int subtractOne(unsigned int x)
+{
+    int m = 1;
+    /* Flip all the set bits
+    until we find a 1*/
+    while (!(x & m)) 
+    {
+        x = x ^ m;
+        m <<= 1;
+    }
+ 
+    /* flip the rightmost 1 bit*/
+    x = x ^ m;
+    return x;
+}
 
 
 

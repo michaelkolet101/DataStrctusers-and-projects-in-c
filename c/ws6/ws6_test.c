@@ -9,12 +9,13 @@
 static int TestToPow2();
 static int TestCheckPowerTwo();
 static void TestAddOneToNum();
-static void TestOnlyWithTreeBytes();
+static void TestOnlyWithThreeBytes();
 static void PrintInBinary(unsigned char n);
 static void TestByteMirrorLoop();
 static void TestByteMirrorNoLoop();
-static void TestcheckOnBytes();
+/*static void TestcheckOnBytes();*/
 static void TestcheckOnBytesOr();
+static void TestcheckOnBytesAnd();
 static void TestLowerNumberDividedBy16();
 static void TestCountBitsOne();
 static void TestCountBitsOneOnLoop();
@@ -26,19 +27,20 @@ static int Input();
 
 int main ()
 {
-	TestAddOneToNum();
-	TestToPow2();
-	TestCheckPowerTwo();
-	TestOnlyWithTreeBytes();
+	/*TestAddOneToNum();*/
+	/*TestToPow2();*/
+	/*TestCheckPowerTwo();
+	TestOnlyWithThreeBytes();
 	TestByteMirrorLoop();
 	TestByteMirrorNoLoop();
-	TestcheckOnBytes();
+	TestcheckOnBytesAnd();
 	TestcheckOnBytesOr();
 	TestLowerNumberDividedBy16();
 	TestCountBitsOne();
 	TestCountBitsOneOnLoop();
 	TestSwapValNumbers();
-	TestSwapBytes();
+	TestSwapBytes();*/
+	
 	return 0;
 	
 }
@@ -97,12 +99,12 @@ static void TestAddOneToNum()
 	printf("%d\n",number);
 }
 
-static void TestOnlyWithTreeBytes()
+static void TestOnlyWithThreeBytes()
 {
 	unsigned int num_arry[] = {1,12,13,15,43,23,65,23,2,7,15,27,31,23,32};
 	unsigned int len = 15;
 	puts("TestOnlyWithTreeBytes\n");
-	OnlyWithTreeBytes(num_arry, len);
+	OnlyWithThreeBytes(num_arry, len);
 }
 
 static void TestByteMirrorLoop()
@@ -206,7 +208,7 @@ static void TestCountBitsOne()
 	printf("%d\n", n);
 }
 
-static void TestCountBitsOneOnLoop()
+static void TestCountBitsOneNoLoop()
 {
 	unsigned int n = 0;
 	
@@ -214,7 +216,7 @@ static void TestCountBitsOneOnLoop()
 	
 	puts("TestCountBitsOneOnLoop()\n");
 	
-	n = CountBitsOneOnLoop(n);
+	n = CountBitsOneNoLoop(n);
 	
 	printf("%d\n", n);
 }
