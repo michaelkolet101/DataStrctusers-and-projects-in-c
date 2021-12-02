@@ -41,7 +41,6 @@ inside the large one*/
 char *StrStr(const char *haystack, const char *string_want_to_find);
 int compare(const char *first_string, const char *second_string);
 
-
 size_t StrSpn(const char *s1, const char *s2);
 
 /*A function to check if a string str is palindrome*/
@@ -50,7 +49,7 @@ void IsPalindrome(char *str);
 char* SpaceX(char *some_string);
 size_t StrLen(const char *pointer_to_string);
 
-
+void SeveneBoom(int start, int end);
 
 
 

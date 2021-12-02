@@ -23,7 +23,7 @@ void TestStrSpn();
 void TestisPalindrome();
 void TestLen();
 void TestSpace();
-
+void TestSevenBoom();
 
 
 
@@ -37,15 +37,17 @@ int main(void)
 	/*TestStrCmp(); 
 	TestStrCpy();
 	TestStrnCpy();
-	test2StrCaseCmp();*/
+	test2StrCaseCmp();
 	TestStrDup();
-	/*TestStrCat();
+	TestStrCat();
 	TestStrnCat();
 	TestStrStr();
 	TestStrSpn();
 	TestisPalindrome();
 	TestSpace();
 	TestLen();*/
+	TestSevenBoom();
+	
     return 0;
 }
 /********************************TestStrCpy()********************************/
@@ -71,16 +73,9 @@ int TestStrCpy()
 	destination = NULL;
 
 	return 0;
-
-
-
 }
 
-
 /*******************************TestStrnCpy()**********************************/
-
-
-
 
 void TestStrnCpy()
 {
@@ -90,8 +85,6 @@ void TestStrnCpy()
 	
 	StrnCpy(destination, source, num);
 	printf("it is from TestStrnCpy() %s\n", destination);
-
-
 }
 
 
@@ -122,50 +115,31 @@ int test2StrCaseCmp()
     testStrCaseCmp(string1,string3);
 
     return(0);
-
 }
-
 /*******************************TestStrChr**********************************/
 
 void TestStrCmp()
 {
-
-
-char *str1 = "michael";
-char *str2 = "michael";
-
-/*printf("%d\n",strcmp(str1,str2));*/
-printf("%d\n",StrCmp(str1,str2));
-
-
+	char *str1 = "michael";
+	char *str2 = "michael";
+	/*printf("%d\n",strcmp(str1,str2));*/
+	printf("%d\n",StrCmp(str1,str2));
 }
-
-
-
-
 
 void TestStrChr()
 {
+	char *string1 = "my name is michael kolet";
+	char ch = 'e';
+	char const *ptr1 = NULL;
+	char *ptr2 = NULL;
 
-char *string1 = "my name is michael kolet";
-char ch = 'e';
-char const *ptr1 = NULL;
-char *ptr2 = NULL;
+	ptr1 = (char *)StrChr(string1 ,ch);
+	ptr2 = (char *)strchr(string1 ,ch);
 
-
-
-ptr1 = (char *)StrChr(string1 ,ch);
-ptr2 = (char *)strchr(string1 ,ch);
-
-printf("%s\n", ptr2);
-printf("%s\n", ptr1);
-
-
-
+	printf("%s\n", ptr2);
+	printf("%s\n", ptr1);
 
 }
-
-
 
 void TestStrDup()
 {
@@ -174,11 +148,8 @@ void TestStrDup()
 	char *p = (char *)StrDup(s);
 
 	puts(p);
-
 	/*free(p);*/
-
 }
-
 
 void TestStrCat()
 {
@@ -192,15 +163,9 @@ void TestStrCat()
     StrCat(str, "are ");
     StrCat(str, "exhausting ");
     
-     
     puts(str);
     free(str);
-
 }
-
-
-
-
 
 void TestStrnCat()
 {
@@ -215,11 +180,7 @@ void TestStrnCat()
     
     StrnCat(dest, src, 10);
     puts(dest);
-    
- 	
-
 }
-
 
 void TestStrStr()
 {
@@ -239,10 +200,6 @@ void TestStrStr()
 	
 }
 
-
-
-
-
 /*TO DO - I did not really understand what to do*/
 void TestStrSpn()
 {
@@ -257,27 +214,20 @@ void TestStrSpn()
 	
 	if ((size_t)(StrSpn(str1, str2) == (size_t)strspn(str3, str4)))
 	{
-	printf("SUCSSES\n");
+		printf("SUCSSES\n");
 	}
 	else
 	{
-	printf("fail\n");
+		printf("fail\n");
 	}
 	
 }
 
-
-
-
-
-
 void TestisPalindrome()
 {
-char str[] = "michuelaleahcik";
-IsPalindrome(str);
+	char str[] = "michuelaleahcik";
+	IsPalindrome(str);
 }
-
-
 
 void TestSpace()
 {
@@ -292,15 +242,21 @@ void TestSpace()
 void TestLen()
 {
 	char str[] = "jhghgfdrty";
-	
-	
 
 	printf("%lu\n",StrLen(str));
 	
 }
 
-
-
+void TestSevenBoom()
+{
+	int start = 1;
+	int end = 50;
+	
+	
+	
+	SeveneBoom(start, end);
+	
+}
 
 
 

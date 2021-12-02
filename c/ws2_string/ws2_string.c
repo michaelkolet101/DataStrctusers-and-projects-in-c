@@ -8,14 +8,14 @@
 #include "ws2_string.h"
 
 /*****************************StrCmp**************************************/
+static int DivBy7(int num);
+static int IsIt7(int num);
 
 
 /*A function that checks if strings are equal to each other, if returns 0 
 then they are equal*/
 int StrCmp(const char *first_string, const char *second_string)
 {
-	
-	
     while('\0' != *first_string && *first_string == *second_string) 
     {
         ++first_string;
@@ -33,7 +33,6 @@ association in the string*/
 
 size_t StrLen(const char *pointer_to_string)
 {
-	
     unsigned int number_of_characters = 0;
     while('\0' != *pointer_to_string)
     {
@@ -51,12 +50,8 @@ returns a pointer that points to it*/
 
 char* StrCpy(char *destination, const char *source)
 {
-
-	
 	/*Indicates a destination to which the string will be copied*/
 	char *start_dest = destination;/*לתת משמעות למשתנה*/
-	
-
 	while ('\0' != *source)/*A loop that passes over the original string*/
 	    {
 		   *destination = *source;
@@ -76,11 +71,7 @@ char* StrCpy(char *destination, const char *source)
   original string to a new one.*/
 char* StrnCpy(char *destination, const char *source, size_t num)
 {
-	
 	char *start_dest = destination;
-
-
-
 	/*Indicates a destination to which the string will be copied*/
 	while (('\0' != *source) && (0 < num) )
 	    {
@@ -93,7 +84,6 @@ char* StrnCpy(char *destination, const char *source, size_t num)
 	    *destination = '\0';/*Add the NULL character*/
 		                                                                        
 	    return start_dest;
-
 }
 
 /**********************************StrCaseCmp()*******************************/
@@ -105,14 +95,10 @@ int StrCaseCmp(const char *s1, const char *s2)
         ++s1;
         ++s2;
     }
- 
  /*Calculation to return the difference of the husky value of the two strings*/
 	return toupper(*s1) - toupper(*s2);
-    
  } 
    
-
-
 /**********************************StrChr()******************************/
 
 /*function returns a pointer to the first occurrence of the character
@@ -135,8 +121,6 @@ char *StrChr(const char *some_string, int ch)
     return (char *)some_string;
 
 }
-
-
 /*********************************StrDup()******************************/
 
 char *StrDup(const char *str)
@@ -149,13 +133,9 @@ char *StrDup(const char *str)
 	}          
 	StrCpy(dest, str);                     
 	return dest; 
-
 }
 
-
-
 /*********************************StrCat()******************************/
-
 
 /*Receives two strings and returns a pointer to the string connected from both*/
 char *StrCat(char *destination, const char *source)
@@ -175,7 +155,6 @@ it to the destination*/
 
 }
 
-
 /*The function gets two string strings and a number of characters per thread 
 from the second string for the first time*/
 char *StrnCat(char *destination, const char *source, size_t number_of_char)
@@ -194,7 +173,6 @@ it to the destination*/
 	return destination;
 }
 
-
 /*Auxiliary function to check if the strings are the same*/
 int compare(const char *first_string, const char *second_string)
 {
@@ -208,15 +186,10 @@ int compare(const char *first_string, const char *second_string)
         first_string++;
         second_string++;
     }
- 
- 
- 
   return (*second_string == '\0');
  
  }
-   
-
-
+  
 /*Receives two strings and returns the first position of the small string 
 inside the large one*/
 char* StrStr(const char *large_string, const char *the_little_string)
@@ -233,10 +206,6 @@ char* StrStr(const char *large_string, const char *the_little_string)
  
     return NULL;
 }
-
-
-
-
 
 size_t StrSpn(const char *s1, const char *s2)
 {
@@ -262,7 +231,6 @@ size_t StrSpn(const char *s1, const char *s2)
 	return len;
 }
 
-
 /*A function to check if a string str is palindrome*/
 void IsPalindrome(char *str)
 {
@@ -283,13 +251,6 @@ void IsPalindrome(char *str)
 	}
 }
 
-
-
-
-
-
-
-
 /*Function for deleting unnecessary spaces from a string*/
 char* SpaceX(char *some_string)
 {
@@ -303,15 +264,12 @@ char* SpaceX(char *some_string)
 	{
 	 	some_string++;
 	}
-	
 	/*Skip the spaces from the end*/
 	while (isspace(*end))
 	{
 		*end = '\0';
 		 --end;
 	}
-	
-	
 	ptr_new = temp;
 	/*main loop as long as we have not reached the end of the string*/
 	while(*some_string )
@@ -326,7 +284,7 @@ char* SpaceX(char *some_string)
 			++some_string;
 			count = 0;
 		}	
-		
+	
 		count = 1;
 		/*++some_string;*/
 		*temp = *some_string;
@@ -337,18 +295,45 @@ char* SpaceX(char *some_string)
 		{ 
 			 ++some_string; 
 		}	
-
-
 	}
-
-	*temp = '\0';
-
-
-	
+	*temp = '\0';	
 	return ptr_new ;
 }
 
+void SeveneBoom(int start, int end)
+{
+	int i = 0;
+	
+	for (i = start; i < end; ++i)
+	{
+		if ((0 == DivBy7(i)) || (0 != IsIt7(i)))
+		{
+			puts("BOOM");
+		}
+		else
+		{
+			printf("%d\n", i);
+		}
+	}
+}
 
+static int DivBy7(int num)
+{
+	return (num % 7);
+}
+
+static int IsIt7(int num)
+{
+	while (num)
+	{
+		if (num % 10 == 7)
+		{
+			return 1;
+		}
+		num = num / 7;
+	}	
+	return 0;
+}
 
 
 
