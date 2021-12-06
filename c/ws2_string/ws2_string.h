@@ -27,6 +27,7 @@ int StrCaseCmp(const char *s1, const char *s2);
  c in the string s*/
 char *StrChr(const char *some_string, int ch);
 
+/*get a string and duplicat it ane return a pointer to that string.*/
 char *StrDup(const char *s);
 
 /*Receives two strings and returns a pointer to the string connected from both*/
