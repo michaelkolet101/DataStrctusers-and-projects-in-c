@@ -5,93 +5,130 @@
 
 #include "ws9.h"
 
-#define SUCCESS 0
-#define FAIL 1
+
 
 
 
 /****************************************************************************/
-/*USEFULL FUNCTIONS THAT I USE IN THE PROGREM*/
+/*USEFULL FUNCTIONS THAT I USE IN THE PROGRAM*/
 
 
-void *MemSet(void *s, int c, size_t n)
+void *MemSet(void *source, int ch, size_t n)
 {
 	int i = 0;
-	char *runer = s;
-	char *buffer = (char*)malloc(sizeof(char) * c);
+	char *runer = source;
+
+	/*buffer that contain the ch will contain the
+	 character as many times as required*/
+	char *buffer = (char*)malloc(sizeof(char) * sizeof(size_t));
 	
-	assert(buffer);
-	
-	for(i = 0; i < sizeof(size_t); ++i)
+	if (NULL == buffer)
 	{
-		buffer[i] = c;
+		return NULL;
 	}
 	
+	assert(source);
+	
+	/*initialization of the buffer in ch */
+	for(i = 0; (size_t)i < sizeof(size_t); ++i)
+	{
+		buffer[i] = ch;
+	}
+	
+	/*Inserting the buffer to the sours with memcpy */
+	while (0 < (n / sizeof(size_t))) 
+	{
+		MemCpy(runer, buffer, sizeof(size_t));	
+		runer += sizeof(size_t);
+		n -= sizeof(size_t);
+	}
+
+	/*	The second loop is for the remainder if the given number is not
+	 divided by 8 and it should insert them one by one */
 	while (0 < n)
 	{
-		memcpy(s, buffer, n);	
+		*runer = ch;
 		++runer;
 		--n;
 	}
 	
 	free(buffer);	
+	
+	return source;
 }
 
 
-void* MemCpy(void* dst, const void* src, size_t n)
+void *MemCpy(void* dest, const void* src, size_t n)
 {
-    size_t *ptr_dest = (size_t*) dest;
-    size_t *ptr_src = (size_t*) src;
-	int index = 0;
+	/*	Defines pointers char and then assign them with dest and src */
+    char *ptr_dest = (char *) dest;
+    char *ptr_src = (char *) src;
+	int i = 0;
+	
+	/*	The first loop will run up to the number divided by 8 */
     int loops = (n / sizeof(size_t));
-    
-    for(index = 0; index < loops; ++index)
+
+	assert(src);
+	assert(dest);
+
+    for (i = 0; i < loops; ++i)
     {
-        *((size_t*)ptr_dest) = *((size_t*)ptr_src);
+		/*	Make a casting for the 8 bytes jumps */
+        *((size_t *)ptr_dest) = *((size_t *)ptr_src);
         ptr_dest += sizeof(size_t);
         ptr_src += sizeof(size_t);
     }
 
+	/*	The second loop is for the remainder if the given number is not
+	 divided by 8 and it should insert them one by one */
     loops = (n % sizeof(size_t));
-    for (int index = 0; index < loops; ++index)
+
+    for (i = 0; i < loops; ++i)
     {
-        *ptr_dest = *ptr_src;
+        *(char *)ptr_dest = *(char *)ptr_src;
         ++ptr_dest;
         ++ptr_src;
     }
-    
-    return dst;
+
+    return dest;
 }
 
-void* MemMove(void *dest, const void *src, size_t n);
+void *MemMove(void *dest, const void *src, size_t n)
 {
     char *ptr_dest = (char *)dest;
-    const char *ptr_src =( const char*)src;
-    size_t i = 0;
+    const char *ptr_src =(const char *)src;
     
-    /*allocate memory for tmp array*/
-    char *tmp  = (char *)malloc(sizeof(char ) * n);
-    
-    if(NULL == tmp)
-    {
-        return NULL;
-    }
-    else
-    { 
-        /* copy src to tmp array */
-        for(i =0; i < n ; ++i)
-        {
-            *(tmp + i) = *(ptr_src + i);
-        }
-        
-        /*copy tmp to dest*/
-        for(i =0 ; i < n ; ++i)
-        {
-            *(ptr_dest + i) = *(tmp + i);
-        
-        }
-        free(tmp); /*free allocated memory*/
-    }
+	assert(src);
+	assert(dest);
+
+	/*Checks which value of pointer is greater: source or 		  	destination*/
+	if (ptr_src < ptr_dest)
+	{
+	/*advance the two pointers to their end*/
+		ptr_src += n - 1;
+		ptr_dest += n - 1;
+		
+	/*A loop that ran on the pointer from the end to the beginning*/
+		while (n)
+		{
+			*ptr_dest = *ptr_src;
+			--ptr_dest; 
+			--ptr_src;
+			--n;
+		}
+	}
+	/*A loop that ran from the beginning to the end of the pointers*/
+	else
+	{
+		while (n)
+		{
+			*ptr_dest = *ptr_src;
+			++ptr_dest; 
+			++ptr_src;
+			--n;
+		}
+	}
+
     return dest;
 }
 
