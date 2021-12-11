@@ -14,10 +14,19 @@
 /*USEFULL FUNCTIONS THAT I USE IN THE PROGRAM*/
 
 /*int countDigit(int n);*/
-static void reverse(char str[], int length);
-static void swap(char *x, char *y);
-void revstr(char *str1)  ;
 
+
+static void reverse(char *str1);
+
+static int val(char c);
+
+static int ToDeci(char *str, int base);
+
+static void InitAsciiArr(int *ascii);
+static void ChackArr1(int *ascii, char *arr1, int len1);
+static void ChackArr2(int* ascii, char* arr2, int len2);
+static void ChackArr3(int* ascii, char* arr3, int len3);
+static void PrintCorrectVal(int* ascii);
 /*************************************************************************/
 
 char* Itoa(int num, char* str, int base)
@@ -29,12 +38,13 @@ char* Itoa(int num, char* str, int base)
     /* Handle 0 explicitly, otherwise empty string is printed for 0 */
     if (num == 0)
     {
-        str[i++] = '0';
+        str[i] = '0';
+        ++i;
         str[i] = '\0';
         return str;
     }
  
-    if (num < 0 && base == 10)
+    if ((num < 0) && (base == 10))
     {
         negative = TRUE;
         num = -num;
@@ -44,8 +54,18 @@ char* Itoa(int num, char* str, int base)
     while (num != 0)
     {
         rem = num % base;
-        str[i] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
+        
+        if (rem > 9)
+        {
+        	str[i] = (rem - 10) + 'a';
+        }
+        else
+        {
+        	str[i] = rem + '0';
+        }
+        
         ++i;
+        
         num = num/base;
     }
  
@@ -56,134 +76,163 @@ char* Itoa(int num, char* str, int base)
 		++i;        
     }
  
-    str[i] = '\0'; /* Append string terminator*/
+    /* Append null terminator*/
+    str[i] = '\0'; 
  
     /* Reverse the string*/
     
-    revstr(str);
+    reverse(str);
  
     return str;
 }
  
-/*
-char* Itoa(int number)
+int Atoi(char *string, int base)
 {
-	int count = countDigit(number);
-	char *new_string = NULL;
-	char *save_my_place = NULL;
-	int *buffer = NULL;
-	int num = number;
-	
-	printf("%d\n", count);
-	
-	if (0 > number)
-	{
-		++count;
-	}
-	
-	new_string = (char *)malloc(sizeof(char) * count + 1);
-	
-	if (NULL == new_string)
-	{
-		return NULL;
-	}
-	
-	save_my_place = new_string;
-	
-	buffer = (int *)malloc(sizeof(char) * count);
-	
-	if (NULL == buffer)
-	{
-		return NULL;
-	}
-	
-	/*chack if the number is nagativ than put the "-" and "0" in the place*/
-/*	if (0 > number)
-	{
-		
-		*new_string = '-';
-		++new_string;
-		
-		num = -num;
-	}
-	
-	while (0 != num)
-	{
-		*buffer = num % 10;
-		++buffer;
-		num = num / 10; 
-	}
-	
-	while (count)
-	{
-		*new_string = *buffer + 48;
-		++new_string ;
-		--buffer;
-		--count;
-	}
-	
-	*(new_string + count + 1) = '\0';
-	
-	new_string = save_my_place;
-	
-	return new_string;
+	int i;
+    int res = 0;
+    int nagativ = 0;
+    
+    
+    if (*string == '-')
+    {
+    	nagativ = 1;
+    	++string;
+    }
+    
+    if (10 == base)
+    {
+    	for (i = 0; string[i] != '\0'; ++i)
+		{
+			res = res * base + string[i] - '0';
+		}	
+    }
+    else
+    {
+    	res = ToDeci(string, base);
+ 	}
+ 	
+ 	if (1 == nagativ)
+ 	{
+ 		res = -res;
+ 	}
+    return res;
 }
 
-
-
-
-int countDigit(int n)
+void PrintTwoEqualChar(char* arr1, char* arr2, char* arr3, int len1, int len2, int len3)
 {
-    int count = 0;
-    while (n != 0)
-    {
-        n = n / 10;
-        ++count;
-    }
-    return count;
-}*/
-/*
-static void reverse(char str[], int length)
-{
-    int start = 0;
-    int end = length -1;
-    char a, b;
-    while (start < end)
-    {
-		a = *(str+start);
-		b = *(str+end);
-		      
-        swap(a , b);
-        ++start;
-        --end;
-    }
+	int ascii[256];
+	
+	InitAsciiArr(ascii);
+	ChackArr1(ascii, arr1, len1);
+	ChackArr2(ascii, arr2, len2);
+	ChackArr3(ascii, arr3, len3);
+	PrintCorrectVal(ascii);
 }
-*/
-void revstr(char *str1)  
+
+static void PrintCorrectVal(int* ascii)
+	{
+		int i = 0;
+		for (i = 0; i < 265; ++i)
+		{
+			if ((ascii[i]) == 2)
+			{
+				printf("%c\n",i);
+			}
+		}
+	}
+	
+static void ChackArr3(int *ascii, char* arr3, int len3)
+	{
+		int i = 0;
+		int index = 0;
+		for (i = 0; i < len3; ++i)
+		{
+			index = (int)arr3[i];
+			ascii[index] -= 1;
+		}
+	}
+	
+static void ChackArr2(int* ascii, char* arr2, int len2)
+	{
+		int i = 0;
+		int index = 0;
+		for (i = 0; i < len2; ++i)
+		{
+			index = (int)arr2[i];
+			ascii[index] += 1;
+		}
+	}
+	
+static void InitAsciiArr(int *ascii)
+	{
+		int i = 0;
+		for (i = 0; i < 256; ++i)
+		{
+			ascii[i] = 0;
+		}
+	}
+	
+static void ChackArr1(int *ascii, char *arr1, int len1)
+	
+	{
+		int i = 0;
+		int index = 0; 
+		
+		for (i = 0; i < len1; ++i)
+		{
+			index = (int)arr1[i];
+			ascii[index] += 1;
+		}
+	}
+	
+static void reverse(char *str1)  
 {  
-   
-    int i, len, temp;  
+    int i = 0, len = 0, temp = 0;  
     len = strlen(str1);  
       
-    for (i = 0; i < len/2; i++)  
+    for (i = 0; i < len/2; ++i)  
     {     
         temp = str1[i];  
         str1[i] = str1[len - i - 1];  
         str1[len - i - 1] = temp;  
     }  
 }  
-/*
-static void swap(char x, char y)
-	{
-	    char t = x;
-	     x = y;
-	     y = t;
-	}
 
-*/
+static int val(char c)
+{
+    if (c >= '0' && c <= '9')
+        return (int)c - '0';
+    else
+        return (int)c - 'A' + 10;
+}
 
-
-
+static int ToDeci(char *str, int base)
+{
+    int len = strlen(str);
+    int power = 1; /* Initialize power of base*/
+    int num = 0;  /* Initialize result*/
+    int i = 0;
+ 
+    /* Decimal equivalent is str[len-1]*1 +*/
+    /* str[len-2]*base + str[len-3]*(base^2) + ...*/
+    
+    
+    for (i = len - 1; i >= 0; --i)
+    {
+        /* A digit in input number must be*/
+        /* less than number's base*/
+        if (val(str[i]) >= base)
+        {
+           printf("Invalid Number");
+           return -1;
+        }
+ 
+        num += val(str[i]) * power;
+        power = power * base;
+    }
+ 
+    return num;
+}
 
 
 
