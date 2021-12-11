@@ -15,17 +15,26 @@
 
 /*int countDigit(int n);*/
 
-
+/*reverse string*/
 static void reverse(char *str1);
 
+/*convert string to base 10*/
+static int ToDeci(char *str, int base);
 static int val(char c);
 
-static int ToDeci(char *str, int base);
-
+/*initializtion the ascii aray with 0*/
 static void InitAsciiArr(int *ascii);
+
+/*set the index fo the ascii arr relative  		to arr1*/
 static void ChackArr1(int *ascii, char *arr1, int len1);
+
+/*set the index fo the ascii arr relative  		to arr2 if the index is alrady set*/
 static void ChackArr2(int* ascii, char* arr2, int len2);
+
+/*set the index fo the ascii arr relative 		the arr1 and arr2*/
 static void ChackArr3(int* ascii, char* arr3, int len3);
+
+/*print the correct value*/
 static void PrintCorrectVal(int* ascii);
 /*************************************************************************/
 
@@ -122,12 +131,23 @@ void PrintTwoEqualChar(char* arr1, char* arr2, char* arr3, int len1, int len2, i
 {
 	int ascii[256];
 	
+	/*initializtion the ascii aray with 0*/
 	InitAsciiArr(ascii);
+	
+	/*set the index fo the ascii arr relative  		to arr1*/
 	ChackArr1(ascii, arr1, len1);
+	
+	/*set the index fo the ascii arr relative  		to arr2 if the index is alrady set*/
 	ChackArr2(ascii, arr2, len2);
+	
+	/*set the index fo the ascii arr relative 		the arr1 and arr2*/
 	ChackArr3(ascii, arr3, len3);
-	PrintCorrectVal(ascii);
+	
+	/*print the correct value*/
+	PrintCorrectVal(ascii);	
 }
+
+/***********************************************/
 
 static void PrintCorrectVal(int* ascii)
 	{
@@ -209,14 +229,13 @@ static int val(char c)
 static int ToDeci(char *str, int base)
 {
     int len = strlen(str);
-    int power = 1; /* Initialize power of base*/
-    int num = 0;  /* Initialize result*/
+    /* Initialize power of base*/
+    int power = 1; 
+    int num = 0;  
     int i = 0;
  
     /* Decimal equivalent is str[len-1]*1 +*/
-    /* str[len-2]*base + str[len-3]*(base^2) + ...*/
-    
-    
+    /* str[len-2]*base + str[len-3]*(base^2)+*/
     for (i = len - 1; i >= 0; --i)
     {
         /* A digit in input number must be*/
