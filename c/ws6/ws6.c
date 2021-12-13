@@ -39,7 +39,6 @@ int CheckPowerTwoWithLoop(unsigned int n)
         if(0 != temp)
         {
             ++count;
-            /* TODO : check if not > 1 ???*/
         }
     }
     if (1 == count)

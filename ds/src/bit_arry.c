@@ -7,51 +7,83 @@
 #define CHAR_BITS 8/*size of character*/
 
 
-/* Function for printing a binary number */
+
+/* Definitions */
+#define BIT_ARRAY_MSB_MASK (bit_array_ty)0x8000000000000000
+#define BIT_ARRAY_LSB_MASK (bit_array_ty)0x0000000000000001
+#define BITS_IN_BYTE 8
+#define BITS_IN_WORD 64
+
+#define UNUSED(x)	{(void)x;}
+
+/* Function for printing a binary maskber */
 static void PrintInBinary(unsigned char n);
 /***************************************************************************/
 
 bit_array_ty SetAll(bit_array_ty data)
 {
-	return ~data;
+	UNUSED(data)
+	return (bit_array_ty)~0;
 }
 
 bit_array_ty ResetAll(bit_array_ty data)
 {
-	  size_t flag = 0;
-	  
-	  return  flag & data;
+	UNUSED(data)
+		  
+	return  (bit_array_ty)0;
 }
 
 char *ToString(bit_array_ty data, char *dest)
-{
-	sprintf(dest,"%ld", data);
+{	
+	char *start = dest;
+	size_t i = 0;
 	
-	return dest;
+	assert(NULL != dest);
+	
+	for (i = 0; i < BITS_IN_WORD; ++i)
+	{
+		if ((data & (BIT_ARRAY_MSB_MASK >> i)))
+		{
+			*dest = '1';
+		}
+		else
+		{
+			*dest = '0';
+		}
+		
+		++dest;
+	}
+	
+	*dest = '\0';
+	
+	return start;
 }
+
 
 bit_array_ty SetOn(bit_array_ty data, const unsigned int idx)
 {
-	unsigned char flag = 1;
+	unsigned char mask = 1;
 	
-	flag = (flag << (idx - 1));
+	mask = mask << (idx - 1) ;
 	
-	return (data | flag);
+	return (data | mask);
 }
 
 bit_array_ty SetOff(bit_array_ty data, const unsigned int idx)
 {
-	unsigned char flag = 1;
+	unsigned char mask = 1;
 	
-	flag = (flag << (idx - 1));
-	flag = ~flag;
+	mask = mask << (idx - 1);
+	mask = ~mask;
 
-	return (data & flag);
+	return (data & mask);
 }
 
 bit_array_ty SetBit(bit_array_ty data, const unsigned int idx, const unsigned int val)
 {
-	if (val)
+	assert(val < 2);
+	
+	if (1 == val)
 	{
 		data = SetOn(data, idx);
 	}
@@ -65,123 +97,116 @@ bit_array_ty SetBit(bit_array_ty data, const unsigned int idx, const unsigned in
 
 int GetVal(bit_array_ty data, const unsigned int idx)
 {
-	int num = 1;
+	bit_array_ty mask = 1;
 	
-	num = num << (idx - 1);
-	num = num & data;
+	mask = mask << (idx - 1);
+	mask = mask & data;
 	
-	return (num >> (idx - 1));
+	return (int)(mask >> (idx - 1));
 }
 
 bit_array_ty Flip(bit_array_ty data, const unsigned int idx)
 {
-	size_t num = 0;
+	bit_array_ty mask = 0;
 	
-	num = GetVal(data, idx);
+	mask = GetVal(data, idx);
 	
-	if (num)
+	if (mask)
 	{
-		num = SetOff(data, idx);
+		mask = SetOff(data, idx);
 	}
 	else
 	{
-		num = SetOn(data, idx);
+		mask = SetOn(data, idx);
 	}
 	
-	return num;
+	return mask;
 }
 
 unsigned int CountOn(bit_array_ty data)
 {
 	unsigned int count = 0;
 	
-	while (data) 
+	while (0 != data)
 	{
         count += data & 1;
         data = data >> 1;
     }
+    
     return count;
 }
 
 unsigned int CountOff(bit_array_ty data)
 {
-	unsigned int count = 8;
+	unsigned int count = BITS_IN_WORD;
 	
-	while (data) 
+	while (0 != data) 
 	{
         count -= data & 1;
         data = data >> 1;
     }
+    
     return count;
 }
 
 bit_array_ty Mirror(bit_array_ty data)
 {
-	long unsigned int count = sizeof(data) * 8 - 1;
-    long unsigned int reverse_num = data;
+	bit_array_ty count = BITS_IN_WORD - 1;
+	bit_array_ty reverse_mask = data;
       
-    data >>= 1; 
+    data = data >> 1; 
     
-    while(data)
+    while (0 != data)
     {
-       reverse_num <<= 1;       
-       reverse_num |= data & 1;
-       data >>= 1;
-       count--;
+       reverse_mask = reverse_mask << 1;       
+       reverse_mask = reverse_mask |(data & 1);
+       data = data >> 1;
+       --count;
     }
-    reverse_num <<= count;
-    return reverse_num;
+    
+    reverse_mask = reverse_mask << count;
+    
+    return reverse_mask;
 }
 
-bit_array_ty RotR(bit_array_ty data, const unsigned int num_rot)
+bit_array_ty RotR(bit_array_ty data, const unsigned int num)
 {
-	int num = -1;
-	unsigned int count = num_rot;
+	int mask = -1;
+	unsigned int count = num;
 	
 	while (count)
 	{
-		num = GetVal(data, 0);
+		mask = GetVal(data, 0);
 		data = data >> 1;
 		--count;
 		
-		if (num)
+		if (mask)
 		{
-			data = SetOn(data, 63);	
+			data = SetOn(data, BITS_IN_WORD - 1);	
 		}
 	}
 	
 	return data;
 }
 
-bit_array_ty RotL(bit_array_ty data, const unsigned int num_rot)
+bit_array_ty RotL(bit_array_ty data, const unsigned int num)
 {
-	int num = -1;
-	unsigned int count = num_rot;
+	int mask = -1;
+	unsigned int count = num;
 	
 	while (count)
 	{
-		num = GetVal(data, 63);
+		mask = GetVal(data, BITS_IN_WORD - 1);
 		data = data << 1;
 		--count;
 		
-		if (num)
+		if (mask)
 		{
 			data = SetOn(data, 0);	
 		}
 	}
 	
 	return data;
-}
- /* Function for printing a binary number */
-static void PrintInBinary(unsigned char n)
-{
-	int index;
-	
-	for (index = (INT_BITS - 1) ; index >= 0 ; --index)
-	{
-		(n & (1 << index))? printf("1"): printf("0");	
-	}
-	puts("\n");
 }
 
 

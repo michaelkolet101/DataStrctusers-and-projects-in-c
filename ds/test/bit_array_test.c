@@ -22,7 +22,7 @@ static void TestRotL();
 /****************************************************************************/
 int main (void)
 {
-	/*
+	
 	TestSetAll();
 	TestResetAll();
 	TestToString();
@@ -34,7 +34,7 @@ int main (void)
 	TestCountOn();
 	TestCountOff();
 	TestMirror();
-	TestRotR();*/
+	TestRotR();
 	TestRotL();
 	return 0;
 }
@@ -43,29 +43,37 @@ int main (void)
 
 static void TestSetAll()
 {
-	size_t num = 149;
+	bit_array_ty num = 0;
+	char *string = NULL;
 	
+	puts("                        SetAll ");
+	string = (char*)malloc(sizeof(char) * 64);
 	num = SetAll(num);
-	
-	printf("%lu\n",num);
+	string = ToString(num, string);
+	printf("%s\n",string);
 }
 
 static void TestResetAll()
 {
-	size_t num = 149;
+	bit_array_ty num = 149;
+	char *string = NULL;
 	
+	puts("                       ResetAll ");
+	string = (char*)malloc(sizeof(char) * 64);
 	num = ResetAll(num);
+	string = ToString(num, string);
 	
-	printf("%lu\n",num);
+	printf("%s\n",string);
 }
 
 static void TestToString()
 {
-	size_t  num = 149;
+	bit_array_ty  num = 149;
 	char *string = NULL;
 	
 	string = (char*)malloc(sizeof(char) * 64);
 	
+	puts("                       ToString ");
 	string = ToString(num, string);
 	
 	printf("%s\n",string);
@@ -73,96 +81,194 @@ static void TestToString()
 
 static void TestSetOn()
 {
-	size_t binary = 149, binary1 = 0;
-	int number = 4;
 	
-	binary1 = SetOn(binary, number);
+	bit_array_ty bit_arr = (bit_array_ty)0;
+	bit_array_ty expected_val = 0x8000000000000000;
 	
-	printf("%ld\n",binary1);
+	puts("                    TestSetOn");
+	if (expected_val != SetOn(bit_arr, 63))
+	{	
+		puts("SUCCSES");	
+	}
+	else
+	{
+		puts("FAIL");
+	}
+
 }
 
 static void TestSetOff()
 {
-	size_t binary = 149, binary1 = 0;
+	bit_array_ty binary = 157, binary1 = 0;
 	int number = 4;
 	
 	binary1 = SetOff(binary, number);
 	
-	printf("%ld\n",binary1);
+	puts("                  TestSetOff");
+	
+	if (binary1 == 149)
+	{
+		puts("SUCCSES");
+	}
+	else
+	{
+		puts("FAIL");
+	}
 }
 
 static void TestSetBit()
 {
-	size_t binary = 149, binary1 = 0;
-	int number = 4;
-	int set_to = 1;
+	bit_array_ty binary = 149, binary1 = 0;
+	bit_array_ty number = 4;
+	bit_array_ty set_to = 1;
+	
+	puts("                    TestSetBit");
 	
 	binary1 = SetBit(binary, number, set_to);
 	
-	printf("%ld\n",binary1);
+	if (binary1 == 157)
+	{
+		puts("SUCCSES");
+	}
+	else
+	{
+		puts("FAIL");
+	}
 }
 
 static void TestGetVal()
 {
-	size_t binary = 149, binary1 = 0;
-	int number = 4;
+	bit_array_ty binary = 149, binary1 = 0;
+	bit_array_ty number = 4;
 	
 	binary1 = GetVal(binary, number);
 	
-	printf("%ld\n",binary1);
+	puts("                     TestGetVal");
+	
+	if (binary1 == 0)
+	{
+		puts("SUCCSES");
+	}
+	else
+	{
+		puts("FAIL");
+	}
+	
 }
 
 static void TestFlip()
 {
-	size_t binary = 157, binary1 = 0;
+	bit_array_ty binary = 157, binary1 = 0;
 	int number = 4;
 	
 	binary1 = Flip(binary, number);
 	
-	printf("%ld\n",binary1);
+	puts("                    TestFlip");
+	
+	if (binary1 == 149)
+	{
+		puts("SUCCSES");
+	}
+	else
+	{
+		puts("FAIL");
+	}
+	
 }
 
 static void TestCountOn()
 {
-	size_t binary = 159, binary1 = 0;
+	bit_array_ty binary = 159, binary1 = 0;
 	
 	binary1 = CountOn(binary);
-	printf("%ld\n",binary1);
+	
+	puts("                     TestCountOn");
+	
+	if (binary1 == 6)
+	{
+		puts("SUCCSES");
+	}
+	else
+	{
+	puts("FAIL");
+	}
+	
 }
 
 static void TestCountOff()
 {
-	size_t binary = 155, binary1 = 0;
+	bit_array_ty binary = 159, binary1 = 0;
 	
 	binary1 = CountOff(binary);
-	printf("%ld\n",binary1);
+	
+	puts("                      TestCountOff");
+	
+	if (binary1 == 58)
+	{
+		puts("SUCCSES");
+	}
+	else
+	{
+		puts("FAIL");
+	}
+	
 }
 
 static void TestMirror()
 {
-	size_t binary = 1, binary1 = 0;
+	bit_array_ty binary = 33;
+	char *string = NULL;
+	char *string1 = NULL;
 	
-	binary1 = Mirror(binary);
+	string = (char*)malloc(sizeof(char) * 64);
+	string1 = (char*)malloc(sizeof(char) * 64);
 	
-	printf("%lu\n",binary1);
+	binary = Mirror(binary);
+	
+	string = ToString(33, string);
+	string1 = ToString(binary, string1);
+	
+	puts("                        Test Mirror ");
+	printf("%s\n",string);
+	printf("%s\n",string1);
 }
 
 static void TestRotR()
 {
-	size_t binary = 32 , binary1 = 0;
+	bit_array_ty binary = 32 , binary1 = 0;
 	
 	binary1 = RotR(binary, 3);
 	
-	printf("%lu\n",binary1);
+	puts("                      TestRotR");
+	
+	if (binary1 == 4)
+	{
+		puts("SUCCSES");
+	}
+	else
+	{
+		puts("FAIL");
+	}
+	
 }
 
 static void TestRotL()
 {
-	size_t binary = 32 , binary1 = 0;
+	bit_array_ty binary = 32 , binary1 = 0;
 	
 	binary1 = RotL(binary, 3);
 	
-	printf("%lu\n",binary1);
+	puts("                        TestRotL");
+	
+	if (binary1 == 256)
+	{
+		puts("SUCCSES");
+	}
+	else
+	{
+		puts("FAIL");
+	}
+	
 }
 
 
