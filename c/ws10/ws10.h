@@ -15,6 +15,8 @@ int Atoi(char *string, int base);
 
 /*print the char if the char exist in two first array and not in third */
 void PrintTwoEqualChar(char* arr1, char* arr2, char* arr3, int len1, int len2, int len3);
+
+/*TODO littelendiun func and macro*/
 /***************************   functions   ********************************/
 
 

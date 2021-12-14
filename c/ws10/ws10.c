@@ -13,13 +13,15 @@
 /****************************************************************************/
 /*USEFULL FUNCTIONS THAT I USE IN THE PROGRAM*/
 
-/*int countDigit(int n);*/
+
 
 /*reverse string*/
+/*TODO change the name to convention name!!! and batter name*/
 static void reverse(char *str1);
 
 /*convert string to base 10*/
 static int ToDeci(char *str, int base);
+/*TODO change the name to convention name!!! and batter name*/
 static int val(char c);
 
 /*initializtion the ascii aray with 0*/
@@ -41,18 +43,22 @@ static void PrintCorrectVal(int* ascii);
 char* Itoa(int num, char* str, int base)
 {
     int i = 0;
+    /*TODO change the varibel name to "is negativ"*/
     int negative = FALSE;
+    /*TODO better name*/
  	int rem = 0;
  	
     /* Handle 0 explicitly, otherwise empty string is printed for 0 */
     if (num == 0)
     {
-        str[i] = '0';
-        ++i;
-        str[i] = '\0';
+        *str = '0';
+		++str;
+        *str = '\0';
+        
         return str;
     }
- 
+ 	
+ 	/*TODO check the if*/
     if ((num < 0) && (base == 10))
     {
         negative = TRUE;
@@ -63,7 +69,7 @@ char* Itoa(int num, char* str, int base)
     while (num != 0)
     {
         rem = num % base;
-        
+         /*TODO work with pointers*/
         if (rem > 9)
         {
         	str[i] = (rem - 10) + 'a';
@@ -79,6 +85,7 @@ char* Itoa(int num, char* str, int base)
     }
  
     /* If number is negative, append '-'*/
+    /*TODO work with pointers*/
     if (negative)
     {
         str[i] = '-';
