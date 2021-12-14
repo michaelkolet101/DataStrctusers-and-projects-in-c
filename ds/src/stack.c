@@ -18,14 +18,19 @@
 
 #define UNUSED(x)	{(void)x;}
 
-typedef struct stack
+struct stack
 {
-	void *top;
-	char *arr;
-	size_t elem_size;
-	size_t capacity;
-} stack_ty;
+    char *top;
+    char *arr;
+    size_t elem_size;
+    size_t capacity;
+} ;
+/***************************************************************************/
 
+
+
+
+int IsFull(struct Stack* stack);
 /***************************************************************************/
 
 stack_ty *StackCreate(size_t element_size, size_t capacity)
@@ -38,6 +43,35 @@ stack_ty *StackCreate(size_t element_size, size_t capacity)
     
     return new_stack;
 }
+
+/*Stack is empty when top is equal to -1*/
+int StackIsEmpty(const stack_ty *stack)
+{
+    return  (stack->top == NULL);
+}
+
+
+
+
+
+
+
+
+int IsFull(stack_ty *stack)
+{
+    return stack->top == stack->capacity ;
+}
+
+
+
+
+
+
+
+
+
+
+
 /*
 void StackDestroy(stack_ty *stack)
 {
@@ -49,10 +83,7 @@ void StackPop(stack_ty *stack)
 	;
 }
 
-int isFull(struct Stack* stack)
-{
-    return stack->top == stack->capacity - 1;
-}
+
 /* Stack is full when top is equal to the last index
 int isFull(struct Stack* stack)
 {
