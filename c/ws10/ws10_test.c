@@ -17,9 +17,9 @@ void TestPrintTwoEqualCharacters();
 int main () 
 {
 	system("clear");
-	TestItoa();
+	/*TestItoa();*/
 	TestAtoi();
-	TestPrintTwoEqualCharacters();
+	/*TestPrintTwoEqualCharacters();*/
 	return 0;
 }
 
@@ -37,7 +37,7 @@ static int TestItoa()
 
 static void TestAtoi()
 {
-	char str[] = "-11F";
+	char str[] = "1C5";
 	int base = 16;
 	int status = 0;
 	char str2[] = "13";

@@ -104,7 +104,8 @@ char* Itoa(int num, char* str, int base)
  
 int Atoi(char *string, int base)
 {
-	int i;
+	int i = 0;
+	/*TODO better name*/
     int res = 0;
     int nagativ = 0;
     
@@ -117,6 +118,7 @@ int Atoi(char *string, int base)
     
     if (10 == base)
     {
+    	/*TODO work with pointers*/
     	for (i = 0; string[i] != '\0'; ++i)
 		{
 			res = res * base + string[i] - '0';
@@ -136,7 +138,7 @@ int Atoi(char *string, int base)
 
 void PrintTwoEqualChar(char* arr1, char* arr2, char* arr3, int len1, int len2, int len3)
 {
-	int ascii[256];
+	int ascii[256] = {0};
 	
 	/*initializtion the ascii aray with 0*/
 	InitAsciiArr(ascii);
@@ -159,6 +161,7 @@ void PrintTwoEqualChar(char* arr1, char* arr2, char* arr3, int len1, int len2, i
 static void PrintCorrectVal(int* ascii)
 	{
 		int i = 0;
+		
 		for (i = 0; i < 265; ++i)
 		{
 			if ((ascii[i]) == 2)
@@ -172,6 +175,7 @@ static void ChackArr3(int *ascii, char* arr3, int len3)
 	{
 		int i = 0;
 		int index = 0;
+		
 		for (i = 0; i < len3; ++i)
 		{
 			index = (int)arr3[i];
@@ -183,6 +187,8 @@ static void ChackArr2(int* ascii, char* arr2, int len2)
 	{
 		int i = 0;
 		int index = 0;
+		
+		/*TODO what if they are the same char?*/
 		for (i = 0; i < len2; ++i)
 		{
 			index = (int)arr2[i];
@@ -225,6 +231,7 @@ static void reverse(char *str1)
     }  
 }  
 
+/*TODO try and work with to upper or to lower*/
 static int val(char c)
 {
     if (c >= '0' && c <= '9')
@@ -243,10 +250,13 @@ static int ToDeci(char *str, int base)
  
     /* Decimal equivalent is str[len-1]*1 +*/
     /* str[len-2]*base + str[len-3]*(base^2)+*/
+    /*TODO work with pointers*/
     for (i = len - 1; i >= 0; --i)
     {
         /* A digit in input number must be*/
         /* less than number's base*/
+        /*TODO what if val < base and btween 9-A on ascci*/
+        /*TODO return status*/
         if (val(str[i]) >= base)
         {
            printf("Invalid Number");
