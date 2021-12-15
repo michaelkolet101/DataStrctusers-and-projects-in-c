@@ -1,6 +1,7 @@
 #include <stdio.h> 
 #include <assert.h> /* assert */
 #include <stdlib.h>/*malloc*/
+#include <string.h>/*memcpy*/
 
 
 #include "stack.h"
@@ -30,36 +31,86 @@ struct stack
 
 
 
-int IsFull(struct Stack* stack);
+
 /***************************************************************************/
 
+/*Function Description: returns a pointer to an empty stack data structure */
 stack_ty *StackCreate(size_t element_size, size_t capacity)
 {
     stack_ty* new_stack = (stack_ty*)malloc(sizeof(stack_ty));
+    if (NULL == new_stack)
+    {
+    	return NULL;
+    }
     
     new_stack->capacity = capacity;
+    
+    
+    new_stack->arr = (char*)malloc(capacity * element_size * sizeof(char));
+    
+    if (NULL == new_stack->arr)
+    {
+    	free(new_stack);
+    	return NULL;
+    }
+    
     new_stack->top = new_stack->arr;
-    new_stack->arr = (char*)malloc(capacity * sizeof(int));
     
     return new_stack;
+}
+
+void StackDestroy(stack_ty *stack)
+{
+	assert(stack);
+	
+	free(stack->arr);
+	free(stack);
+	
+	stack = NULL;
+}
+
+void *StackPeek(const stack_ty *stack)
+{
+	assert(stack);
+	
+	return (void*)(stack->top - stack->elem_size);
+}
+
+void StackPop(stack_ty *stack)
+{
+	assert(stack);
+	
+	stack->top = stack->top - stack->elem_size;
+}
+
+void StackPush(stack_ty *stack, const void *elem)
+{
+	assert(stack);
+	assert(elem);
+	
+	stack->top = stack->top + stack->elem_size;
+	memcpy(stack->top , elem, stack->elem_size);
+	
+}
+
+size_t StackSize(const stack_ty *stack)
+{
+	assert(stack);
+	
+	return ((stack->top) - (stack->arr)) / (stack->elem_size);
 }
 
 /*Stack is empty when top is equal to -1*/
 int StackIsEmpty(const stack_ty *stack)
 {
-    return  (stack->top == NULL);
+	assert(stack);
+    return StackSize(stack) == 0;
 }
 
-
-
-
-
-
-
-
-int IsFull(stack_ty *stack)
+size_t StackCapacity(const stack_ty *stack)
 {
-    return stack->top == stack->capacity ;
+	assert(stack);
+	return stack->capacity;
 }
 
 
@@ -70,71 +121,6 @@ int IsFull(stack_ty *stack)
 
 
 
-
-
-/*
-void StackDestroy(stack_ty *stack)
-{
-	;
-}
-
-void StackPop(stack_ty *stack)
-{
-	;
-}
-
-
-/* Stack is full when top is equal to the last index
-int isFull(struct Stack* stack)
-{
-    return stack->top == stack->capacity - 1;
-}
- 
-// Stack is empty when top is equal to -1
-int isEmpty(struct Stack* stack)
-{
-    return stack->top == -1;
-}
- 
-// Function to add an item to stack.  It increases top by 1
-void push(struct Stack* stack, int item)
-{
-    if (isFull(stack))
-        return;
-    stack->array[++stack->top] = item;
-    printf("%d pushed to stack\n", item);
-}
- 
-// Function to remove an item from stack.  It decreases top by 1
-int pop(struct Stack* stack)
-{
-    if (isEmpty(stack))
-        return INT_MIN;
-    return stack->array[stack->top--];
-}
- 
-// Function to return the top from stack without removing it
-int peek(struct Stack* stack)
-{
-    if (isEmpty(stack))
-        return INT_MIN;
-    return stack->array[stack->top];
-}
- 
-// Driver program to test above functions
-int main()
-{
-    struct Stack* stack = createStack(100);
- 
-    push(stack, 10);
-    push(stack, 20);
-    push(stack, 30);
- 
-    printf("%d popped from stack\n", pop(stack));
- 
-    return 0;
-}
-*/
 
 
 
