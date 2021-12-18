@@ -51,7 +51,7 @@ returns a pointer that points to it*/
 char* StrCpy(char *destination, const char *source)
 {
 	/*Indicates a destination to which the string will be copied*/
-	char *start_dest = destination;/*לתת משמעות למשתנה*/
+	char *start_dest = destination;
 	while ('\0' != *source)/*A loop that passes over the original string*/
 	    {
 		   *destination = *source;
@@ -109,15 +109,14 @@ char *StrChr(const char *some_string, int ch)
 	
 	while (('\0' != *some_string ) && (*some_string != ch)) 
  	{
- 		
 		++some_string;
 	}
 	
-	if('\0' != *some_string)
+	if('\0' == *some_string)
 	{
-	return NULL;
-	
+		return NULL;
 	}
+	
     return (char *)some_string;
 
 }
@@ -127,10 +126,12 @@ char *StrDup(const char *str)
 
 {
 	char *dest = malloc(StrLen(str) + 1);  
+	
 	if (dest == NULL)
 	{
 	 	return NULL;
-	}          
+	}         
+	 
 	StrCpy(dest, str);                     
 	return dest; 
 }
@@ -210,11 +211,13 @@ char* StrStr(const char *large_string, const char *the_little_string)
 size_t StrSpn(const char *s1, const char *s2)
 {
 	size_t len = 0;
+	
 	if((s1 == NULL) || (s2 == NULL))
 	{
-        return len;
+        return len+1;
 	}
-	 while(*s1)
+	
+	while(*s1)
 	 {
 		 if(strchr(s2,*s1))
 		 {
@@ -236,18 +239,22 @@ void IsPalindrome(char *str)
 {
 	/*Start from leftmost and rightmost corners of str*/
 	int start = 0;
-     int end = strlen(str) - 1;
-     while (end > start)
+    int end = strlen(str) - 1;
+    
+    while (end > start)
     {
         if (str[start] != str[end])
         {
             printf("%s is not a palindrome\n", str);
             break;
         }
-	++start;
-	--end;
-	printf("%s is a palindrome\n", str);
-		break;
+		++start;
+		--end;
+	}
+	
+	if (end == start)
+	{
+		printf("%s is a palindrome\n", str);
 	}
 }
 
@@ -262,7 +269,7 @@ char* SpaceX(char *some_string)
 	/*Skip the spaces from the beginning*/
 	while (*some_string && isspace(*some_string))
 	{
-	 	some_string++;
+	 	++some_string;
 	}
 	/*Skip the spaces from the end*/
 	while (isspace(*end))
@@ -274,7 +281,6 @@ char* SpaceX(char *some_string)
 	/*main loop as long as we have not reached the end of the string*/
 	while(*some_string )
 	{
-		
 		/*A loop that makes sure the character is not spaced*/
 		while ((!(isspace(*some_string))) && (*some_string))
 		{

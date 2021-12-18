@@ -1,7 +1,6 @@
 #ifndef __STACK_H__
 #define __STACK_H__
 
-
 typedef struct stack stack_ty;
 
 /******************************************************************************
@@ -15,7 +14,6 @@ typedef struct stack stack_ty;
 * Time Complexity: NA
 *******************************************************************************/
 stack_ty *StackCreate(size_t element_size, size_t capacity);
-
 
 /******************************************************************************
 * Function Description: destroys the structure, by freeing the memory	       
@@ -86,7 +84,5 @@ int StackIsEmpty(const stack_ty *stack);
 * Time Complexity: NA
 *******************************************************************************/
 size_t StackCapacity(const stack_ty *stack);
-
-
 
 #endif /*__STACK_H__*/

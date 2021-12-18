@@ -44,7 +44,7 @@ char* Itoa(int num, char* str, int base)
 {
     int i = 0;
     /*TODO change the varibel name to "is negativ"*/
-    int negative = FALSE;
+    int is_negative = FALSE;
     /*TODO better name*/
  	int rem = 0;
  	
@@ -61,7 +61,7 @@ char* Itoa(int num, char* str, int base)
  	/*TODO check the if*/
     if ((num < 0) && (base == 10))
     {
-        negative = TRUE;
+        is_negative = TRUE;
         num = -num;
     }
  
@@ -84,9 +84,9 @@ char* Itoa(int num, char* str, int base)
         num = num/base;
     }
  
-    /* If number is negative, append '-'*/
+    /* If number is is_negative, append '-'*/
     /*TODO work with pointers*/
-    if (negative)
+    if (is_negative)
     {
         str[i] = '-';
 		++i;        

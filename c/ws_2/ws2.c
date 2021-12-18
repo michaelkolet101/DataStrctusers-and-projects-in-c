@@ -73,7 +73,7 @@ int main ()
 	                                             TestSwapToSizeTPointers());
 	TestToStrLen();                                         
  	
-    	TestToStrCmp();
+	TestToStrCmp();
 		
 	                                             
 	return (0);	
@@ -288,7 +288,7 @@ then they are equal*/
 int StrCmp(const char *first_string, const char *second_string)
 {
 
-    while (*first_string && *first_string != *second_string) 
+    while (*first_string && (*first_string == *second_string)) 
     {
         ++first_string;
         ++second_string;

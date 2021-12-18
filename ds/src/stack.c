@@ -1,52 +1,41 @@
-#include <stdio.h> 
-#include <assert.h> /* assert */
-#include <stdlib.h>/*malloc*/
-#include <string.h>/*memcpy*/
+/*******************************************************************************
+Data Structures WorkSheet 2: Stack.
 
+Written by: Michael Kolet
+Reviewd by: Gabriel Poshumenski
+
+Functions for WS
+*******************************************************************************/
+
+#include <stdio.h>	/* size_t */
+#include <assert.h> /* assert */
+#include <stdlib.h>	/* malloc */
+#include <string.h>	/* memcpy */
 
 #include "stack.h"
 
-#define INT_BITS ( sizeof(int) * CHAR_BITS)
-#define CHAR_BITS 8/*size of character*/
-
-
-
-/* Definitions */
-#define BIT_ARRAY_MSB_MASK (bit_array_ty)0x8000000000000000
-#define BIT_ARRAY_LSB_MASK (bit_array_ty)0x0000000000000001
-#define BITS_IN_BYTE 8
-#define BITS_IN_WORD 64
-
-#define UNUSED(x)	{(void)x;}
-
+/* Structs: */
 struct stack
 {
     char *top;
     char *arr;
     size_t elem_size;
     size_t capacity;
-} ;
-/***************************************************************************/
+};
 
-
-
-
-
-/***************************************************************************/
+/******************************************************************************/
 
 /*Function Description: returns a pointer to an empty stack data structure */
 stack_ty *StackCreate(size_t element_size, size_t capacity)
 {
-    stack_ty* new_stack = (stack_ty*)malloc(sizeof(stack_ty));
+    stack_ty *new_stack = (stack_ty *)malloc(sizeof(stack_ty));
+    
     if (NULL == new_stack)
     {
     	return NULL;
     }
     
-    new_stack->capacity = capacity;
-    
-    
-    new_stack->arr = (char*)malloc(capacity * element_size * sizeof(char));
+    new_stack->arr = (char *)malloc(capacity * element_size * sizeof(char));
     
     if (NULL == new_stack->arr)
     {
@@ -54,28 +43,34 @@ stack_ty *StackCreate(size_t element_size, size_t capacity)
     	return NULL;
     }
     
+    new_stack->capacity = capacity;
+    new_stack->elem_size = element_size;
     new_stack->top = new_stack->arr;
     
     return new_stack;
 }
 
+/*deleting the stack*/
 void StackDestroy(stack_ty *stack)
-{
+{	
 	assert(stack);
 	
 	free(stack->arr);
-	free(stack);
-	
-	stack = NULL;
+	stack->arr = NULL;
+
+	free(stack);	
+	*(&stack) = NULL;
 }
 
+/*return thr top of the stack to thr user*/
 void *StackPeek(const stack_ty *stack)
 {
 	assert(stack);
 	
-	return (void*)(stack->top - stack->elem_size);
+	return (void *)(stack->top - stack->elem_size);
 }
 
+/*delete a element from the top fo the stack */
 void StackPop(stack_ty *stack)
 {
 	assert(stack);
@@ -83,52 +78,36 @@ void StackPop(stack_ty *stack)
 	stack->top = stack->top - stack->elem_size;
 }
 
+/*insert a element to the stack*/
 void StackPush(stack_ty *stack, const void *elem)
 {
 	assert(stack);
 	assert(elem);
 	
+	memcpy(stack->top ,elem ,stack->elem_size);
 	stack->top = stack->top + stack->elem_size;
-	memcpy(stack->top , elem, stack->elem_size);
-	
 }
 
+/*returns the number of stacked elements */
 size_t StackSize(const stack_ty *stack)
 {
 	assert(stack);
 	
-	return ((stack->top) - (stack->arr)) / (stack->elem_size);
+	return ((size_t)(stack->top - stack->arr) / (stack->elem_size));
 }
 
-/*Stack is empty when top is equal to -1*/
+/*returns true if stack is empty, false otherwise.*/
 int StackIsEmpty(const stack_ty *stack)
 {
 	assert(stack);
-    return StackSize(stack) == 0;
+	
+    return (StackSize(stack) == 0);
 }
 
+/*the return capacity of the stack*/
 size_t StackCapacity(const stack_ty *stack)
 {
 	assert(stack);
+	
 	return stack->capacity;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

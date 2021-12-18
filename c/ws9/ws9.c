@@ -36,7 +36,7 @@ void *MemSet(void *source, int ch, size_t n)
 	}
 	
 	/*Inserting the buffer to the sours with memcpy */
-	while (0 < (n / sizeof(size_t))) 
+	while (0 < n) 
 	{
 		MemCpy(runer, buffer, sizeof(size_t));	
 		runer += sizeof(size_t);

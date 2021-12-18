@@ -6,7 +6,6 @@
 
 #include "ws3.h"
 
-
 /*usefull functions*/
 static void printarry(int arr[], int len);
 static int Length(char** envp);
@@ -16,11 +15,6 @@ static char* StrCpy(char *destination, const char *source);
 static char *StrDup(const char *str);
 
 /*******************************************************************/
-
-
-
-
-
 
 /*Function for calculating a row sum in a two-dimensional array*/
 int* CalcoletRow(int array[ROWS][COLS], int sum[ROWS])
@@ -38,11 +32,6 @@ int* CalcoletRow(int array[ROWS][COLS], int sum[ROWS])
 	}
 	return sum;	
 }	
-
-
-
-
-
 
 /*Function for  Joseph's problem 
 Receives the number of soldiers and prints the index that you want 
@@ -83,8 +72,6 @@ int JosephusProblem(int len)
 		}	
 		/*Circular promotion*/
 		i = (i + 1) % len;
-		
-	
 	}
 	
 	/*TODO out it to extern function*/
@@ -97,8 +84,8 @@ int JosephusProblem(int len)
 		}
 		
 	}
-	free(start);
 	
+	free(start);	
 }
 
 static void printarry(int arr[], int len)
@@ -140,17 +127,14 @@ void  StoringAndPrinting(char** envp)
 	char **start_buffer = NULL;
 	char **start_to_free = NULL;
 	
-	
 	int width;
 	int count = Length(envp);			/*The length of the string rows
 	 		of the environment variables, in fact it is the outer array that 
 	 									contains all the strings*/
-	
 	start_envp = envp; /*Maintains the beginning of the environment variable*/
 	
 	buffer = (char **)malloc(sizeof(char) * count  - 1);/*Define a place to
 												 hold the copy*/ 
-	
 	if (NULL == buffer)
 	{
 	 	puts("malloc fail");
@@ -162,53 +146,24 @@ void  StoringAndPrinting(char** envp)
 		*buffer = LwoStr(StrDup(*envp));
 		
 		printf("%s",*buffer);
-		
-		
-		
 		++envp;
 	}	
 	
 	start_buffer = buffer;
 	free(buffer);
-	
-	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 static int Length(char** envp)
 {
 	int count = 0;
 	while (*envp) 
-		{
-			
+		{			
 			++count;
 			*envp++;
 		}
 		
 	return (count);
-
 }
-
 
 static char* LwoStr(char *str)
 {
@@ -221,9 +176,6 @@ static char* LwoStr(char *str)
 	return str;
 }
 
-
-
-
 static char *StrDup(const char *str)
 
 {
@@ -234,9 +186,7 @@ static char *StrDup(const char *str)
 	}          
 	StrCpy(dest, str);                     
 	return dest; 
-
 }
-
 
 static size_t StrLen(const char *pointer_to_string)
 {
@@ -253,21 +203,19 @@ static size_t StrLen(const char *pointer_to_string)
 static char* StrCpy(char *destination, const char *source)
 {
 
-	
 	/*Indicates a destination to which the string will be copied*/
 	char *start_dest = destination;/*לתת משמעות למשתנה*/
 	
-
 	while ('\0' != *source)/*A loop that passes over the original string*/
-	    {
-		   *destination = tolower(*source);
-		   ++destination;/*Upload by one to two pointres*/
-		   ++source;
-	    }
+	{
+		*destination = tolower(*source);
+		++destination;/*Upload by one to two pointres*/
+		++source;
+	}
 	    
-	    *destination = '\0';/*Add the NULL character*/
-	    
-	    return start_dest;
+    *destination = '\0';/*Add the NULL character*/
+    
+    return start_dest;
 }
 
 

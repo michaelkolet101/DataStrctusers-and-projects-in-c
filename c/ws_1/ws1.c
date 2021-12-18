@@ -69,7 +69,7 @@ float NumberToThePower(int expo)
 int FlipOrderOfNumber(int n)
 	
 {
-	int revers = 0, remainder;
+	int revers = 0, remainder = 0;
 	
 	while (0 != n)
 	{
