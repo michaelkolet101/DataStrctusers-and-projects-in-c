@@ -1,8 +1,8 @@
 /*******************************************************************************
-Data Structures WorkSheet 2: Stack.
+Data Structures WorkSheet 3: vector.
 
 Written by: Michael Kolet
-Reviewd by: Gabriel Poshumenski
+Reviewd by: daniel
 
 Functions for WS
 *******************************************************************************/
@@ -14,7 +14,31 @@ Functions for WS
 
 #include "../includ/vector.h"
 
-#define growth_factor 2
+#define GROWTH_FACTOR 2
+
+
+/***************************Macros Functions *********************************/
+#define ALLOC_CHK(a,b)		 \
+do 							 \
+{						 	 \
+	if(NULL == a) 			 \
+	{						 \
+		return b;		 	 \
+	} 						 \
+} 							 \
+while(0)
+
+#define ARRAY_CHK(a,b,c)	 \
+do 							 \
+{						 	 \
+	if(NULL == a) 			 \
+	{						 \
+		free(b);			 \
+		return c;		 	 \
+	} 						 \
+} 							 \
+while(0)
+ 
  
 /* Structs: */
 struct vector 
@@ -30,77 +54,97 @@ struct vector
 
 /******************************************************************************/
 
+/*creat vector*/
 vector_ty *VectorCreate(size_t element_size, size_t capacity)
 {
-    vector_ty *new_vector = (vector_ty *)malloc(sizeof(vector_ty));
+    vector_ty *new_vector = NULL;
     
-    if (NULL == new_vector)
-    {
-    	return NULL;
-    }
+    assert(capacity > 0);
     
-    new_vector->vector_start = (char *)malloc(capacity * element_size * sizeof(char));
+    new_vector = (vector_ty *)malloc(sizeof(vector_ty));
     
-    if (NULL == new_vector->vector_start)
-    {
-    	free(new_vector);
-    	return NULL;
-    }
+    /*check if malloc fail*/
+    ALLOC_CHK(new_vector, NULL);
     
-    new_vector->capacity = capacity;
+    /*malloc for the array of the vector*/
+    new_vector->vector_start = (char *)malloc(capacity * element_size);
+    
+    /*check if malloc fail*/
+    ARRAY_CHK(new_vector->vector_start, new_vector, NULL);
+    
+    /*initializtion of the vector struct members*/
     new_vector->element_size = element_size;
     new_vector->vector_size = 0;
-    
+    new_vector->init_capacity = capacity;
+    new_vector->capacity = capacity;
+   
+    /*return the pointer to thr vector*/
     return new_vector;
 }
 
+/*free the pointer of the vector*/
 void VectorDestroy(vector_ty *vector)
 {	
 	assert(vector);
-
+	
 	free(vector->vector_start);
+	vector->vector_start = NULL;
+	
+	free(vector);
 }
 
+/*get the last element in the vector*/
 void *VectorGetElem(const vector_ty *vector, size_t idx)
 {
 	assert(vector);
-	
-	return (void *)&vector->vector_start[idx];
+		
+	return (vector->vector_start+ (idx * vector->element_size));
 }
 
+/*push element to the last undex of thr vectoe */
 int VectorPushBack(vector_ty *vector, const void *elem)
 {
+
 	assert(vector);
+	assert(elem);	
 	
-	++(vector->vector_size);
-	
-	if ((vector->vector_size) < (VectorCapacity(vector)))
+	if ((vector->vector_size) == (VectorCapacity(vector)))
 	{
+		vector->capacity = vector->capacity * GROWTH_FACTOR;
 		vector->vector_start[vector->vector_size] = *((char*)elem);
-	}
-	else
-	{
-		vector = (vector_ty*)realloc(vector, (vector->capacity) * growth_factor * sizeof(size_t));
 		
 		if (vector == NULL)
 		{
 			return 1;
 		}
-		
-		vector->capacity = vector->capacity * growth_factor;
-		vector->vector_start[vector->vector_size] = *((char*)elem);
+	
 	}
+				/*memcpy(vector-> vector_start + (vector->vector_size), elem,
+	vector-> element_size);*/
+	vector->vector_start[vector->vector_size] = *((char*)elem);
 	
-	
+	/*what about idx 0 and the last one*/
+	++(vector->vector_size);
 		
 	return 0; 
 }
 
 void VectorPopBack(vector_ty *vector)
 {
-	assert(vector);
 	
+	assert(vector);
 	--(vector->vector_size);
+	
+	if (vector->vector_size == 0.25 * vector->capacity && (vector->capacity * 0.5) >= vector->init_capacity)
+	{
+		vector->vector_start = (char *)realloc(vector->vector_start, (vector->capacity) * 0.5 * vector->element_size);
+		
+		if (vector->vector_start == NULL)
+		{
+			return;
+		}
+	}
+	vector -> capacity /= 2;
 	
 }
 
@@ -115,15 +159,20 @@ size_t VectorCapacity(const vector_ty *vector)
 	return vector->capacity;
 }
 
+/* ther is a probleme with the realoc!!!*/
 int VectorReserveSize(vector_ty *vector, size_t new_capacity)
 {
-	vector->init_capacity = new_capacity;
-	vector->capacity = vector->init_capacity;
-	vector = (vector_ty*)realloc(vector, (vector->capacity) * sizeof(size_t));
-		
-	if (vector == NULL)
+	if (new_capacity > vector->capacity)
 	{
-		return 1;
+		vector->capacity = new_capacity;
+		
+		vector = (vector_ty*)realloc(vector, (vector->capacity) * vector->element_size);
+		
+		/*realloccan fail  add tmp pointer*/
+		if (vector == NULL)
+		{
+			return 1;
+		}
 	}
 	
 	return 0;	
@@ -131,14 +180,18 @@ int VectorReserveSize(vector_ty *vector, size_t new_capacity)
 
 void VectorShrinkToSize(vector_ty *vector)
 {
-	vector = (vector_ty*)realloc(vector, (vector->vector_size) * sizeof(size_t));
-	
-	if (NULL == vector)
+	if ((vector->vector_size) <= vector->init_capacity) 
 	{
-		return;
-	}
+		vector->capacity = vector->vector_size;
+		
+		vector->vector_start = (char *)realloc(vector->vector_start , 
+		(vector->capacity) * vector->element_size);
 	
-	vector->capacity = vector->vector_size;	
+		if (NULL == vector)
+		{
+			return;
+		}
+	}
 }
 
 

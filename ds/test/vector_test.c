@@ -112,7 +112,7 @@ test_stat_ty TestVector(void)
 	/************************************************************************/
 	/* Test for VectorCapacity  */
 	
-	if (VectorCapacity(p_vector) ==  num_of_elements)
+	if (VectorCapacity(p_vector) ==  VectorSize(p_vector) )
 	{
 		puts("VectorCapacity SUCCESS");
 	}
@@ -143,6 +143,9 @@ test_stat_ty TestVector(void)
 	/* Test for VectorShrinkToSize  */
 	
 	VectorShrinkToSize(p_vector);
+	
+	printf("%ld\n",VectorCapacity(p_vector));
+	
 	if (VectorCapacity(p_vector) == 2)
 	{
 		puts("VectorShrinkToSize SUCCESS");

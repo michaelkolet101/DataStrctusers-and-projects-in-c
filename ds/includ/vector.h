@@ -1,9 +1,11 @@
 #ifndef __VECTOR_H__
 #define __VECTOR_H__
 
+#include <stddef.h> /*sizt_t */
+
 typedef struct vector vector_ty;
 
-/*In source file:*/
+
 
 
 /******************************************************************************
@@ -37,16 +39,6 @@ void VectorDestroy(vector_ty *vector);
 * Time Complexity: O(1)
 *******************************************************************************/
 void *VectorGetElem(const vector_ty *vector, size_t idx);
-
-/*****************************Super advanced ***********************************
-* Function Description: Inserts	an element to the vector at specified index
-* Arguments: Vector pointer, index, element to add
-* Return value: int status
-* Notes: Return error in case of failure.
-
-* Time Complexity: O(n)
-*******************************************************************************/
-int VectorAddElem(vector_ty *vector, size_t idx, const void *elem);
 
 /******************************************************************************
 * Function Description: Inserts	an element to the end of the vector.
