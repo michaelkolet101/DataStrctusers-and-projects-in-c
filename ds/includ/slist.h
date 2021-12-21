@@ -111,9 +111,7 @@ int SlistForEach(iterator_ty start,
 
 * Time Complexity: O(n)
 *******************************************************************************/
-iterator_ty SlistFind(iterator_ty start,
- 					  iterator_ty end, 
-					  match_func_ty op_func,
+iterator_ty SlistFind(iterator_ty start, iterator_ty end, match_func_ty op_func,
 					  void *param);
 
 
