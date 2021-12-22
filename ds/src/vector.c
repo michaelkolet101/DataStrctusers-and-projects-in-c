@@ -15,6 +15,10 @@ Functions for WS
 #include "../includ/vector.h"
 
 #define GROWTH_FACTOR 2
+#define HALF 0.5
+#define QUARTER 0.25
+#define SUCCESS 0
+#define FAIL 1
 
 
 /***************************Macros Functions *********************************/
@@ -38,8 +42,7 @@ do 							 \
 	} 						 \
 } 							 \
 while(0)
- 
- 
+  
 /* Structs: */
 struct vector 
 {
@@ -115,9 +118,8 @@ int VectorPushBack(vector_ty *vector, const void *elem)
 		
 		if (vector == NULL)
 		{
-			return 1;
+			return FAIL;
 		}
-	
 	}
 				/*memcpy(vector-> vector_start + (vector->vector_size), elem,
 	vector-> element_size);*/
@@ -126,7 +128,7 @@ int VectorPushBack(vector_ty *vector, const void *elem)
 	/*what about idx 0 and the last one*/
 	++(vector->vector_size);
 		
-	return 0; 
+	return SUCCESS; 
 }
 
 void VectorPopBack(vector_ty *vector)
@@ -135,16 +137,16 @@ void VectorPopBack(vector_ty *vector)
 	assert(vector);
 	--(vector->vector_size);
 	
-	if (vector->vector_size == 0.25 * vector->capacity && (vector->capacity * 0.5) >= vector->init_capacity)
+	if (vector->vector_size == QUARTER * vector->capacity && (vector->capacity * HALF) >= vector->init_capacity)
 	{
-		vector->vector_start = (char *)realloc(vector->vector_start, (vector->capacity) * 0.5 * vector->element_size);
+		vector->vector_start = (char *)realloc(vector->vector_start, (vector->capacity) * HALF * vector->element_size);
 		
 		if (vector->vector_start == NULL)
 		{
 			return;
 		}
 	}
-	vector -> capacity /= 2;
+	vector -> capacity /= GROWTH_FACTOR;
 	
 }
 
@@ -171,11 +173,11 @@ int VectorReserveSize(vector_ty *vector, size_t new_capacity)
 		/*realloccan fail  add tmp pointer*/
 		if (vector == NULL)
 		{
-			return 1;
+			return FAIL;
 		}
 	}
 	
-	return 0;	
+	return SUCCESS;	
 }
 
 void VectorShrinkToSize(vector_ty *vector)

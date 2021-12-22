@@ -4,8 +4,8 @@
 #include "bit_arry.h"
 
 /*****************************************************************************/
-
-
+static void TestCountOnLut();
+static void TestMirrorLut();
 static void TestSetAll();
 static void TestResetAll();
 static void TestToString();
@@ -36,6 +36,8 @@ int main (void)
 	TestMirror();
 	TestRotR();
 	TestRotL();
+	TestMirrorLut();
+	TestCountOnLut();
 	return 0;
 }
 
@@ -192,7 +194,6 @@ static void TestCountOn()
 	{
 	puts("FAIL");
 	}
-	
 }
 
 static void TestCountOff()
@@ -271,10 +272,35 @@ static void TestRotL()
 	
 }
 
+static void TestMirrorLut()
+{
+    bit_array_ty x = 12456; 
+    printf("%lu", MirrorLut(x));     
+}
 
+static void TestMirrorLut()
+{
+    bit_array_ty x = 12456; 
+    printf("%lu", MirrorLut(x));     
+}
 
-
-
+static void TestCountOnLut()
+{
+	bit_array_ty binary = 159, binary1 = 0;
+	
+	binary1 = CountOnLut(binary);
+	
+	puts("                     TestCountOnLut");
+	
+	if (binary1 == 6)
+	{
+		puts("SUCCSES");
+	}
+	else
+	{
+		puts("FAIL");
+	}
+}
 
 
 

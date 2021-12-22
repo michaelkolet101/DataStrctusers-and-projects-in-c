@@ -1,3 +1,11 @@
+/*******************************************************************************
+Data Structures WorkSheet 1: bit arry.
+
+Written by: Michael Kolet
+Reviewd by: meirav
+
+Functions for WS
+*******************************************************************************/
 #include <stdio.h> 
 #include <assert.h> /* assert */
 
@@ -14,10 +22,16 @@
 #define BITS_IN_BYTE 8
 #define BITS_IN_WORD 64
 
+/*macro for but mirror lut*/
+#define R2(n)     n,     n + 2*64,     n + 1*64,     n + 3*64
+#define R4(n) R2(n), R2(n + 2*16), R2(n + 1*16), R2(n + 3*16)
+#define R6(n) R4(n), R4(n + 2*4 ), R4(n + 1*4 ), R4(n + 3*4 )
+
 #define UNUSED(x)	{(void)x;}
 
 /* Function for printing a binary maskber */
 static void PrintInBinary(unsigned char n);
+bit_array_ty MirrorLut(bit_array_ty data);
 /***************************************************************************/
 
 bit_array_ty SetAll(bit_array_ty data)
@@ -64,7 +78,7 @@ bit_array_ty SetOn(bit_array_ty data, const unsigned int idx)
 {
 	unsigned char mask = 1;
 	
-	mask = mask << (idx - 1) ;
+	mask = mask << (idx) ;
 	
 	return (data | mask);
 }
@@ -73,7 +87,7 @@ bit_array_ty SetOff(bit_array_ty data, const unsigned int idx)
 {
 	unsigned char mask = 1;
 	
-	mask = mask << (idx - 1);
+	mask = mask << (idx);
 	mask = ~mask;
 
 	return (data & mask);
@@ -99,10 +113,10 @@ int GetVal(bit_array_ty data, const unsigned int idx)
 {
 	bit_array_ty mask = 1;
 	
-	mask = mask << (idx - 1);
+	mask = mask << (idx);
 	mask = mask & data;
 	
-	return (int)(mask >> (idx - 1));
+	return (int)(mask >> (idx));
 }
 
 bit_array_ty Flip(bit_array_ty data, const unsigned int idx)
@@ -209,10 +223,29 @@ bit_array_ty RotL(bit_array_ty data, const unsigned int num)
 	return data;
 }
 
+bit_array_ty MirrorLut(bit_array_ty data)
+{
+	unsigned int lookuptable[256] = { R6(0), R6(2), R6(1), R6(3) };
+	int reverse_num = 0;
+	reverse_num = lookuptable[data & 0xff]<<24 |  
+                   lookuptable[(data >> 8) & 0xff]<<16 | 
+                   lookuptable[(data >> 16 ) & 0xff]<< 8 |
+                   lookuptable[(data >>24 ) & 0xff] ;
+	
+	return reverse_num;
+}
 
-
-
-
+unsigned int CountOn(bit_array_ty data)
+{
+	unsigned int lookuptable[256] = { B6(0), B6(1), B6(1), B6(2) };
+	
+	unsigned int count = lookuptable[data & 0xff] +
+                         lookuptable[(data >> 8) & 0xff] + 
+                         lookuptable[(data >> 16) & 0xff] + 
+                         lookuptable[(data >> 24) & 0xff];
+    
+    return count;
+}
 
 
 
