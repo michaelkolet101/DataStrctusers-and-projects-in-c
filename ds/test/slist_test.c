@@ -97,7 +97,7 @@ test_stat_ty Testslist(void)
 	
 /***************** Test for Slistend and slistbegin **********************/
 	
-	if (SlistBegin(p_slist) == Slistend(p_slist))
+	/*if (SlistBegin(p_slist) == Slistend(p_slist))
 	{
 		puts("Slistend SUCCESS");
 	}
