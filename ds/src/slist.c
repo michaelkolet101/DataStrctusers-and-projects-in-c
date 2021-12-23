@@ -35,7 +35,7 @@ while(0)
 /* Structs: */
 
 /* Structure of each node in the list*/
-struct node;
+struct node
 {
 	void *data;
 	struct node *next;
@@ -53,7 +53,7 @@ struct itrator
 	node_ty *slist_node;
 };
 
-int IsMatch(void *a, void *b);
+
 static int AddCount(void *data, void *count);
 
 /******************************************************************************/
@@ -101,11 +101,7 @@ void SlistDestroy(slist_ty *slist)
 		/*	assign next node to current */
 		current_node = next_node;
 	}
-	/*	free the dummy */
-	free(current_node);
-	
-	/*	free slist */
-	free(slist->tail);
+
 	free(slist);
 }
 
@@ -118,10 +114,17 @@ int SlistIsEmpty(const slist_ty *slist)
 
 iterator_ty SlistInsertBefore(iterator_ty where, const void *data)
 {
+	
+	
 	/*    allocate new node */
 	node_ty *new_node = (node_ty *)malloc(sizeof(slist_ty));
-	/*ALLOC_CHK(new_node,NULL, NULL);*/
-	slist_ty *tmp = (slist_ty *)(where.slist_node->data);
+	
+	if (new_node == NULL)
+	{
+		free(new_node);
+	}
+	
+	slist_ty *tmp = (slist_ty *)(where.slist_node->data); 
 	
 	/*copy current node to new node*/
 	new_node->data = where.slist_node->data;
@@ -238,13 +241,12 @@ int SlistForEach(iterator_ty start,
 	return SUCCESS;
 }
 
-iterator_ty SlistFind(iterator_ty start, iterator_ty end, match_func_ty op_func,
-					  void *param)
+iterator_ty SlistFind(iterator_ty start, iterator_ty end, match_func_ty op_func, void *param)
 {
 	
 	while (start.slist_node != end.slist_node)
 	{
-		if (op_func(start.slist_node->data, param) == 0)
+		if (op_func(start.slist_node->data, param) == 1)
 		{
 			return start;
 		}	
@@ -291,14 +293,7 @@ static int AddCount(void *data, void *count)
 }
 
 
-int IsMatch(void *a, void *b)
-{
-	int ret = 0;
-	
-	ret = memcmp(a,b,1);
 
-	return ret;
-}
 
 
 

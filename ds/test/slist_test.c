@@ -22,6 +22,9 @@ typedef enum test_stat
 
 /* Test functions declarations: */
 test_stat_ty Testslist(void);
+/*Service functions*/
+int IsMatch(void *a, void *b);
+
 
 /**************************** Main Function ***********************************/
 
@@ -76,18 +79,21 @@ test_stat_ty Testslist(void)
 	/* Test for SlistInsertBefore  */
 	iter1 = SlistBegin(p_slist);
 	
-	iter1 = SlistInsertBefore(iter1, ptr2);
-	iter1 = SlistInsertBefore(iter1, ptr);
-	iter1 = SlistInsertBefore(iter1, ptr2);
+	iter1 = SlistInsertBefore(iter1, ptr2); /*20*/
+	iter1 = SlistInsertBefore(iter1, ptr);  /*10*/
+	iter1 = SlistInsertBefore(iter1, ptr2); /*20*/
+	iter1 = SlistInsertBefore(iter1, ptr2); /*20*/
+	iter1 = SlistInsertBefore(iter1, ptr);  /*10*/
+	iter1 = SlistInsertBefore(iter1, ptr2); /*20*/
 	
 	list_size = SlistCount(p_slist);
 	
-	if (3 == list_size)
+	if (6 == list_size)
 	{
 		puts("SlistInsertBefore SUCCESS");
 		puts("SlistCount SUCCESS");
 		puts("SlistBegin SUCCESS");
-		puts("SlistNext SUCCESS");
+		
 	}
 	else
 	{
@@ -95,24 +101,13 @@ test_stat_ty Testslist(void)
 		return TEST_FAIL;
 	}
 	
-/***************** Test for Slistend and slistbegin **********************/
-	
-	/*if (SlistBegin(p_slist) == Slistend(p_slist))
-	{
-		puts("Slistend SUCCESS");
-	}
-	
-	else
-	{
-		puts("Slistend FAIL");
-		return TEST_FAIL;
-	}	
+
 	
 	/************************************************************************/
 	/* Test for SlistRemove */
 	SlistRemove(iter1);
 	
-	if (2 == (SlistCount(p_slist)))
+	if (5 == (SlistCount(p_slist)))
 	{
 		puts("SlistRemove SUCCESS");
 	}
@@ -151,9 +146,38 @@ test_stat_ty Testslist(void)
 	}
 	
 	
-/*	SlistDestroy(p_slist);
+	SlistDestroy(p_slist);
 	p_slist = NULL;
-	*/
+	
+	/************************************************************************/
+	/* Test for SlistFind  */
+	
+	iter1 = SlistFind(SlistBegin(p_slist), Slistend(p_slist), IsMatch, ptr2) ;/*find 20*/
+	
+	if (iter1.slist_node->data == 20)
+	{
+		puts("SlistFind SUCCESS");
+	}
+	else
+	{
+		puts("SlistFind FAIL");
+		return TEST_FAIL;
+	}
 	
 	return TEST_PASS;
 }
+
+int IsMatch(void *a, void *b)
+{
+	return (*(int*)a == *(int*)b);
+}
+
+
+
+
+
+
+
+
+
+
