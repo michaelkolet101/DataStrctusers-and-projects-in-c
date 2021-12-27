@@ -5,6 +5,8 @@
 
 #define UNUSED(x) ((void)x)
 
+#define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT))
+
 #define RET_IF_BAD(aquired, bad) 		if(bad == (aquired)) \
 																								{\
 																									return bad; \

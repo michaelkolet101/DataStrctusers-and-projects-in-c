@@ -10,7 +10,7 @@ Tests for WS
 #include <stdio.h>	/* printf */
 #include <assert.h>	/* assert */
 
-#include "../includ/slist.h"
+#include "slist.h"
 
 /* Typedefs: */
 typedef enum test_stat
@@ -78,7 +78,7 @@ test_stat_ty Testslist(void)
 	/************************************************************************/
 	/* Test for SlistInsertBefore  */
 	iter1 = SlistBegin(p_slist);
-	
+	/*TODO make every data different*/
 	iter1 = SlistInsertBefore(iter1, ptr2); /*20*/
 	iter1 = SlistInsertBefore(iter1, ptr);  /*10*/
 	iter1 = SlistInsertBefore(iter1, ptr2); /*20*/
@@ -93,15 +93,12 @@ test_stat_ty Testslist(void)
 		puts("SlistInsertBefore SUCCESS");
 		puts("SlistCount SUCCESS");
 		puts("SlistBegin SUCCESS");
-		
 	}
 	else
 	{
 		puts("SlistInsertBefore FAIL");
 		return TEST_FAIL;
 	}
-	
-
 	
 	/************************************************************************/
 	/* Test for SlistRemove */
@@ -118,7 +115,7 @@ test_stat_ty Testslist(void)
 	}
 	
 	/************************************************************************/
-	/* Test for SlistGetData  */
+	/* Test for SlistGetData  TODO check what is in the begin/ next/ end*/
 	elem = SlistGetData(iter1);
 	
 	if (*(int*)elem == 10)
@@ -131,7 +128,7 @@ test_stat_ty Testslist(void)
 	}
 	
 	/************************************************************************/
-	/* Test for SlistSetData  */
+	/* Test for SlistSetData TODO check what is in the begin/ next/ end */
 	
 	SlistSetData(iter1, ptr2);
 	
@@ -146,8 +143,6 @@ test_stat_ty Testslist(void)
 	}
 	
 	
-	SlistDestroy(p_slist);
-	p_slist = NULL;
 	
 	/************************************************************************/
 	/* Test for SlistFind  */
@@ -164,12 +159,18 @@ test_stat_ty Testslist(void)
 		return TEST_FAIL;
 	}
 	
+	SlistDestroy(p_slist);
+	p_slist = NULL;
+	
 	return TEST_PASS;
 }
 
-int IsMatch(void *a, void *b)
+int IsMatch(void *data, void *param)
 {
-	return (*(int*)a == *(int*)b);
+	assert(data);
+	assert(param);
+	
+	return !(*(int*)data == *(int*)param);
 }
 
 
