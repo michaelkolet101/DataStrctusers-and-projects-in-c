@@ -38,6 +38,8 @@ node_ty *Flip(node_ty *head)
 	
 	/*make the new head of the list*/
 	head = prev;
+	
+	return head;
 }
 
 int HasLoop(const node_ty *head)

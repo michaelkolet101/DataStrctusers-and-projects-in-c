@@ -24,7 +24,7 @@ static test_stat_ty Testqueue(void);
 
 int main(void)
 {
-	printf("\nSLIST final test result: %s\n", Testqueue()?"FAIL":"PASS");
+	printf("\nSLIST final test result: %s\n", Testqueue()?RED"FAIL":GREEN"PASS");
 	
 	return 0;
 }
@@ -50,7 +50,8 @@ static test_stat_ty Testqueue(void)
 	}
 	else
 	{
-		puts("Your queue is ready to use !!!");
+		
+		puts(" Your queue is ready to use !!!");
 	}
 
 /************************************************************************/
@@ -58,7 +59,7 @@ static test_stat_ty Testqueue(void)
 	
 	if (1 == QueueIsEmpty(p_queue))
 	{
-		puts("QueueEnqueue SUCCESS");
+		puts("QueueEnqueue" GREEN " SUCCESS" WHITE);
 	}
 	else
 	{
@@ -73,7 +74,7 @@ static test_stat_ty Testqueue(void)
 	
 	if (SUCCESS == QueueEnqueue(p_queue, elem))
 	{
-		puts("QueueEnqueue SUCCESS");
+		puts("QueueEnqueue" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
@@ -89,7 +90,7 @@ static test_stat_ty Testqueue(void)
 	if (2 == QueueSize(p_queue))
 	{
 		
-		puts("QueueSize SUCCESS");
+		puts("QueueSize" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
@@ -105,7 +106,7 @@ static test_stat_ty Testqueue(void)
 	if (1 == QueueSize(p_queue))
 	{
 		
-		puts("QueueDequeue SUCCESS");
+		puts("QueueDequeue" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
@@ -120,7 +121,7 @@ static test_stat_ty Testqueue(void)
 	
 	if (5 == *(int *)elem)
 	{
-		puts("QueuePeek SUCCESS");
+		puts("QueuePeek" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
@@ -140,7 +141,7 @@ static test_stat_ty Testqueue(void)
 	
 	if (6 == QueueSize(p_queue))
 	{
-		puts("QueueAppend SUCCESS");
+		puts("QueueAppend" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
@@ -158,7 +159,7 @@ static test_stat_ty Testqueue(void)
 	
 	if (6 == *(int *)elem)
 	{
-		puts("QueuePeek SUCCESS");
+		puts("QueuePeek" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{

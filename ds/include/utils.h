@@ -8,17 +8,36 @@
 #define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT))
 
 #define RET_IF_BAD(aquired, bad) 		if(bad == (aquired)) \
-																								{\
-																									return bad; \
-																				 				}
-#define RETURN_IF_BAD(aquired, bad, msg) 		if(bad == (aquired)) \
-																								{\
-																									puts(msg); \
+{                                                            \																									   return bad;                                                  \
+}
+
+
+
+#define ALLOC_CHK_FREE(a,b,c)	\
+{				 	 			\
+	if(NULL == a) 			 	\
+	{						 	\
+			free(b);			\
+			return c;		 	\
+	} 							\
+}																								
+
+#define ALLOC_CHK(a,b)	\
+{				 	 			\
+	if(NULL == a) 			 	\
+	{						 	\
+			free(b);			\
+							 	\
+	} 							\
+}	
+	
+
+/*																									puts(msg); \
 																									return bad; \
 																				 				}
 #define RET_STAT_IF_BAD(aquired, bad, msg, status) 		if(bad == (aquired)) \
 																								{\
-																									puts( RED msg RESET); \
+																									/*puts( RED msg RESET); \
 																									return status; \
 																								}																				 				
 #define RET_FREE_IF_BAD(aquired, msg, freeme) 		if(NULL == (aquired)) \
@@ -35,7 +54,7 @@
 
 #define PRINTESTCMP(name ,exp, res, cmp)  \
 (printf(name "\tFunction Test ...... %s\n", RESCMP(cmp(exp,res))))
-
+*/
 #define RESET   "\033[0m" 	/*	Reset Color */
 #define BLACK   "\033[30m"      /* Black */
 #define RED     "\033[31m"      /* Red */
