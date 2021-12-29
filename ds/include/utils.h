@@ -11,6 +11,19 @@
 {                                                            \																									   return bad;                                                  \
 }
 
+#define RETURN_IF_NULL(result)\
+			if(result == NULL)\
+			{\
+				fprintf(stderr, "Failed, NULL result\n");\
+				return NULL; \
+			}
+#define RETURN_STATUS_IF_NULL(result)\
+			if(result == NULL)\
+			{\
+				fprintf(stderr, "Failed, NULL result\n");\
+				return -1; \
+			}
+
 
 
 #define ALLOC_CHK_FREE(a,b,c)	\
@@ -32,29 +45,8 @@
 }	
 	
 
-/*																									puts(msg); \
-																									return bad; \
-																				 				}
-#define RET_STAT_IF_BAD(aquired, bad, msg, status) 		if(bad == (aquired)) \
-																								{\
-																									/*puts( RED msg RESET); \
-																									return status; \
-																								}																				 				
-#define RET_FREE_IF_BAD(aquired, msg, freeme) 		if(NULL == (aquired)) \
-																								{\
-																									puts( RED msg RESET); \
-																									free(freeme); \
-																									return NULL; \
-																								}
-																				 				
-#define TESTBOOL(x) ( x? BOLDGREEN "GOOD" RESET : BOLDRED "BAD" RESET )
-#define RESCMP(x) ( x? BOLDRED "BAD" RESET : BOLDGREEN "GOOD" RESET )
 
-#define PRINTEST(name ,exp, res)  (printf(name "\tFunction Test ...... %s\n", TESTBOOL(res == exp)))
 
-#define PRINTESTCMP(name ,exp, res, cmp)  \
-(printf(name "\tFunction Test ...... %s\n", RESCMP(cmp(exp,res))))
-*/
 #define RESET   "\033[0m" 	/*	Reset Color */
 #define BLACK   "\033[30m"      /* Black */
 #define RED     "\033[31m"      /* Red */

@@ -71,74 +71,66 @@ int CBufferIsEmpty(const cbuffer_ty *cbuffer)
 	return (cbuffer -> size == 0);
 }
 
+/*TODO  make a diffrent test !!!*/
 ssize_t CBufferRead(cbuffer_ty *cbuffer, void *dest, size_t count)
 {
-	ssize_t num_of_read_bytes = 0;
-	size_t index = cbuffer->read_idx;
+	size_t num_of_read_bytes = 0;
+	size_t size_of_buffer = 0;
+	size_t index = 0;
 	
 	assert(cbuffer);
 	assert(dest);
 	
-	if ((count > cbuffer->bufsiz) && (0 != cbuffer -> size))
-	{
-		count = cbuffer->bufsiz;
-	}
-	else if(0 != cbuffer -> size)
+	size_of_buffer = CBufferBufsiz(cbuffer);
+	
+	/* circular the index */
+	index = ((cbuffer->read_idx) + size_of_buffer - (cbuffer -> size) + 1) % size_of_buffer;
+	
+	/* checks if the buffer not empty */
+	if ((CBufferIsEmpty(cbuffer) == 0) && (count <= size_of_buffer))
 	{
 		memmove(dest, (void *)&(cbuffer->buffer[index]), count);
 		cbuffer -> size -= count;
-		num_of_read_bytes = count;
-		index = (index + count) % (cbuffer -> bufsiz);
+		num_of_read_bytes += count;
 	}
-	
-	/* the version with loop */
-	
-/*	while ((0 != count) & (0 != cbuffer -> size))
-	{
-		memmove(dest, (void *)&(cbuffer->buffer[index]), (size_t)1);
-		index = (index + 1) % (cbuffer -> bufsiz);
-		++num_of_read_bytes;
-		cbuffer -> size--;
-		--count;
-		
-	}
-*/
+	cbuffer->read_idx = index;
 	
 	return num_of_read_bytes;
 }
 
+/*TODO fix that function its fail for some casese*/
 ssize_t CBufferWrite(cbuffer_ty *cbuffer, const void *src, size_t count)
 {
 	ssize_t num_of_copy_bytes = 0;
 	size_t index = cbuffer->read_idx;
+	size_t size_of_buffer = 0;
+	size_t space = 0;
+	void *source = NULL;
 	
 	assert(cbuffer);
 	assert(src);
 	
-	if ((CBufferFreeSpace(cbuffer)) > 0 && (count > cbuffer->bufsiz))
+	source = (void *)src;
+	size_of_buffer = CBufferBufsiz(cbuffer);
+	space = CBufferFreeSpace(cbuffer);
+	
+	if (space < count )
 	{
-		count = cbuffer->bufsiz;
-		
-	}
-	else if(CBufferFreeSpace(cbuffer) > 0)
-	{
-		memmove((void *)&(cbuffer->buffer[index]), src, count);
-		cbuffer -> size += count;
-		num_of_copy_bytes = count;
-		index = (index + count) % (cbuffer -> bufsiz);
+		count = space;
 	}
 	
-	/* the version with loop */
-	
-/*	while ((0 < count) && (CBufferFreeSpace(cbuffer) > 0))
+	while (count > 0)
 	{
-		memmove((void *)&(cbuffer->buffer[index]), src, (size_t)1);
-		index = (index + 1) % (cbuffer -> bufsiz);
+		index = ((cbuffer->read_idx) + (cbuffer -> size)) % size_of_buffer;
+		--count;
+		memmove((void *)&(cbuffer->buffer[index]), src, 1);
+		src;
 		cbuffer -> size++;
 		++num_of_copy_bytes;
-		--count;
 	}
-*/	
+	
+	cbuffer->read_idx = index;
+
 	return num_of_copy_bytes;
 }
 
