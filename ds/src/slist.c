@@ -60,7 +60,7 @@ slist_ty *SlistCreate(void)
     new_list = (slist_ty *)malloc(sizeof(slist_ty));
 	ALLOC_CHK(new_list, NULL, NULL);
 	
-    dummy = (node_ty *)malloc(sizeof(slist_ty));
+    dummy = (node_ty *)malloc(sizeof(node_ty));
     ALLOC_CHK(dummy, new_list, NULL);	
     
     dummy->data = new_list;
@@ -159,7 +159,8 @@ iterator_ty SlistRemove(iterator_ty where)
 	node_ty *next_address = NULL;
     
     assert(where.slist_node);
-    assert(where.slist_node -> next); /* this is no not dummy */
+    
+    assert(where.slist_node->next); /* this is no not dummy */
     
     next_address = where.slist_node -> next; /* address of the next node */
 
@@ -193,7 +194,7 @@ size_t SlistCount(const slist_ty *slist)
 	
 	if (status != SUCCESS)
 	{
-		return 8;
+		return -1; /*for failure*/
 	}
 	
 	return count;
@@ -212,6 +213,7 @@ iterator_ty SlistBegin(const slist_ty *slist)
 	
 	return iter;
 }
+
 
 iterator_ty SlistEnd(const slist_ty *slist)
 {
@@ -245,7 +247,6 @@ int SlistForEach(iterator_ty start,
 				 op_func_ty op_func,
 				 void *param)
 {
-	
 	int status = SUCCESS;
 	
 	assert (start.list != end.list);
@@ -271,22 +272,34 @@ int SlistForEach(iterator_ty start,
 iterator_ty SlistFind(iterator_ty start, iterator_ty end, match_func_ty op_func,
 																    void *param)
 {
+	
+	int status = 0;
+	
 	assert(start);
 	assert(end);
 	assert(op_func);
 	assert(param);
 	
+	
 	while (start.slist_node != end.slist_node)
 	{
 		if (op_func(start.slist_node->data, param) == SUCCESS) 
 		{
+			status = 1;
 			return start;
 		}	
 		start.slist_node= start.slist_node->next;
 	}
 	
-	return end; /*TODO need to return dummy*/
-	
+	if (status == 0)
+	{
+		while (where.dlist_node->next != NULL)
+		{
+			where = DlistNext(where);
+		}
+		
+		return where;
+	}
 }
 				 
 void *SlistGetData(const iterator_ty iterator)

@@ -39,7 +39,7 @@
 {				 	 			\
 	if(NULL == a) 			 	\
 	{						 	\
-			free(b);			\
+			return(b);			\
 							 	\
 	} 							\
 }	

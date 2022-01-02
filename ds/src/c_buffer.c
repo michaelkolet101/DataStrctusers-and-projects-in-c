@@ -119,7 +119,7 @@ ssize_t CBufferWrite(cbuffer_ty *cbuffer, const void *src, size_t count)
 		count = space;
 	}
 	
-	while (count > 0)
+	while (count > 0 && (CBufferFreeSpace(cbuffer) > 0))
 	{
 		index = ((cbuffer->read_idx) + (cbuffer -> size)) % size_of_buffer;
 		--count;

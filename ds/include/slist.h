@@ -15,8 +15,6 @@ typedef struct slist slist_ty;
 
 typedef struct node node_ty;
 
-
-
 typedef struct iterator iterator_ty;
 
 struct iterator
@@ -35,6 +33,7 @@ typedef enum status
 
 /*SlistForEach && SlistFind*/
 /* these functions must return 0 for SUCCESS and 1 for FAIL */
+
 typedef int(*op_func_ty)(void *data, void *param);
 
 typedef int(*match_func_ty)(const void *data, void *param);
