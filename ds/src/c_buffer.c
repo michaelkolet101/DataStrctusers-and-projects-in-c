@@ -71,7 +71,19 @@ int CBufferIsEmpty(const cbuffer_ty *cbuffer)
 	return (cbuffer -> size == 0);
 }
 
-/*TODO  make a diffrent test !!!*/
+
+
+
+
+
+
+
+
+
+
+
+
+/*TODO it's dont work need to make it again!!!*/
 ssize_t CBufferRead(cbuffer_ty *cbuffer, void *dest, size_t count)
 {
 	size_t num_of_read_bytes = 0;
@@ -98,7 +110,7 @@ ssize_t CBufferRead(cbuffer_ty *cbuffer, void *dest, size_t count)
 	return num_of_read_bytes;
 }
 
-/*TODO fix that function its fail for some casese*/
+/*TODO it's dont work need to make it again!!!*/
 ssize_t CBufferWrite(cbuffer_ty *cbuffer, const void *src, size_t count)
 {
 	ssize_t num_of_copy_bytes = 0;

@@ -2,7 +2,7 @@
 #include <stddef.h> /* size_t*/
 #include <unistd.h>/* sleep */
 
-#include "dlist.h"
+#include "sorted_list.h"
 #include "utils.h"
 
 #define SUCCESS 0
@@ -19,7 +19,7 @@ typedef enum test_stat
 static void Welcome();
 
 /*Service functions*/
-static test_stat_ty TestDlist(void);
+static test_stat_ty TestSortList(void);
 int IsMatch(const void *data, void *param);
 
 
@@ -29,7 +29,7 @@ int main(void)
 {
 	
 	/*Welcome();*/
-	printf("\nDLIST final test result: %s\n", TestDlist()?RED"FAIL\n":GREEN"PASS\n");
+	printf("\nDLIST final test result: %s\n", TestSortList()?RED"FAIL\n":GREEN"PASS\n");
 	
 	return 0;
 }
@@ -69,7 +69,7 @@ static test_stat_ty TestDlist(void)
 
 /************************************************************************/
 	/* Test for DlistSize  */
-	
+/*	
 	if (0 == DlistSize(p_dlist))
 	{
 		puts("DlistSize" GREEN " SUCCESS" WHITE);
@@ -84,7 +84,7 @@ static test_stat_ty TestDlist(void)
 	
 	/************************************************************************/
 	/* Test for DlistIsEmpty  */
-	
+/*	
 	if (1 == DlistIsEmpty(p_dlist))
 	{
 		puts("DlistIsEmpty" GREEN " SUCCESS"WHITE);
@@ -99,7 +99,7 @@ static test_stat_ty TestDlist(void)
 	
 	/************************************************************************/
 	/* Test for DlistPushFront  */
-	
+/*	
 	DlistPushFront(p_dlist, elem );
 	DlistPushFront(p_dlist, elem1);
 	DlistPushFront(p_dlist, num_to_find);
@@ -128,7 +128,7 @@ static test_stat_ty TestDlist(void)
 	
 	/************************************************************************/
 	/* Test for DlistPushBack  */
-	
+/*	
 	DlistPushBack(p_dlist, elem );
 	
 	if (6 == DlistSize(p_dlist))
@@ -143,7 +143,7 @@ static test_stat_ty TestDlist(void)
 	
 	/************************************************************************/
 	/* Test for DlistGetData */
-	
+/*	
 	g = *((int *)DlistGetData(DlistBegin(p_dlist)));
 	
 	if (g == d)
@@ -160,7 +160,7 @@ static test_stat_ty TestDlist(void)
 	
 	/************************************************************************/
 	/* Test for DlistNext */
-	
+/*	
 	g = *((int *)DlistGetData(DlistNext(DlistBegin(p_dlist))));
 	
 	if (g == c)
@@ -175,7 +175,7 @@ static test_stat_ty TestDlist(void)
 	
 	/************************************************************************/
 	/* Test for DlistPrev */
-	
+/*	
 	g = *((int *)DlistGetData(DlistPrev((DlistNext(DlistBegin(p_dlist))))));
 	
 	
@@ -191,7 +191,7 @@ static test_stat_ty TestDlist(void)
 	
 	/************************************************************************/
 	/* Test for DlistSetData */
-	
+/*	
 	DlistSetData(DlistBegin(p_dlist), elem3);
 	
 	g = *((int *)DlistGetData(DlistBegin(p_dlist)));
@@ -209,7 +209,7 @@ static test_stat_ty TestDlist(void)
 	}
 /*	************************************************************************/
 	/* Test for DlistInsertBefore */
-	
+/*	
 	iter1 = DlistBegin(p_dlist);
 	iter1 = DlistNext(iter1);
 	iter1 = DlistNext(iter1);
@@ -231,7 +231,7 @@ static test_stat_ty TestDlist(void)
 
 /************************************************************************/
 	/* Test for DlistRemove */
-	
+/*	
 	iter1 = DlistRemove(iter1);
 	
 	if (6 == DlistSize(p_dlist))
@@ -245,7 +245,7 @@ static test_stat_ty TestDlist(void)
 	}
 	/*	************************************************************************/
 	/* Test for DlistIsSameIter */
-	
+/*	
 	iter1 = DlistBegin(p_dlist);
 	iter10 = DlistBegin(p_dlist);
 	
@@ -269,7 +269,7 @@ static test_stat_ty TestDlist(void)
 	
 /*	************************************************************************/
 	/* Test for DlistPopFront */
-	
+/*	
 	elem4 = DlistPopFront(p_dlist);
 
 	if (5 == DlistSize(p_dlist))
@@ -284,7 +284,7 @@ static test_stat_ty TestDlist(void)
 	
 	/*	************************************************************************/
 	/* Test for DlistPopFront */
-	
+/*	
 	elem4 = DlistPopBack(p_dlist);
 
 	if (4 == DlistSize(p_dlist))
@@ -299,7 +299,7 @@ static test_stat_ty TestDlist(void)
 	
 	/*	************************************************************************/
 	/* Test for DlistFind */
-	
+/*	
 	
 	
 	iter1 = DlistFind(DlistBegin(p_dlist),
@@ -324,7 +324,7 @@ static test_stat_ty TestDlist(void)
 	/************************************************************************/
 /*	************************************************************************/
 	/* Test for DlistSplice */
-
+/*
 	for (i = 0; i < 50; ++i)
 	{
 		DlistPushFront(p_dlist, elem );
@@ -362,7 +362,7 @@ static test_stat_ty TestDlist(void)
 	
 /*	************************************************************************/
 	/* Test for DlistMultiFind */
-	
+/*	
 	g = DlistMultiFind(DlistBegin(p_dlist),
  					   DlistEnd(p_dlist),
  					    p_dest, 
@@ -398,7 +398,7 @@ static test_stat_ty TestDlist(void)
 	
 	/* Test for DlistDestroy */
 	
-	
+/*	
 	DlistDestroy(p_dlist);
 	/************************************************************************/
 	

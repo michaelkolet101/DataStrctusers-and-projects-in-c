@@ -9,7 +9,7 @@ Functions for WS
 
 #include <stdio.h>	/* size_t */
 #include <assert.h> /* assert */
-#include <stdlib.h>	/* malloc */
+#include <stdlib.h>	/* malloc free*/
 #include <string.h>	/* memcpy */
 
 #include "dlist.h"
@@ -112,18 +112,11 @@ void DlistDestroy(dlist_ty *dlist)
 size_t DlistSize(const dlist_ty *dlist)
 {
 	size_t count = 0;
-	size_t status = SUCCESS;
 	
 	assert(dlist);
 	 
 	status = DlistForEach(DlistBegin(dlist), DlistEnd(dlist), AddCount,
 															 (void *)&count);
-	
-	if (status != SUCCESS)
-	{
-		return -1; /*for failure*/
-	}
-
 	return count;
 }
 
@@ -257,15 +250,20 @@ iterator_ty DlistInsertBefore(iterator_ty where, const void *data)
 	
 	/*  put in the data  */
 	new_node->data = (void *)data;
+	
 	/*Tells the new node to indicate the location of the iterator*/
 	new_node->next = where.dlist_node;
+	
 	/*Tells the previous node to point to the new node*/
 	where.dlist_node->prev->next = new_node;
+	
 	/*The new node will point backwards to the same value as the iterator 
 														points backwards*/
 	new_node->prev = where.dlist_node->prev;
+	
 	/*The backward pointer of our iterator will point to the new node*/
 	where.dlist_node->prev = new_node;
+	
 	/*We will move the iterator to the new node we created in the list*/
 	where.dlist_node = where.dlist_node->prev;
 	
@@ -294,21 +292,19 @@ iterator_ty DlistPushBack(dlist_ty *dlist, const void *data)
 
 iterator_ty DlistRemove(iterator_ty where)
 {
-	iterator_ty delete = {NULL};
+	iterator_ty next_node = {NULL};
 	
 	assert(where.dlist_node);
 	
-	delete.dlist_node = where.dlist_node->prev;
+	next_node = where.dlist_node->next;
 	
-	where.dlist_node->prev->prev->next = where.dlist_node;
+	where.dlist_node->prev->next = where.dlist_node->next;
 	
-	where.dlist_node->prev = where.dlist_node->prev->prev;
+	where.dlist_node->next->prev = where.dlist_node->prev;
 	
-	free(delete.dlist_node);
+	free(where.dlist_node);
 	
-	where.dlist_node = where.dlist_node->next;
-	
-	return where;
+	return next_node;
 }
 
 /************************************************************************/
@@ -359,7 +355,6 @@ int DlistForEach(iterator_ty start,
 	assert(start);
 	assert(end);
 	assert(op_func);
-	assert(param);
 	
 	while (start.dlist_node != end.dlist_node)
 	{
@@ -410,12 +405,10 @@ iterator_ty DlistSplice(iterator_ty start, iterator_ty end, iterator_ty dest)
     node_ty *before_end = NULL;
     node_ty *after_dest = NULL;
     
+    dest = DlistPrev(dest);
     
     assert(dest.dlist_node);
     assert(dest.dlist_node->prev);
-    
-    dest = DlistPrev(dest);
-    
     assert(start.dlist_node);
     assert(start.dlist_node->prev);
     assert(start.dlist_node->prev->next);

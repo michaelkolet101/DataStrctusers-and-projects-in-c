@@ -1,5 +1,13 @@
 /*version 1.1 missing ; in findif function*/
 /*version 1.2 fixed problem with typedef of sortlist*/
+/*version 1.3 fixed double parantheses in function find if,fixed wrong signiture
+int function Create*/
+/*version 1.4 missing ; in the sort_list struct, reorder in the typedefs*/
+/*version 1.5 fixed mistakes in the popfront and popback signiture*/
+/* version 1.6 fixed notes in find and findif description */ 
+/*version 1.7 fixed description in the find function, *added note in the insert
+	function - order of the list will be in the way the compare of higher index 
+	to the previous member will return positive*/
 
 #ifndef __SORTED_LIST_H__
 #define __SORTED_LIST_H__
@@ -13,9 +21,8 @@
 	#define DEBUG_ONLY(exp) 
 #endif
 
-typedef struct sortlist sortlist_ty;
 
-typedef struct iterator_sort_list srt_iter_ty;
+typedef struct sortlist sortlist_ty;
 
 struct iterator_sort_list
 {
@@ -23,16 +30,19 @@ struct iterator_sort_list
 	DEBUG_ONLY(sortlist_ty *list)
 };
 
-/*move to src*/
-struct sortlist
-{
-	dlist_ty *dlist	
-	cmp_func_ty cmp_func;
-};
+typedef struct iterator_sort_list srt_iter_ty;
+
 
 /*0 if equal, 0> if data1 lower then data2, 0< if data1 higher then data2*/
 typedef int(*cmp_func_ty)(const void *data1, const void *data2);
 
+
+/*move to src*/
+/*struct sortlist*/
+/*{*/
+/*	dlist_ty *dlist;	*/
+/*	cmp_func_ty cmp_func;*/
+/*};*/
 
 /******************************************************************************
 * Function Description: returns a pointer to an empty SortedList DS.   
@@ -42,7 +52,7 @@ typedef int(*cmp_func_ty)(const void *data1, const void *data2);
 
 * Time Complexity: O(1)
 *******************************************************************************/
-srt_iter_ty *SortedListCreate(cmp_func_ty cmp_func);
+sortlist_ty *SortedListCreate(cmp_func_ty cmp_func);
 
 /******************************************************************************
 * Function Description: destroys SortedList	       
@@ -136,7 +146,9 @@ void *SortedListGetData(srt_iter_ty current);
 
 
 /******************************************************************************
-* Function Description: insert a node and sort it by the compare function.   
+* Function Description: insert a node and sort it by the compare function. 
+*				so that  compare function of member to the previous member
+*				will return  positive. 
 * Arguments: pointer to sortlist,  void *data to insert.
 * Return value: iterator to the new node.
 * Notes: return dummy if fail
@@ -163,7 +175,7 @@ srt_iter_ty SortedListRemove(srt_iter_ty where);
 * Time Complexity: O(1)
 
 *******************************************************************************/
-void *SortedListPopFront(srt_iter_ty *sortlist);
+void *SortedListPopFront(sortlist_ty *sortlist);
 
 /******************************************************************************
 * Function Description: remove the node from the end of a given sortlist.   
@@ -173,7 +185,7 @@ void *SortedListPopFront(srt_iter_ty *sortlist);
 * Time Complexity: O(1)
 
 *******************************************************************************/
-void *SortedListPopBack(srt_iter_ty *sortlist);
+void *SortedListPopBack(sortlist_ty *sortlist);
 
 
 /******************************************************************************
@@ -200,14 +212,16 @@ int SortedListForEach(srt_iter_ty start,
 * the second list will be empty afetr using the function.
 * Time Complexity: O(n + m)
 *******************************************************************************/
-sortl_ty *SortedListMerge(sortlist_ty *first ,sortlist_ty *second);
+sortlist_ty *SortedListMerge(sortlist_ty *first ,sortlist_ty *second);
 				 
 /******************************************************************************
 * Function Description: find first node that return true by the comapre function
-	given the data and the parameter  
-* Arguments: sortlist pointer iterator_ty start, iterator_ty end, void *param
+	given the data  
+* Arguments: sortlist pointer iterator_ty start, iterator_ty end, void * of 
+*			 data to find
 * Return value: iterator of data
 * Notes: undefined behaviour if start and end not from the same list.
+* in case no node found return thr dummy end.
 
 * Time Complexity: O(n)
 *******************************************************************************/
@@ -220,14 +234,14 @@ srt_iter_ty SortedListFind(sortlist_ty *list,srt_iter_ty start, srt_iter_ty end,
 * Arguments: iterator start, itearator end, match function, parameter
 * Return value: iterator to matches node
 * Notes: undefined behaviour if start and end not from the same list.
+*		 in case no node found return thr dummy end.
 * Time Complexity: O(n)
 *******************************************************************************/
 srt_iter_ty SortedListFindIf(srt_iter_ty start,
  					   srt_iter_ty end, 
 					   int(*match_func)(const void *data, void *param),
-					     void *param));
+					     void *param);
 
 
 
 #endif /*__SORTED_LIST_H__*/
-
