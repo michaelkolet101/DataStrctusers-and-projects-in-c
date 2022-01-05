@@ -19,7 +19,7 @@ Functions for WS
 #define FAIL 1
 
 static int AddCount(void *data, void *count);
- 
+static int IsDummy(iterator_ty iterator); 
 /* Structs: */
 
 /* Structure of each node in the list*/
@@ -112,10 +112,10 @@ void DlistDestroy(dlist_ty *dlist)
 size_t DlistSize(const dlist_ty *dlist)
 {
 	size_t count = 0;
-	
+	 
 	assert(dlist);
 	 
-	status = DlistForEach(DlistBegin(dlist), DlistEnd(dlist), AddCount,
+	DlistForEach(DlistBegin(dlist), DlistEnd(dlist), AddCount,
 															 (void *)&count);
 	return count;
 }
@@ -133,17 +133,17 @@ int DlistIsEmpty(const dlist_ty *dlist)
 
 iterator_ty DlistBegin(const dlist_ty *dlist)
 {
-	iterator_ty iter = {NULL};
-	
+	iterator_ty iter;
+
 	assert(dlist);
+
+	iter.dlist_node = dlist -> head -> next;
 	
-	iter.dlist_node = dlist->head->next;
-	
-	/*DEBUG_ONLY*/
-	DEBUG_ONLY(iter->list = (dlist_ty *)dlist);
+	DEBUG_ONLY(iter.list = (dlist_ty *)dlist);
 	
 	return iter;
 }
+
 
 /************************************************************************/
 
@@ -231,44 +231,33 @@ void DlistSetData(iterator_ty current, void *data)
 
 iterator_ty DlistInsertBefore(iterator_ty where, const void *data)
 {
-	node_ty *new_node = {NULL};
-	
+	node_ty * new_node = NULL;
+
 	assert(where.dlist_node);
 	
-	/* Creates a new node */
 	new_node = (node_ty *)malloc(sizeof(node_ty));
-	
-	if (new_node == NULL)
+	/* if mem allocation failed, return dummy iterator */
+	if(new_node == NULL)
 	{
-		while (where.dlist_node->next != NULL)
+		while(!IsDummy(where))
 		{
 			where = DlistNext(where);
 		}
+		/*TODO: errno */
+		printf("Memory allocation Failed!\n");
 		
 		return where;
 	}
 	
-	/*  put in the data  */
-	new_node->data = (void *)data;
-	
-	/*Tells the new node to indicate the location of the iterator*/
-	new_node->next = where.dlist_node;
-	
-	/*Tells the previous node to point to the new node*/
-	where.dlist_node->prev->next = new_node;
-	
-	/*The new node will point backwards to the same value as the iterator 
-														points backwards*/
-	new_node->prev = where.dlist_node->prev;
-	
-	/*The backward pointer of our iterator will point to the new node*/
-	where.dlist_node->prev = new_node;
-	
-	/*We will move the iterator to the new node we created in the list*/
-	where.dlist_node = where.dlist_node->prev;
-	
-	return where;
+	new_node -> data = (void *)data;
+	where.dlist_node -> prev -> next = new_node;
+	new_node -> prev = where.dlist_node -> prev;
+	new_node -> next = where.dlist_node;
+	where.dlist_node -> prev = new_node;
+
+	return DlistPrev(where);
 }
+
 
 /************************************************************************/
 
@@ -296,7 +285,7 @@ iterator_ty DlistRemove(iterator_ty where)
 	
 	assert(where.dlist_node);
 	
-	next_node = where.dlist_node->next;
+	next_node.dlist_node = where.dlist_node->next;
 	
 	where.dlist_node->prev->next = where.dlist_node->next;
 	
@@ -312,17 +301,12 @@ iterator_ty DlistRemove(iterator_ty where)
 void *DlistPopFront(dlist_ty *dlist)
 {
 	void *ret_val = NULL;
-	iterator_ty delete = {NULL};
 	
 	assert(dlist);
 	
 	ret_val = DlistGetData(DlistBegin(dlist));
 	
-	
-	delete = DlistBegin(dlist);
-	delete = DlistNext(delete);
-	
-	DlistRemove(delete);
+	DlistRemove(DlistBegin(dlist));
 	
 	return ret_val;
 }
@@ -481,6 +465,12 @@ static int AddCount(void *data, void *count)
 	return SUCCESS;
 }
 
+static int IsDummy(iterator_ty iterator)
+{
+	return (iterator.dlist_node -> next == NULL || 
+								iterator.dlist_node -> prev == NULL);
+
+}
 
 
 

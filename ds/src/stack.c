@@ -62,7 +62,7 @@ void StackDestroy(stack_ty *stack)
 	*(&stack) = NULL;
 }
 
-/*return thr top of the stack to thr user*/
+/*return the top of the stack to the user*/
 void *StackPeek(const stack_ty *stack)
 {
 	assert(stack);

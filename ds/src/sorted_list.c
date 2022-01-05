@@ -1,16 +1,16 @@
 /*******************************************************************************
-Data Structures : dlist->
+Data Structures : sort list->
 
 Written by: Michael Kolet
-Reviewd by: 
+Reviewd by: olga
 
 Functions for WS
 *******************************************************************************/
 
 #include <stdio.h>	/* size_t */
 #include <assert.h> /* assert */
-#include <stdlib.h>	/* malloc */
-#include <string.h>	/* memcpy */
+#include <stdlib.h>	/* malloc free*/
+
 
 #include "utils.h"
 #include "sorted_list.h"
@@ -47,6 +47,7 @@ sortlist_ty *SortedListCreate(cmp_func_ty cmp_func)
 		free(new_list);
 		return NULL;
 	}
+	
 	new_list->cmp_func = cmp_func;
     
     return new_list;
@@ -63,6 +64,8 @@ void SortedListDestroy(sortlist_ty *sortlist)
 	DlistDestroy(sortlist->dlist);
 	
 	free(sortlist);
+	
+	sortlist = NULL;
 }
 
 /************************************************************************/
@@ -123,8 +126,7 @@ srt_iter_ty SortedListEnd(const sortlist_ty *sortlist)
 
 srt_iter_ty SortedListNext(srt_iter_ty current)
 {
-	/*	assigning iterator with next address and dlist (in debug mode) */
-	DEBUG_ONLY(next->list = iterator_to_next->list);
+	assert(current.iterator.dlist_node);
 	
 	current.iterator = DlistNext(current.iterator);
 	
@@ -135,10 +137,10 @@ srt_iter_ty SortedListNext(srt_iter_ty current)
 
 srt_iter_ty SortedListPrev(srt_iter_ty current)
 {
-	/*	assigning iterator with next address and dlist (in debug mode) */
-	DEBUG_ONLY(next->list = current->list);
+	assert(current.iterator.dlist_node);
 	
 	current.iterator = DlistPrev(current.iterator);
+	
 	return current;
 }
 
@@ -146,26 +148,29 @@ srt_iter_ty SortedListPrev(srt_iter_ty current)
 
 int SortedListIsSameIter(srt_iter_ty first, srt_iter_ty second)
 {
+	/*DEBUG_ONLY */
+	DEBUG_ONLY(iter->list = (dlist_ty *)dlist);
+	
 	return first.iterator.dlist_node == second.iterator.dlist_node;
 }
 
 /************************************************************************/
 
 void *SortedListGetData(srt_iter_ty current)
-{
+{	
+	assert(current.iterator.dlist_node);
+	
 	return DlistGetData(current.iterator);
 }
-
-
-/*****************************************************************************/
-
-/************************************************************************/
 
 /************************************************************************/
 
 srt_iter_ty SortedListRemove(srt_iter_ty where)
 {
-	DlistRemove(where.iterator);
+	assert(where.iterator.dlist_node);
+	
+	where.iterator = DlistRemove(where.iterator);
+	
 	return where;
 }
 
@@ -231,9 +236,65 @@ int SortedListForEach(srt_iter_ty start,
 	assert(end);
 	assert(op_func);
 
-	return DlistForEach(start.iterator, end.iterator, op_func, param);
+	return DlistForEach(start.iterator, end.iterator, op_func_ty, param);
 }
 
+sortlist_ty *SortedListMerge(sortlist_ty *first ,sortlist_ty *second)
+{
+	srt_iter_ty start1;
+	srt_iter_ty start2;
+	srt_iter_ty current2;
+	srt_iter_ty end2;
+	srt_iter_ty dest;
+
+	assert(first);
+	assert(second);
+	assert(first->dlist);
+	assert(second->dlist);
+
+	start1 = SortedListBegin(first);
+	start2 = SortedListBegin(second);
+	current2 = SortedListBegin(second);
+	end2 = SortedListEnd(second);
+
+
+	/* While the second list is not empty */
+	while(!SortedListIsEmpty(second))
+	{	
+		/* find the first element in first list that is bigger than the first element 
+		 * in the second list, this is the dest */	
+		while(!IsDummy(start1) &&
+			(first->cmp_func(SortedListGetData(start1), SortedListGetData(start2)) <= 0))
+		{
+			start1 = SortedListNext(start1);
+		}
+		dest = start1;
+
+		/* if bigger element not found and the first's list dummy is reached,
+		 * merge the rest of second to dest and return */
+		if(IsDummy(dest))
+		{
+			DlistSplice(start2.iterator, end2.iterator, dest.iterator);
+			return first;
+		}
+
+		/* find all the elements from the second list that should be merged to dest
+		 * i.e the first element in second that is bigger than the dest */
+		while(!IsDummy(current2) &&
+			(second->cmp_func(SortedListGetData(current2), SortedListGetData(dest)) <= 0))
+		{
+			current2 = SortedListNext(current2);
+		} 
+
+		/*move elements from start2 to one before the current, to the dest (before) */
+		DlistSplice(start2.iterator, current2.iterator, dest.iterator);
+		start2 = current2;
+	}
+	/* return pointer to first sorted list that is now merged */
+	return first;
+}
+
+/*
 sortlist_ty *SortedListMerge(sortlist_ty *first ,sortlist_ty *second)
 {
 	srt_iter_ty start = {NULL};
@@ -246,23 +307,23 @@ sortlist_ty *SortedListMerge(sortlist_ty *first ,sortlist_ty *second)
 	assert(second->dlist);
 	
 	start = SortedListBegin(second); /*take start and end of the second*/
-	end = SortedListBegin(second);
+/*	end = SortedListBegin(second);
 	
 	dest = SortedListBegin(first);
 
 	while(end.iterator.dlist_node != SortedListEnd(second).iterator.dlist_node &&
 		 dest.iterator.dlist_node != SortedListEnd(first).iterator.dlist_node)
 	{
-		if((first->cmp_func( SortedListGetData(dest), SortedListGetData(start)))>=0)
+		if((first->cmp_func( SortedListGetData(dest), SortedListGetData(start))) <= 0)
 		{
 			dest= SortedListNext(dest);
 		}
-		else if((first->cmp_func( SortedListGetData(dest), SortedListGetData(end))) < 0)
+		else if((first->cmp_func( SortedListGetData(dest), SortedListGetData(end))) > 0)
 		{
 			end = SortedListNext(end);
 			
 		} 
-		else if((first->cmp_func( SortedListGetData(dest), SortedListGetData(end))) >= 0)
+		else if((first->cmp_func( SortedListGetData(dest), SortedListGetData(end))) <= 0)
 		{	
 			DlistSplice( start.iterator, end.iterator, dest.iterator);
 			dest= SortedListNext(dest);
@@ -277,7 +338,7 @@ sortlist_ty *SortedListMerge(sortlist_ty *first ,sortlist_ty *second)
 	}
 
 	return first;
-}
+}*/
 
 srt_iter_ty SortedListFind(sortlist_ty *list,srt_iter_ty start, srt_iter_ty end,
 														const void *to_find)
@@ -285,6 +346,7 @@ srt_iter_ty SortedListFind(sortlist_ty *list,srt_iter_ty start, srt_iter_ty end,
 	void *temp = NULL;
 	srt_iter_ty iter = {NULL};
 	match_func_ty op_func = NULL;
+	
 	assert(list);
 	assert(list->dlist);
 	assert(start.iterator.dlist_node);
@@ -309,8 +371,9 @@ srt_iter_ty SortedListFindIf(srt_iter_ty start,
 	assert(start.iterator.dlist_node);
 	assert(end.iterator.dlist_node);
 	
+	/*TODO it's not must can use match_func insted of op*/
 	op_func = (match_func_ty)match_func;
-	iter.iterator = DlistFind( start.iterator, end.iterator, op_func, param);
+		iter.iterator = DlistFind( start.iterator, end.iterator, op_func, param);
 	
 	return iter;
 }

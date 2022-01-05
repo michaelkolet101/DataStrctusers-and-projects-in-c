@@ -37,12 +37,7 @@ typedef struct iterator_sort_list srt_iter_ty;
 typedef int(*cmp_func_ty)(const void *data1, const void *data2);
 
 
-/*move to src*/
-/*struct sortlist*/
-/*{*/
-/*	dlist_ty *dlist;	*/
-/*	cmp_func_ty cmp_func;*/
-/*};*/
+
 
 /******************************************************************************
 * Function Description: returns a pointer to an empty SortedList DS.   
