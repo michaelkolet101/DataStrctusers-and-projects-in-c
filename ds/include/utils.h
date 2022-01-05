@@ -26,7 +26,7 @@
 
 
 
-#define ALLOC_CHK_FREE(a,b,c)	\
+#define ALLOC_CHK(a,b,c)		\
 {				 	 			\
 	if(NULL == a) 			 	\
 	{						 	\
@@ -35,15 +35,6 @@
 	} 							\
 }																								
 
-#define ALLOC_CHK(a,b)	\
-{				 	 			\
-	if(NULL == a) 			 	\
-	{						 	\
-			return(b);			\
-							 	\
-	} 							\
-}	
-	
 
 
 

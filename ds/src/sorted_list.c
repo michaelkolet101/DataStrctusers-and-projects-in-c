@@ -12,8 +12,9 @@ Functions for WS
 #include <stdlib.h>	/* malloc free*/
 
 
-#include "utils.h"
+
 #include "sorted_list.h"
+#include "utils.h"
 
 #define SUCCESS 0
 #define FAIL 1
@@ -39,7 +40,7 @@ sortlist_ty *SortedListCreate(cmp_func_ty cmp_func)
     sortlist_ty *new_list = NULL;
     
     new_list = (sortlist_ty *)malloc(sizeof(sortlist_ty));
-	ALLOC_CHK(new_list, NULL);
+	ALLOC_CHK(new_list, NULL, NULL);
 	
 	new_list->dlist = DlistCreate();
 	if (new_list->dlist == NULL)
