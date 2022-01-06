@@ -3,6 +3,12 @@
 *				 ~ Deleted the note about the assert in PQPeek
 *				 ~ Added compare function description to PQCreate notes */
 
+/* version 1.2 	 ~ Edited PQErase notes
+				 ~ Rephrased compare function description in PQCreate notes*/
+				 
+/* version 1.3	 ~ PQErase: updated the match_fuc signature to be idntical to
+				   the one in SortedListFindIf signature. */
+
 #ifndef __PRIORITYQ_H__
 #define __PRIORITYQ_H__
 
@@ -17,10 +23,9 @@ typedef struct priorityq pq_ty;
 * DS.   
 * Arguments: compare function to determine priority.
 * Return value: Pointer to priority queue or NULL in case of failure
-* Notes: cmp_func returns less than, equal to, or greater than zero if data2 
-* have, respectively, lower priority, equal priority or greater priority than
-* data1
-
+* Notes: If cmp_func returns value that is less than, equal to, or greater than
+* zero, data2 will have have, respectively, lower priority, equal priority or 
+* greater priority than data1.
 
 * Time Complexity: O(1)
 *******************************************************************************/
@@ -100,7 +105,8 @@ size_t PQSize(const pq_ty *pq);
 void PQClear(pq_ty *pq);
 
 /******************************************************************************
-* Function Description: Erase the first occurance that matches according to
+* Function Description: Erase the first occurance with the highest priority
+* that matches according to
 * match function   
 * Arguments: pointer to priority queue, match function and a parameter
 * Return value: returns the data that was erased, if there is no match returns
@@ -110,8 +116,8 @@ void PQClear(pq_ty *pq);
 * Time Complexity: O(n)
 *******************************************************************************/
 void *PQErase(pq_ty *pq,
-				   int(*match_func)(const void *data1, const void *data2),
-				   void *param); 
+			  int(*match_func)(const void *data1, void *param),
+			  void *param); 
 				  
 
 #endif /*__PRIORITYQ_H__*/

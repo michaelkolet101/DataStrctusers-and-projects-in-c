@@ -3,8 +3,6 @@
 #include <stdio.h> /* printf */
 #include <stdlib.h>
 #include <stddef.h> /* size_t*/
-#include <time.h>
-
 
 #include "priorityq.h"
 #include "utils.h"
@@ -32,7 +30,8 @@ typedef enum test_stat
 /**********************************Declarations********************************/
 
 static test_stat_ty TestPQ(void);
-static int CompareInt(const void *data1, const void *data2);
+int Match(const void *data1, void *data2);
+int CompareInt(const void *data1, const void *data2);
 
 static void Welcome();
 
@@ -45,7 +44,7 @@ void PrintList(pq_ty *sortlist);
 /******************************************************************************/
 int main(void)
 {
-	/*Welcome();*/
+	Welcome();
 	printf("\nP_Q final test result: %s\n", TestPQ()?RED"FAIL\n":GREEN"PASS\n"WHITE);
 	
 	return 0;
@@ -74,19 +73,19 @@ int main(void)
 
 static test_stat_ty TestPQ(void)
 {
-	int n = 15, a = 1, b = 2, c = 3, d = 4;
+	int  a = 1, b = 2, c = 3, d = 4;
 	int g = 6, i = 0, find_me = 101;
 	int r = 0;
-	time_t t;
+	int n = 15;
+	
 	void *elem = (void *)&n;
 	void *elem1 = (void *)&a;
 	void *elem2 = (void *)&b;
 	void *elem3 = (void *)&c;
 	void *elem4 = (void *)&d;
+	
 	void *num_to_find = (void *)&find_me;
-	srt_iter_ty iter1;
-	srt_iter_ty iter10;
-	srt_iter_ty iter20;
+	
 	
 	
 	
@@ -107,9 +106,9 @@ static test_stat_ty TestPQ(void)
 	}
 
 /************************************************************************/
-	/* Test for SortedListSize  */
+	/* Test for PQEnqueue  */
 	
-/*	if (0 == SortedListSize(p_sort_list))
+	if (0 == PQEnqueue(new_pq, elem))
 	{
 		puts("SortedListSize" GREEN " SUCCESS" WHITE);
 	}
@@ -119,171 +118,127 @@ static test_stat_ty TestPQ(void)
 		return TEST_FAIL;
 	}
 	
-	
-	
 	/************************************************************************/
-	/* Test for SortedListIsEmpty  */
+	/* Test for PQIsEmpty  */
 	
-/*	if (1 == SortedListIsEmpty(p_sort_list))
+	if (0 == PQIsEmpty(new_pq))
 	{
-		puts("SortedListIsEmpty" GREEN " SUCCESS"WHITE);
+		puts("PQIsEmpty" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
-		puts("SortedListIsEmpty" RED " FAIL"WHITE);
-		return TEST_FAIL;
-	}
-	
-	
-srand((unsigned) time(&t));	
-	/************************************************************************/
-	/* Test for SortedListInsert  */
-	
-/*	SortedListInsert(p_sort_list, elem); 
-	SortedListInsert(p_sort_list, elem1);            /*1*/
-/*	SortedListInsert(p_sort_list, num_to_find);    /*101*/
-/*	SortedListInsert(p_sort_list, elem3);           /*3*/
-/*	SortedListInsert(p_sort_list, elem4);			/*4*/
-	
-/*	PrintList(p_sort_list);
-	
-	
-	
-	if (0 == SortedListIsEmpty(p_sort_list))
-	{
-		puts("SortedListInsert" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("SortedListInsert" RED " FAIL"WHITE);
-		return TEST_FAIL;
-	}
-	
-	
-	if (5 == SortedListSize(p_sort_list))
-	{
-		puts("SortedListInsert" GREEN " SUCCESS" WHITE);
-	}
-	else
-	{
-		puts("SortedListInsert " RED " FAIL");
-		return TEST_FAIL;
-	}
-
-	/************************************************************************/
-	/* Test for SortedListGetData */
-	
-/*	g = *((int *)SortedListGetData(SortedListBegin(p_sort_list)));
-	
-	if (g == 1)
-	{
-		puts("SortedListGetData" GREEN " SUCCESS"WHITE);
-		puts("SortedListBegin" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("SortedListGetData FAIL");
-		return TEST_FAIL;
-	}
-	
-	
-	
-	
-	/************************************************************************/
-	/* Test for SortedListNext */
-	
-/*	g = *((int *)SortedListGetData(SortedListNext(SortedListBegin(p_sort_list))));
-	
-	if (g == 3)
-	{
-		puts("SortedListNext" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("SortedListNext FAIL");
+		puts("PQIsEmpty" RED " FAIL"WHITE);
 		return TEST_FAIL;
 	}
 	
 	/************************************************************************/
-	/* Test for SortedListPrev */
+	/* Test for PQSize  */
 	
-/*	g = *((int *)SortedListGetData(SortedListPrev(SortedListEnd(p_sort_list))));
-	
-	
-	if (g == 101)
+	if (1 == PQSize(new_pq))
 	{
-		puts("SortedListPrev" GREEN " SUCCESS"WHITE);
+		puts("PQSize" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
-		puts("SortedListPrev FAIL");
-		return TEST_FAIL;
-	}
-
-/************************************************************************/
-	/* Test for SortedListRemove */
-	
-	
-/*	SortedListRemove(SortedListNext(SortedListBegin(p_sort_list)));
-	
-	if (4 == SortedListSize(p_sort_list))
-	{
-		puts("SortedListRemove" GREEN " SUCCESS" WHITE);
-	}
-	else
-	{
-		puts("SortedListRemove " RED " FAIL");
-		return TEST_FAIL;
-	}
-	/*	************************************************************************/
-	/* Test for SortedListPopFront */
-	
-/*	g = *((int *)SortedListPopFront(p_sort_list));
-	
-	if (3 == SortedListSize(p_sort_list))
-	{
-		puts("SortedListPopFront" GREEN " SUCCESS" WHITE);
-	}
-	else
-	{
-		puts("SortedListPopFront " RED " FAIL");
+		puts("PQSize" RED " FAIL"WHITE);
 		return TEST_FAIL;
 	}
 	
 	
 	
-
-	if (g == 1)
+	PQEnqueue(new_pq, elem2);
+	PQEnqueue(new_pq, elem1);
+	PQEnqueue(new_pq, elem4);
+	PQEnqueue(new_pq, elem3);
+	
+	
+	
+	if (5 == PQSize(new_pq))
 	{
-		puts("SortedListPopFront" GREEN " SUCCESS"WHITE);
+		puts("PQSize" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
-		puts("SortedListPopFront FAIL");
+		puts("PQSize" RED " FAIL"WHITE);
+		return TEST_FAIL;
+	}
+	/************************************************************************/
+	/* Test for PQDequeue */
+	elem = PQDequeue(new_pq);
+	
+	if (4 == PQSize(new_pq))
+	{
+		puts("PQDequeue" GREEN " SUCCESS"WHITE);
+	}
+	else
+	{
+		puts("PQDequeue" RED " FAIL"WHITE);
 		return TEST_FAIL;
 	}
 	
-	/*	**********************************************************************/
-	/* Test for SortedListPopBack */
+	/************************************************************************/
+	/* Test for PQPeek */
 	
-/*	g = *((int *)SortedListPopBack(p_sort_list));
+	g = *((int *)PQPeek(new_pq));
 	
+	/*printf("%d\n", g);*/
 
 	if (4 == g)
 	{
-		puts("SortedListPopBack" GREEN " SUCCESS" WHITE);
+		puts("PQPeek" GREEN " SUCCESS" WHITE);
 	}
 	else
 	{
-		puts("SortedListPopBack " RED " FAIL");
+		puts("PQPeek " RED " FAIL");
+		return TEST_FAIL;
+	}
+
+	/************************************************************************/
+	/* Test for PQClear */
+	
+	PQClear(new_pq);
+	
+	if (1 == PQIsEmpty(new_pq))
+	{
+		puts("PQClear" GREEN " SUCCESS"WHITE);
+	}
+	else
+	{
+		puts("PQClear" RED " FAIL"WHITE);
 		return TEST_FAIL;
 	}
 	
-
-	/* Test for SortedListDestroy */
+	PQEnqueue(new_pq, elem2);
+	PQEnqueue(new_pq, elem1);
+	PQEnqueue(new_pq, elem4);
+	PQEnqueue(new_pq, elem3);
+	PQEnqueue(new_pq, elem3);
+	
+	if (5 == PQSize(new_pq))
+	{
+		puts("PQSize" GREEN " SUCCESS"WHITE);
+	}
+	else
+	{
+		puts("PQSize" RED " FAIL"WHITE);
+		return TEST_FAIL;
+	}
 	
 	
-/*	SortedListDestroy(p_sort_list);
+	/************************************************************************/
+	/* Test for PQErase */
+	PQErase(new_pq, Match, elem3);
+	
+	if (4 == PQSize(new_pq))
+	{
+		puts("PQSize" GREEN " SUCCESS"WHITE);
+	}
+	else
+	{
+		puts("PQSize" RED " FAIL"WHITE);
+		return TEST_FAIL;
+	}
+	PQDestroy(new_pq);
 	/************************************************************************/
 		
 	return TEST_PASS;
@@ -314,27 +269,14 @@ static void Welcome()
 	}
 }
 
-static int CompareInt(const void *data1, const void *data2)
+int CompareInt(const void *data1,const void *data2)
 {
-	return (*(int *)data1 - *(int *)data2);
+	return (*(int *)data2 - *(int *)data1);
 }
 
-/*
-void PrintList(pq_ty *sortlist)
+int Match(const void *data1, void *data2)
 {
-	int g = 0;
-	srt_iter_ty iter1 = SortedListBegin(sortlist);
-	
-	
-	
-	while (!(SortedListIsSameIter(iter1, SortedListEnd(sortlist))))
-	{
-		g = *((int *)SortedListGetData(iter1));
-		
-		printf("%d, ", g);
-		
-		iter1 = SortedListNext(iter1);
-	}
-		
-	printf("\n");
-}*/
+	return (*(int *)data2 == *(int *)data1);
+}
+
+

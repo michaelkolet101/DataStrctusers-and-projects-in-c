@@ -49,10 +49,10 @@ dlist_ty *DlistCreate(void)
     node_ty *dummy2 = NULL;
     
     new_list = (dlist_ty *)malloc(sizeof(dlist_ty));
-	ALLOC_CHK(new_list, NULL);
+	ALLOC_CHK(new_list, NULL, NULL);
 	
     dummy1 = (node_ty *)malloc(sizeof(node_ty));
-    ALLOC_CHK_FREE(dummy1, new_list, NULL);	
+    ALLOC_CHK(dummy1, new_list, NULL);	
     
     dummy2 = (node_ty *)malloc(sizeof(node_ty));
     if (dummy2 == NULL)
@@ -204,15 +204,15 @@ int DlistIsSameIter(iterator_ty first, iterator_ty second)
 
 /************************************************************************/
 
-void *DlistGetData(iterator_ty current)
+void *DlistGetData(const iterator_ty iterator)
 {
-	assert(current.dlist_node->next); /*asserting this isn't dummy*/
-	return current.dlist_node->data;
+	assert(iterator.dlist_node);
+	
+	return iterator.dlist_node->data;
+
 }
 
-
 /*****************************************************************************/
-
 
 void DlistSetData(iterator_ty current, void *data)
 {
@@ -469,7 +469,6 @@ static int IsDummy(iterator_ty iterator)
 {
 	return (iterator.dlist_node -> next == NULL || 
 								iterator.dlist_node -> prev == NULL);
-
 }
 
 
