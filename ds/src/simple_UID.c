@@ -11,7 +11,7 @@ Functions for WS
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "../include/simple_UID.h"
+#include "simple_UID.h"
 
 /****************************************************************************/
 
