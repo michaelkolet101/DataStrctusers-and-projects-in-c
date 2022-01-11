@@ -1,113 +1,189 @@
-#include <stdio.h>	/* puts size_t NULL*/
+#include <stdio.h> /* printf, BUFSIZ */ 
+#include <stddef.h> /* size_t, sizeof */
 
 #include "c_buffer.h"
 
-void TestSCBuffer(void);
+#define DEST 100
 
-/******************************************************************************/
+/***************************Helpers********************************************/
+static void PrintCBuffer(cbuffer_ty *cbuffer);
+static void PrintCharArr(char *array, size_t size);
+/**********************Tests declarations**************************************/
+
+static void TestSuit1();
+static void TestSuit2();
+
+
+/****************************Main********************************************/
 int main(void)
 {
-	TestSCBuffer();
-	
-	return 0;
+	TestSuit1();
+	TestSuit2();
+
+	return 0;	
+
 }
 
-/******************************************************************************/
-void TestSCBuffer(void)
-{	
-	cbuffer_ty *p_cbuff = NULL;
-	size_t ctr = 0;
-	
-	size_t bufsiz = 100;
-	char source[] = "hello world";
-	char dest[100];
+/***********************Tests Implementation***********************************/
+static void TestSuit1()
+{
+		cbuffer_ty *cbuffer = NULL;
+	size_t capacity = 5;
 
-	/* Test for CBufferCreate */
-	
-	p_cbuff = CBufferCreate(bufsiz);
-	
-	if(NULL == p_cbuff)
-	{
-		puts("Failed to create Circular Buffer");
-		return;
-	}	
-	else
-	{
-		puts("Your Circular Buffer is ready to use!");
-	}
-	
-	/************************************************************************/
-	/* Test for CBufferIsEmpty */
-	
-	if(1 == CBufferIsEmpty(p_cbuff))
-	{
-		puts("CBufferIsEmpty SUCCESS");
-	}
-	
-	else
-	{
-		puts("CBufferIsEmpty FAIL");
-	}
-	
-	/************************************************************************/
-	/* Test for CBufferFreeSpace */
-	
-	if(bufsiz == CBufferFreeSpace(p_cbuff))
-	{
-		puts("CBufferFreeSpace SUCCESS");
-	}
-	else
-	{
-		puts("CBufferFreeSpace FAIL");
-	}
-	/************************************************************************/
-	/* Test for CBufferBufsiz */
-	
-	if(bufsiz == CBufferBufsiz(p_cbuff))
-	{
-		puts("CBufferBufsiz SUCCESS");
-	}
-	else
-	{
-		puts("CBufferBufsiz FAIL");
-	}
-	
-	/************************************************************************/
-	/* Test for CBufferWrite */
-	
-	CBufferWrite(p_cbuff, source, 5);      /* Writing 5 characters to buffer*/
-	
-	if(95 ==  CBufferFreeSpace(p_cbuff))
-	{
-		puts("CBufferWrite SUCCESS");
+	char *src = "Heliot";
+	char dest[DEST] = {0};
 
-	}
-	else
+	cbuffer = CBufferCreate(capacity);
+	if(cbuffer == NULL)
 	{
-		puts("CBufferWrite FAIL");
+		printf("failed to create a circular buffer\n");
 	}
+	printf("New Circular buffer created\n");
 	
-	/************************************************************************/
-	/* Test for CBufferRead */
-	
-	ctr = 2;
-	
-	CBufferRead(p_cbuff, dest, ctr);
-	
-	if(97 ==  CBufferFreeSpace(p_cbuff))
-	{
-		puts("CBufferRead SUCCESS");
+	CBufferIsEmpty(cbuffer) ?
+			printf("The circular buffer is empty \t\tTest Passed\n") :
+			printf("The circular buffer is not empty \tTest Failed\n");
 
-	}
-	else
+	CBufferBufsiz(cbuffer) == capacity ?
+			printf("The buffer capacity is %ld bytes \t\tTest Passed\n", capacity) :
+			printf("Wrong buffer capacity \t\tTest Failed");
+
+	CBufferFreeSpace(cbuffer) == capacity ?
+			printf("Free space: %ld \t\t\t\tTest Passed\n", CBufferFreeSpace(cbuffer)) :
+			printf("Free Space wrong %ld \t\tTest Failed\n", CBufferFreeSpace(cbuffer));
+
+	/* writing 2 bytes to cbuffer */
+	CBufferWrite(cbuffer, src, 2) == 2 ?
+			printf("2 bytes were written to cbuffer \tTest passed\n") :
+			printf("Wrong amount of bytes were written \t\tTest Failed\n");
+
+	CBufferFreeSpace(cbuffer) == 3 ?
+			printf("Free space: %ld \t\t\t\tTest Passed\n", CBufferFreeSpace(cbuffer)) :
+			printf("Free Space wrong %ld \t\tTest Failed\n", CBufferFreeSpace(cbuffer));
+
+     /*	PrintCBuffer(cbuffer); */
+
+	/* writing 2 bytes to cbuffer */
+	CBufferWrite(cbuffer, src, 2) == 2 ?
+			printf("2 bytes were written to cbuffer \tTest passed\n") :
+			printf("Wrong amount of bytes were written \t\tTest Failed\n");
+			
+	/*	PrintCBuffer(cbuffer); */
+	CBufferFreeSpace(cbuffer) == 1 ?
+			printf("Free space: %ld \t\t\t\tTest Passed\n", CBufferFreeSpace(cbuffer)) :
+			printf("Free Space wrong %ld \t\tTest Failed\n", CBufferFreeSpace(cbuffer));	
+
+	/*  writing 2 bytes to cbuffer attempt, should write just 1 */
+	CBufferWrite(cbuffer, src, 2) == 1 ?
+			printf("1 bytes were written out of 2 bytes \tTest passed\n") :
+			printf("Wrong amount of bytes were written\t\tTest Failed\n");
+
+	CBufferFreeSpace(cbuffer) == 0 ?
+			printf("Free space: %ld \t\t\t\tTest Passed\n", CBufferFreeSpace(cbuffer)) :
+			printf("Free Space wrong %ld \t\tTest Failed\n", CBufferFreeSpace(cbuffer));
+			
+	/* PrintCBuffer(cbuffer); */
+
+	/* attempt writing to full buffer */
+	CBufferWrite(cbuffer, src, 1) == 0 ?
+			printf("0 bytes were written out of 1 bytes \tTest passed\n") :
+			printf("Wrong amount of bytes were written\t\tTest Failed\n");
+
+	CBufferFreeSpace(cbuffer) == 0 ?
+			printf("Free space: %ld \t\t\t\tTest Passed\n", CBufferFreeSpace(cbuffer)) :
+			printf("Free Space wrong %ld \t\tTest Failed\n", CBufferFreeSpace(cbuffer));
+
+
+	/* read all 5 bytes from buffer to dest */
+	CBufferRead(cbuffer, dest, 5) == 5 ?
+			printf("Reading 5 bytes from cbuffer \t\tTest Passed\n") :
+			printf("Reading wrong count \t\t\tTest Failed\n");
+
+	CBufferFreeSpace(cbuffer) == 5 ?
+			printf("Free space: %ld \t\t\t\tTest Passed\n", CBufferFreeSpace(cbuffer)) :
+			printf("Free Space wrong %ld \t\tTest Failed\n", CBufferFreeSpace(cbuffer));
+
+	PrintCharArr(dest, DEST);
+
+	CBufferDestroy(cbuffer);
+
+}
+
+static void TestSuit2()
+{
+	cbuffer_ty *cbuffer = NULL;
+	size_t capacity = 5;
+
+	char *src = "Heliot";
+	char dest[DEST] = {0};
+
+	cbuffer = CBufferCreate(capacity);
+	if(cbuffer == NULL)
 	{
-		puts("CBufferRead FAIL");
+		printf("failed to create a circular buffer\n");
 	}
+	printf("New Circular buffer created\n");
 	
 	
-	/************************************************************************/
-	/* Free DS */ 
+	/*  writing 4 bytes to cbuffer attempt, should write just 1 */
+	CBufferWrite(cbuffer, src, 4) == 4 ?
+			printf("4 bytes were written \tTest passed\n") :
+			printf("Wrong amount of bytes were written\t\tTest Failed\n");
 	
-	CBufferDestroy(p_cbuff);
-	p_cbuff = NULL;
+
+	/* read 3 bytes from buffer to dest */
+	CBufferRead(cbuffer, dest, 3) == 3 ?
+			printf("Reading 3 bytes from cbuffer \t\tTest Passed\n") :
+			printf("Reading wrong count \t\t\tTest Failed\n");
+
+	PrintCharArr(dest, DEST);
+
+	/*  writing 4 bytes to cbuffer attempt, should write just 1 */
+	CBufferWrite(cbuffer, src, 4) == 4 ?
+			printf("4 bytes were written \tTest passed\n") :
+			printf("Wrong amount of bytes were written\t\tTest Failed\n");
+
+	CBufferFreeSpace(cbuffer) == 0 ?
+			printf("Free space: %ld \t\t\t\tTest Passed\n", CBufferFreeSpace(cbuffer)) :
+			printf("Free Space wrong %ld \t\tTest Failed\n", CBufferFreeSpace(cbuffer));
+	
+
+	/* read more the the capacity, 5 expected to be read */
+	CBufferRead(cbuffer, dest, 6) == 5 ?
+			printf("Reading 5 bytes from cbuffer \t\tTest Passed\n") :
+			printf("Reading wrong count \t\t\tTest Failed\n");
+
+	PrintCharArr(dest, DEST);
+
+	CBufferDestroy(cbuffer);
+}
+
+/****************************Helpers Implementation****************************/
+/*
+static void PrintCBuffer(cbuffer_ty *cbuffer)
+{
+	size_t i = 0;
+	char *buf = ((char *)cbuffer + sizeof(size_t) * 3);
+
+	printf("Bufer:  ");
+	while (i < CBufferBufsiz(cbuffer)+1)
+	{
+		printf("%c", *buf);
+		++buf;
+		++i;
+	}
+	printf("\n");
+}
+*/
+
+static void PrintCharArr(char *array, size_t size)
+{
+	size_t i = 0;
+
+printf("Dest:  ");
+	for(i = 0; i < size; ++i)
+	{
+		printf("%c ", array[i]);
+	}
+	printf("\n");
 }

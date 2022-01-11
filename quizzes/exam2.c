@@ -4,25 +4,24 @@
 
 /************************************Answer 2*******************************/
 
-Node *flip(Node *slist)
+
+Node *flip(Node *head) 
 {
-	Node *current = slist->head;
-	Node *next = slist->head;
-	Node *prev = slist->head;
+	Node *current = head;
+	Node *next = head;
+	Node *prev = head;
 	
 	size_t count = 0;
 	
-	assert(slist);
+	assert(head);
 	
 	while (slist->tail != current->next)
 	{
 		++count;
 	}
 	
-	current = slist->head;
+	current = head;
 
-	current->next = slist->tail;
-	
 	
 	while (count - 1)
 	{
@@ -36,19 +35,31 @@ Node *flip(Node *slist)
 	return current;
 }
 
+
+/*******************************Answer 3 ***********************************/
+
+/*Any task that does not require going over the entire list will be in o(1)
+   else o(n)*/
+   
 /*******************************Answer 4 a***********************************/
 
-int IsNotAloop(Node *slist)
+
+int IsNotAloop(Node *head)
 {
-	Node *faster = slist->head;
-	Node *slower = slist->head;
+	Node *faster = NULL; 
+	Node *slower = NULL; 
 	
-	while ((current->next->next != tail) && (slower->next != tail))
+	assert(head);
+	
+	faster = head;
+	slower = head;
+	
+	while (faster && slower)
 	{
-		current = current->next->next;
+		faster = faster->next->next;
 		slower = slower->next;
 		
-		if (current == slower)
+		if (faster == slower)
 		{
 			return 0;
 		}
@@ -60,7 +71,7 @@ int IsNotAloop(Node *slist)
 /*******************************Answer 4 b***********************************/
 
 
-void ReleaseTheLoop(Node *slist)
+void ReleaseTheLoop(Node *head)
 {
 	Node *faster = NULL;
 	Node *slower = NULL;
@@ -69,14 +80,13 @@ void ReleaseTheLoop(Node *slist)
 	size_t count = 1;
 	size_t tmp_count = 0;
 	
-	assert(slist);
-	assert(!IsNotAloop(slist));
+	assert(head);
 	
-	faster = slist->head;
-	slower = slist->head;
+	faster = head;
+	slower = head;
 	
 	/*Find the node we know for sure is in a loop*/
-	while ((current->next->next != slist->tail) && (slower->next != slist->tail))
+	while ((current->next->next) && (slower->next))
 	{
 		current = current->next->next;
 		slower = slower->next;
@@ -100,7 +110,7 @@ void ReleaseTheLoop(Node *slist)
 										in the loop*/
 	tmp_count = count;
 	
-	runner = slist->head;
+	runner = head;
 	
 	while (tmp_count)
 	{
@@ -109,7 +119,7 @@ void ReleaseTheLoop(Node *slist)
 	}
 	
 	save_place = runner;
-	runner = slist->head;
+	runner = head;
 	
 	/*Find where the loop begins*/
 	while (save_place != runner)
@@ -131,7 +141,8 @@ void ReleaseTheLoop(Node *slist)
 
 /**************************Answer 5 a **********************************/
 
-int NotIntersect(Node *slist1, Node *slist2)
+
+int NotIntersect(Node *head1, Node *head2)
 {
 	size_t count1 = 0;
 	size_t count2 = 0;
@@ -139,27 +150,27 @@ int NotIntersect(Node *slist1, Node *slist2)
 	Node *runner1 = NULL;
 	Node *runner2 = NULL;
 	
-	assert(slist1);
-	assert(slist2);
+	assert(head1);
+	assert(head2);
 	
-	runner1 = slist1->head;
-	runner2 = slist2->head;
+	runner1 = head1;
+	runner2 = head2;
 	
 	/*We will check what the size of each list is*/
-	while (runner1 != slist1->tail)
+	while (runner1)
 	{
 		++count1;
 		runner1 = runner1->next;
 	}
 	
-	while (runner2 != slist2->tail)
+	while (runner2)
 	{
 		++count2;
 		runner2 = runner2->next;
 	}
 	
-	runner1 = slist1->head;
-	runner2 = slist2->head;
+	runner1 = head1;
+	runner2 = head2;
 	
 	/*We will advance with the larger the difference in sizes*/
 	if (count1 > count2)
@@ -184,9 +195,9 @@ int NotIntersect(Node *slist1, Node *slist2)
 	}
 	
 	/*We will check if the nodes are equal*/
-	while (runner1 != slist->tail)
+	while (runner1)
 	{
-		if (runner1 = runner2)
+		if (runner1 == runner2)
 		{
 			return 0
 		}
@@ -201,9 +212,9 @@ int NotIntersect(Node *slist1, Node *slist2)
 
 /**************************Answer 5 b **********************************/
 
-void SeparatorOfLists(Node *slist1, Node *slist2)
+
+void SeparatorOfLists(Node *head1, Node *head2)
 {
-	
 	size_t count1 = 0;
 	size_t count2 = 0;
 	size_t move_forward = 0;
@@ -213,26 +224,25 @@ void SeparatorOfLists(Node *slist1, Node *slist2)
 	
 	assert(slist1);
 	assert(slist2);
-	assert(!NotIntersect(slist1,slist2));
 	
-	runner1 = slist1->head;
-	runner2 = slist2->head;
+	runner1 = head1;
+	runner2 = head2;
 	
 	/*We will check what the size of each list is*/
-	while (runner1 != slist1->tail)
+	while (runner1)
 	{
 		++count1;
 		runner1 = runner1->next;
 	}
 	
-	while (runner2 != slist2->tail)
+	while (runner2)
 	{
 		++count2;
 		runner2 = runner2->next;
 	}
 	
-	runner1 = slist1->head;
-	runner2 = slist2->head;
+	runner1 = head1;
+	runner2 = head2;
 	
 	/*We will advance with the larger the difference in sizes*/
 	if (count1 > count2)
@@ -257,7 +267,7 @@ void SeparatorOfLists(Node *slist1, Node *slist2)
 	}
 	
 	/*Find the place where they intersect*/
-	while (runner1 != slist->tail)
+	while (runner1)
 	{
 		if (runner1 = runner2)
 		{
@@ -272,7 +282,7 @@ void SeparatorOfLists(Node *slist1, Node *slist2)
 	}
 	
 	/*We will promote our runner on the list to one place before the intersection*/
-	runner1 = slist->head;
+	runner1 = head1;
 	
 	while (count1 - 1)
 	{
@@ -321,11 +331,14 @@ DNode_ty *DlistInsert(DNode_t *where, const void *data)
 	{
 		return NULL;
 	}
-	
+	node_to_insert->next = NULL;
+	node_to_insert->prev = NULL;
 	node_to_insert->data = data;
-	where->prev->next = node_to_insert;
+	
 	node_to_insert->next = where;
 	node_to_insert->prev = where->prev;
+	
+	where->prev->next = node_to_insert;
 	where->prev = node_to_insert;
 	
 	return node_to_insert;
@@ -334,6 +347,7 @@ DNode_ty *DlistInsert(DNode_t *where, const void *data)
 DNode_ty *DlistRemove(DNode_t *where)
 {
 	*DNode_ty ret_val = NULL;
+	
 	assert(where);
 	
 	ret_val = where->next;
@@ -350,37 +364,27 @@ DNode_ty *DlistRemove(DNode_t *where)
 
 /************************** Answer 8 **********************************/
 
-/************                 Solution 1  Pseudo code                  ******/
-/*We will sort the array*/
-/*We will run on the sorted array*/
-
-/*We will check in each iteration if the next number is larger than one 
-of the previous ones*/
-
-/*If not then we will return the number we are in plus 1 and that is
- the missing number*/
-
-/************                 Solution 2                       ******/
 
 int TheMissingNumber(int *arr)
 {
-/**/
+/*We will create an array of 1024 places*/
 	int new[1024];
 	int i = 0;
 	int index_to_on = 0;
 	
+	/*We will reset the entire array*/
 	for (i = 0; i <= 1024; ++i)
 	{
 		new[i] = 0;
 	}  
-	
+	/*We will run on the array we got from the function and turn on indexes
+	 accordingly in our array*/
 	for (i = 0; i <= 1024; ++i)
-	{
-		
+	{	
 		index_to_on = *(arr + i);
 		new[index_to_on] = 1;
 	}  
-	
+	/*We will look for the undexed index in the array and return it*/
 	for (i = 0; i <= 1024; ++i)
 	{
 		if (0 == new[i])
@@ -389,7 +393,46 @@ int TheMissingNumber(int *arr)
 		}
 	}  
 	
-	return 1
+	return 1 /*for fail*/
+}
+
+/*********************************Answer 10 ********************************/
+
+typedef struct Queue
+{
+    char m_queue[Q_SIZE];
+    size_t m_elements_in_q;
+    size_t m_first_element;
+}Queue_ty;
+
+void PushChar(Queue_ty *q, char *data)
+{
+	assert(q);
+	
+	if ((q->m_first_element + q->m_elements_in_q >= Q_SIZE))
+	{
+		return 1;
+	}
+	
+	q->m_queue[m_first_element + m_elements_in_q] = data;
+	q->m_elements_in_q += 1;
+	
+	return 0;
+}
+
+char *PopChar(Queue_ty *q)
+{
+	char *ret_val = NULL;
+	
+	assert(q);
+	
+	ret_val = q->m_queue[q->m_first_element];
+	
+	q->m_first_element +=1;
+	
+	q->m_elements_in_q -= 1;
+	
+	return ret_val;
 }
 
 
@@ -403,7 +446,3 @@ int TheMissingNumber(int *arr)
 
 
 
-
-
-
-unctio

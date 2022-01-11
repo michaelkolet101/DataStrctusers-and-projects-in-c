@@ -1,22 +1,19 @@
-/*******************************************************************************
-Data Structures queue
+#define OFFSETOF(type, member) (size_t)&(((type *)0)->member)
+#define RETURN_AND_FREE_IF_BAD(x, y, z) {if (NULL == x){free(z); return y;}}
 
-Written by: Michael Kolet
-Reviewd by: Olga
+#define MAX2(x, y) (x > y ? x : y) 
+#define MIN2(x ,y) (x < y ? x : y)
 
-Functions for WS
-*******************************************************************************/
-#include <string.h>/*memmove*/
-#include <stddef.h>
+#include <string.h> /* memcpy */
+#include <stdio.h>	/* size_t */
 #include <assert.h> /* assert */
-#include <stdlib.h>	/* malloc free */
+#include <stdlib.h> /* malloc, free */
+#include <sys/types.h> /* ssize_t */
+
 
 #include "c_buffer.h"
-#include "utils.h"
 
-#define SUCCESS 0
-#define FAIL 1
-
+/******************************************************************************/
 struct cbuffer
 {
 	size_t read_idx;
@@ -24,22 +21,19 @@ struct cbuffer
 	size_t bufsiz; 
 	char buffer[1];
 };
-
-/***************************Macros Functions *********************************/
-
-
+/******************************************************************************/
 cbuffer_ty *CBufferCreate(size_t bufsiz)
 {
-	cbuffer_ty *new_cbuffer = (cbuffer_ty *)malloc(OFFSETOF(cbuffer_ty, buffer) + sizeof(char) * bufsiz);
+	cbuffer_ty *cbuffer = NULL;
 	
-	ALLOC_CHK(new_cbuffer , NULL, NULL);
+	cbuffer = (cbuffer_ty *)malloc(OFFSETOF(cbuffer_ty, buffer) + sizeof(char) * bufsiz);
+	RETURN_AND_FREE_IF_BAD(cbuffer, NULL, NULL);/**/
 	
-	new_cbuffer->read_idx = 0;
-	new_cbuffer->size = 0;
-	new_cbuffer->bufsiz = bufsiz;
-	new_cbuffer->buffer[0] = 0;
+	cbuffer->read_idx = 0;
+	cbuffer->size = 0;
+	cbuffer->bufsiz = bufsiz;
 	
-	return new_cbuffer;
+	return cbuffer;
 }
 
 void CBufferDestroy(cbuffer_ty *cbuffer)
@@ -47,27 +41,21 @@ void CBufferDestroy(cbuffer_ty *cbuffer)
 	assert(cbuffer);
 	
 	free(cbuffer);
+	cbuffer = NULL;
 }
 
 size_t CBufferFreeSpace(const cbuffer_ty *cbuffer)
 {
 	assert(cbuffer);
 	
-	return (cbuffer -> bufsiz) - (cbuffer -> size);
+	return cbuffer->bufsiz - cbuffer->size;
 }
 
 size_t CBufferBufsiz(const cbuffer_ty *cbuffer)
 {
 	assert(cbuffer);
 	
-	return cbuffer -> bufsiz;
-}
-
-int CBufferIsEmpty(const cbuffer_ty *cbuffer)
-{
-	assert(cbuffer);
-	
-	return (cbuffer -> size == 0);
+	return  cbuffer->bufsiz;
 }
 
 ssize_t CBufferRead(cbuffer_ty *cbuffer, void *dest, size_t count)
@@ -126,4 +114,9 @@ ssize_t CBufferWrite(cbuffer_ty *cbuffer, const void *src, size_t count)
 	return count;
 }
 
-
+int CBufferIsEmpty(const cbuffer_ty *cbuffer)
+{
+	assert(cbuffer);
+	
+	return !(cbuffer->size);
+}
