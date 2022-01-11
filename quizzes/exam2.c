@@ -280,9 +280,130 @@ void SeparatorOfLists(Node *slist1, Node *slist2)
 		--count1;
 	}
 	
-	/*Suspended that his next would point to NULL*/
+	/*His next was made to point to NULL*/
 	runner1->next = NULL;
+}
+
+/************************** Answer 6 **********************************/
+
+Node *Remove(Node *where)
+{
+	/*We will create a pointer to the Node*/
+	Node *tmp = NULL;
+	
+	assert(where);
+	
+	/*The pointer will point to the next after what we got in the function*/
+	tmp = where->next;
+	
+	/*Our node in the list will get the values ​​of it after it*/
+	where->data = tmp->data;
+	where->next = tmp->next;
+	
+	/*We will release the next node after it*/
+	tmp->next = NULL;
+	free(tmp);
+	tmp = NULL;
+}
+
+/************************** Answer 7 **********************************/
+
+
+DNode_ty *DlistInsert(DNode_t *where, const void *data)
+{
+	
+	DNode_ty *node_to_insert = NULL;
+	
+	assert(where);
+	
+	node_to_insert = (DNode_ty)malloc(sizeof(DNode_ty));
+	if (NULL == node_to_insert)
+	{
+		return NULL;
+	}
+	
+	node_to_insert->data = data;
+	where->prev->next = node_to_insert;
+	node_to_insert->next = where;
+	node_to_insert->prev = where->prev;
+	where->prev = node_to_insert;
+	
+	return node_to_insert;
+}
+
+DNode_ty *DlistRemove(DNode_t *where)
+{
+	*DNode_ty ret_val = NULL;
+	assert(where);
+	
+	ret_val = where->next;
+	
+	where->prev->next = where->next;
+	where->next->prev = where->prev;
+	
+	free(where);
+	where = NULL;
+	
+	return ret_val;
+}
+
+
+/************************** Answer 8 **********************************/
+
+/************                 Solution 1  Pseudo code                  ******/
+/*We will sort the array*/
+/*We will run on the sorted array*/
+
+/*We will check in each iteration if the next number is larger than one 
+of the previous ones*/
+
+/*If not then we will return the number we are in plus 1 and that is
+ the missing number*/
+
+/************                 Solution 2                       ******/
+
+int TheMissingNumber(int *arr)
+{
+/**/
+	int new[1024];
+	int i = 0;
+	int index_to_on = 0;
+	
+	for (i = 0; i <= 1024; ++i)
+	{
+		new[i] = 0;
+	}  
+	
+	for (i = 0; i <= 1024; ++i)
+	{
+		
+		index_to_on = *(arr + i);
+		new[index_to_on] = 1;
+	}  
+	
+	for (i = 0; i <= 1024; ++i)
+	{
+		if (0 == new[i])
+		{
+			return i;
+		}
+	}  
+	
+	return 1
 }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+unctio
