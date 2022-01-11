@@ -2,7 +2,7 @@
 #include "scheduler.h"
 #include "priorityq.h"
 #include "sorted_list.h"
-
+#include <assert.h> /* assert */
 
 #include "task.h"
 #include "utils.h"
@@ -44,7 +44,7 @@ scheduler_ty *SchedulerCreate()
 	return new_scheduler;
 }
 
-/*
+
 void SchedulerDestroy(scheduler_ty *scheduler)
 {
 	assert(scheduler);
@@ -56,18 +56,25 @@ void SchedulerDestroy(scheduler_ty *scheduler)
 	free(scheduler);
 	scheduler = NULL;
 }
-*/
+
 
 uid_ty SchedulerAdd(scheduler_ty *scheduler,
 					sched_func_ty sched_func,
 					void *params,
 					time_t interval)
 {
+	
+	
 	task_ty *new_task = TaskCreate(sched_func, params, interval);
+	
 	if (new_task == NULL)
 	{
 		return BadUID;
 	}
+	
+	assert(scheduler);
+	assert(scheduler->pq);
+	assert(sched_func);
 	
 	PQEnqueue(scheduler->pq, new_task);
 	
@@ -79,20 +86,39 @@ int SchedulerRemove(scheduler_ty *scheduler, uid_ty uid)
 {
 	task_ty *task_to_delete = NULL;
 	
-	task_to_delete = PQErase(scheduler->pq, (int(*)(const void *, void *))TaskMatchUID, &uid);
+	assert(scheduler);
+	assert(scheduler->pq);
+	
+	if (scheduler->should_run)
+	{
+		scheduler->remove_curr = 1;
+	}
+	
+	task_to_delete = PQErase(scheduler->pq,
+							 (int(*)(const void *, void *))TaskMatchUID,
+							  &uid);
 	
 	if (task_to_delete == NULL)
 	{
 		return FAIL;
 	}
+	
+	TaskDestroy(task_to_delete);
+	
+	task_to_delete = NULL;
+	
 	return SUCCESS;
 }
+
+/****************************************************************************/
 
 run_exec_stat_ty SchedulerRun(scheduler_ty *scheduler)
 {
 	int repeat = 1;
-	uid_ty id = {0};
 	int check = SUCCESS;
+	
+	assert(scheduler);
+	assert(scheduler->pq);
 	
 	scheduler->should_run = 1;
 	
@@ -101,27 +127,25 @@ run_exec_stat_ty SchedulerRun(scheduler_ty *scheduler)
 	{
 		scheduler->curr_task = (task_ty *)PQDequeue(scheduler->pq);
 		
-		/*Check the value of the return from the task to know if to 
-													repeat it again*/
 		repeat = TaskExecute(scheduler->curr_task);
 		
 		/*If the task needs to be performed again the time must be 
 		updated and re-entered the queue*/
-		if (repeat)
+		if (repeat && (0 == scheduler->remove_curr))
 		{
 			check = TaskUpdateTime(scheduler->curr_task);
 			
 			PQEnqueue(scheduler->pq, scheduler->curr_task);
 		}
-		
-		if (TaskMatchUID((const task_ty*)scheduler->curr_task, (uid_ty *)&BadUID) || FAILED == check)
+		else
 		{
-			return FAILED;
-		}
-			
+			TaskDestroy(scheduler->curr_task);
+			scheduler->remove_curr = 0;
+		}	
+		
 	}	
 			
-	if (!(scheduler->should_run))
+	if (0 == scheduler->should_run)
 	{
 		return STOPPED;
 	}
@@ -131,28 +155,46 @@ run_exec_stat_ty SchedulerRun(scheduler_ty *scheduler)
 
 void SchedulerStop(scheduler_ty *scheduler)
 {
+	assert(scheduler);
+	assert(scheduler->pq);
+	
 	scheduler->should_run = 0;
 }
 
 int SchedulerIsEmpty(const scheduler_ty *scheduler)
 {
+	assert(scheduler);
+	assert(scheduler->pq);
+	
 	return PQIsEmpty(scheduler->pq);
 }
 
 size_t SchedulerSize(const scheduler_ty *scheduler)
 {
+	assert(scheduler);
+	assert(scheduler->pq);
+	
 	return PQSize(scheduler->pq);
 }
-/*
+
 void SchedulerClear(scheduler_ty *scheduler)
 {
-	PQClear(scheduler->pq);
+	assert(scheduler);
+	assert(scheduler->pq);
+	
+	while (!SchedulerIsEmpty(scheduler))
+	{
+		TaskDestroy((task_ty *)PQDequeue(scheduler->pq));
+	}
 }
-*/
 
+/****************************************************************************/
 
 int ConvertToNegetiv(const task_ty *task1, const task_ty *task2)
 {
+	assert(task1);
+	assert(task2);
+		
 	if (TaskIsBefore(task1, task2))
 	{
 		return -1;

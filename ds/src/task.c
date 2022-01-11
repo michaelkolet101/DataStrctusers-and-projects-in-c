@@ -1,4 +1,4 @@
-
+#include <unistd.h>/* sleep */
 #include <stdio.h>	/* size_t */
 #include <assert.h> /* assert */
 #include <stdlib.h>	/* malloc free*/
@@ -24,21 +24,28 @@ task_ty *TaskCreate(op_functask_ty op_func,
 					void *params,
 					time_t interval)
 {
+	time_t now = time(NULL);
+	
 	task_ty *new_task = (task_ty *)malloc(sizeof(task_ty));
 	ALLOC_CHK(new_task ,NULL, NULL);
 	
-	new_task->op_time = time(NULL) + interval;
+	if (now < 0)
+	{
+		free(new_task);
+		return NULL;
+	}
+	
+	new_task->op_time = now + interval;
 	new_task->op_func = op_func;
 	new_task->params = params;
+	new_task->time_interval = interval;
 	new_task->uid = SimpleUIDCreate();
-	
 	
 	if (SimpleUIDCmp(new_task->uid, BadUID))
 	{
 		return NULL;
 		free(new_task);
 	}
-	new_task->time_interval = interval;
 	
 	return new_task;
 }
@@ -62,19 +69,30 @@ uid_ty TaskGetUid(const task_ty *task)
 int TaskMatchUID(const task_ty *task, uid_ty *uid)
 {
 	assert(task);
+	assert(uid);
 	
-	return SimpleUIDCmp(task->uid , *uid);
+	return !SimpleUIDCmp(task->uid , *uid);
 }
 
 int TaskExecute(task_ty *task)
 {	
+	time_t now = time(NULL);
+	
 	assert(task);
+	
+	if (now < 0)
+	{
+		return 1;
+	}
+	sleep(task->op_time - now);
 	
 	return task->op_func(task->params);
 }
 
 time_t TaskGetTime(const task_ty *task)
 {
+	assert(task);
+	
 	return task->op_time;
 }
 
@@ -99,6 +117,6 @@ int TaskIsBefore(const task_ty *task1, const task_ty *task2)
 	assert(task1);
 	assert(task2);
 	
-	return task2->op_time < task1->op_time;
+	return TaskGetTime(task2) > TaskGetTime(task1);
 }
 

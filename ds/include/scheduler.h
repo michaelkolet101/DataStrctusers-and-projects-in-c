@@ -4,7 +4,7 @@ Version 1.3.1
 	* moved the Destroy note to its rightful place
 	* added the description in the Run 'Return Value' section
 	* added a note in the description of Run:
-		"Notes: undefined behavior if called with a running scheduler"
+	"Notes: undefined behavior if called with a running scheduler"
 --------------------------------------------------------------------------------
 Version 1.3
 	* added a note in the description of Destroy:

@@ -35,8 +35,9 @@ static test_stat_ty TestSchduler(void);
 int Match(const void *data1, void *data2);
 int CompareInt(const void *data1, const void *data2);
 
-int Printhellow();
+int Printhello();
 int PrintMichael();
+int Stop(void *data);
 
 static void Welcome();
 
@@ -83,9 +84,10 @@ static test_stat_ty TestSchduler(void)
 
 /************************************************************************/
 	/* Test for SchedulerAdd  */
-	id2 = SchedulerAdd(new_Schduler, PrintMichael ,NULL ,1);
-	id1 = SchedulerAdd(new_Schduler, Printhellow ,NULL ,4);
 	
+	id1 = SchedulerAdd(new_Schduler, Printhello ,NULL ,2);
+	id1 = SchedulerAdd(new_Schduler, PrintMichael ,NULL ,2);
+	id3 = SchedulerAdd(new_Schduler, PrintMichael ,NULL ,2);
 	
 	if (0 == SchedulerIsEmpty(new_Schduler))
 	{
@@ -100,7 +102,7 @@ static test_stat_ty TestSchduler(void)
 	/************************************************************************/
 	/* Test for SchedulerSize  */
 	
-	if (2 == SchedulerSize(new_Schduler))
+	if (3 == SchedulerSize(new_Schduler))
 	{
 		puts("SchedulerSize" GREEN " SUCCESS"WHITE);
 	}
@@ -110,6 +112,19 @@ static test_stat_ty TestSchduler(void)
 		return TEST_FAIL;
 	}
 	
+	/************************************************************************/
+	/* Test for SchedulerRemove  */
+	SchedulerRemove(new_Schduler, id3);
+	
+	if (2 == SchedulerSize(new_Schduler))
+	{
+		puts("SchedulerRemove" GREEN " SUCCESS"WHITE);
+	}
+	else
+	{
+		puts("SchedulerRemove" RED " FAIL"WHITE);
+		return TEST_FAIL;
+	}
 	/************************************************************************/
 	/* Test for SchedulerRun  */
 	
@@ -125,27 +140,32 @@ static test_stat_ty TestSchduler(void)
 		return TEST_FAIL;
 	}
 	
-	
-
 	/************************************************************************/
-	/* Test for SchedulerRemove  */
+	/* Test for SchedulerClear  */
 	
-	SchedulerRemove(new_Schduler, id1);
+	SchedulerClear(new_Schduler);
 	
 	if (1 == SchedulerIsEmpty(new_Schduler))
 	{
-		puts("SchedulerRemove" GREEN " SUCCESS" WHITE);
+		puts("SchedulerClear" GREEN " SUCCESS" WHITE);
 	}
 	else
 	{
-		puts("SchedulerRemove " RED " FAIL");
+		puts("SchedulerClear " RED " FAIL");
 		return TEST_FAIL;
 	}
-	/************************************************************************/
-	/* Test for SchedulerStop */
-/*
 	
-	if (new_Schduler->should_run == 0)
+	/************************************************************************/
+	/* Test for SchedulerStop  */
+	
+	id1 = SchedulerAdd(new_Schduler, Printhello ,NULL ,2);
+	id1 = SchedulerAdd(new_Schduler, PrintMichael ,NULL ,2);
+	id1 = SchedulerAdd(new_Schduler, Stop, new_Schduler, 3);
+	id3 = SchedulerAdd(new_Schduler, PrintMichael ,NULL ,2);
+	
+	status = SchedulerRun(new_Schduler);
+	
+	if (STOPPED == status)
 	{
 		puts("SchedulerStop" GREEN " SUCCESS"WHITE);
 	}
@@ -154,70 +174,10 @@ static test_stat_ty TestSchduler(void)
 		puts("SchedulerStop" RED " FAIL"WHITE);
 		return TEST_FAIL;
 	}
-	
-	/************************************************************************/
-	/* Test for PQPeek */
-	
-/*	g = *((int *)PQPeek(new_pq));
-	
-	/*printf("%d\n", g);*/
-
-/*	if (4 == g)
-	{
-		puts("PQPeek" GREEN " SUCCESS" WHITE);
-	}
-	else
-	{
-		puts("PQPeek " RED " FAIL");
-		return TEST_FAIL;
-	}
-
-	/************************************************************************/
-	/* Test for PQClear */
-	
-/*	PQClear(new_pq);
-	
-	if (1 == PQIsEmpty(new_pq))
-	{
-		puts("PQClear" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("PQClear" RED " FAIL"WHITE);
-		return TEST_FAIL;
-	}
-	
-	PQEnqueue(new_pq, elem2);
-	PQEnqueue(new_pq, elem1);
-	PQEnqueue(new_pq, elem4);
-	PQEnqueue(new_pq, elem3);
-	PQEnqueue(new_pq, elem3);
-	
-	if (5 == PQSize(new_pq))
-	{
-		puts("PQSize" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("PQSize" RED " FAIL"WHITE);
-		return TEST_FAIL;
-	}
-	
-	
-	/************************************************************************/
-	/* Test for PQErase */
-/*	PQErase(new_pq, Match, elem3);
-	
-	if (4 == PQSize(new_pq))
-	{
-		puts("PQSize" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("PQSize" RED " FAIL"WHITE);
-		return TEST_FAIL;
-	}
-	PQDestroy(new_pq);
+/************************************************************************/
+	/* Test for SchedulerDestroy  */
+	SchedulerClear(new_Schduler);
+	SchedulerDestroy(new_Schduler);
 	/************************************************************************/
 		
 	return TEST_PASS;
@@ -258,27 +218,36 @@ int Match(const void *data1, void *data2)
 	return (*(int *)data2 == *(int *)data1);
 }
 
-int Printhellow()
+int Printhello()
 {
 	static int count = 3;
 	
-	puts("hellow");
+	puts("hello");
 	
 	--count;
 	
-	return !count == 0;
+	return !(count <= 0);
 }
 
 int PrintMichael()
 {
-	static int count = 2;
+	static int count = 4;
 	
 	puts("michael");
 	
 	--count;
 	
-	return !count == 0;
+	return !(count <= 0);
 }
+
+int Stop(void *data)
+{
+	printf("stop\n");
+	SchedulerStop((scheduler_ty *)data);
+	
+	return 0; 
+}
+
 
 
 
