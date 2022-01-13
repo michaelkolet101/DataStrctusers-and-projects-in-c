@@ -24,7 +24,7 @@ task_ty *TaskCreate(op_functask_ty op_func,
 					void *params,
 					time_t interval)
 {
-	time_t now = time(NULL);
+	time_t now = time(NULL); /*TODO do all the fails checks in first*/
 	
 	task_ty *new_task = (task_ty *)malloc(sizeof(task_ty));
 	ALLOC_CHK(new_task ,NULL, NULL);
@@ -41,7 +41,7 @@ task_ty *TaskCreate(op_functask_ty op_func,
 	new_task->time_interval = interval;
 	new_task->uid = SimpleUIDCreate();
 	
-	if (SimpleUIDCmp(new_task->uid, BadUID))
+	if (SimpleUIDCmp(new_task->uid, BadUID))/*TODO do all the fails checks in first*/
 	{
 		return NULL;
 		free(new_task);
@@ -55,8 +55,6 @@ void TaskDestroy(task_ty *task)
 	assert(task);
 	
 	free(task);
-	
-	task = NULL;
 }
 
 uid_ty TaskGetUid(const task_ty *task)
@@ -117,6 +115,6 @@ int TaskIsBefore(const task_ty *task1, const task_ty *task2)
 	assert(task1);
 	assert(task2);
 	
-	return TaskGetTime(task2) > TaskGetTime(task1);
+	return TaskGetTime(task2) > TaskGetTime(task1);/*TODO check the if why its work?*/
 }
 

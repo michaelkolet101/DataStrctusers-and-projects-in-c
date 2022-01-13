@@ -272,7 +272,6 @@ int SlistForEach(iterator_ty start,
 iterator_ty SlistFind(iterator_ty start, iterator_ty end, match_func_ty op_func,
 																    void *param)
 {
-	
 	int status = 0;
 	
 	assert(start);

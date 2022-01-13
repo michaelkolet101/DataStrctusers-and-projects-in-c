@@ -31,6 +31,8 @@ scheduler_ty *SchedulerCreate()
 	/* alloc memory for struct*/
 	scheduler_ty *new_scheduler = (scheduler_ty *)malloc(sizeof(scheduler_ty));
 	
+	/*TODO do all the fails checks in first*/
+	
 	/*check alloc */
 	ALLOC_CHK(new_scheduler, NULL, NULL);
 	
@@ -49,6 +51,7 @@ void SchedulerDestroy(scheduler_ty *scheduler)
 {
 	assert(scheduler);
 	assert(scheduler->pq);
+	assert(0 == scheduler->should_run);
 	
 	SchedulerClear(scheduler);
 	PQDestroy(scheduler->pq);
@@ -63,11 +66,9 @@ uid_ty SchedulerAdd(scheduler_ty *scheduler,
 					void *params,
 					time_t interval)
 {
-	
-	
 	task_ty *new_task = TaskCreate(sched_func, params, interval);
 	
-	if (new_task == NULL)
+	if (new_task == NULL) /*TODO it with macro*/
 	{
 		return BadUID;
 	}
@@ -190,6 +191,7 @@ void SchedulerClear(scheduler_ty *scheduler)
 
 /****************************************************************************/
 
+/*TODO change the func name*/
 int ConvertToNegetiv(const task_ty *task1, const task_ty *task2)
 {
 	assert(task1);

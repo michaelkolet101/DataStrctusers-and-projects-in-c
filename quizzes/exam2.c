@@ -7,29 +7,19 @@
 
 Node *flip(Node *head) 
 {
-	Node *current = head;
-	Node *next = head;
-	Node *prev = head;
-	
+	Node* current = head;
+    Node *prev = NULL, 
+    Node *next = NULL;
 	size_t count = 0;
 	
 	assert(head);
 	
-	while (slist->tail != current->next)
+	while (current)
 	{
-		++count;
-	}
-	
-	current = head;
-
-	
-	while (count - 1)
-	{
-		current = slower;
 		next = current->next;
-		current.slist_node->next = prev;
+		current->next = prev;
 		prev = current;	
-		--count;
+		current = next;
 	}	
 	
 	return current;
@@ -39,8 +29,18 @@ Node *flip(Node *head)
 /*******************************Answer 3 ***********************************/
 
 /*Any task that does not require going over the entire list will be in o(1)
-   else o(n)*/
+   else o(n)
    
+   Create o(1)
+   Destroy o(n)
+   
+   InsertBefore o(1)
+   Remove o(1)
+   GetData o(1)
+   SetData o(1)
+   Append o(1)
+   
+   Count o(n)
 /*******************************Answer 4 a***********************************/
 
 
@@ -396,6 +396,13 @@ int TheMissingNumber(int *arr)
 	return 1 /*for fail*/
 }
 
+
+/*********************************Answer 9 ********************************/
+
+
+
+
+
 /*********************************Answer 10 ********************************/
 
 typedef struct Queue
@@ -428,7 +435,7 @@ char *PopChar(Queue_ty *q)
 	
 	ret_val = q->m_queue[q->m_first_element];
 	
-	q->m_first_element +=1;
+	q->m_first_element += 1;
 	
 	q->m_elements_in_q -= 1;
 	
