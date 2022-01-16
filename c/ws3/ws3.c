@@ -41,7 +41,7 @@ int JosephusProblem(int len)
 	/*TO DO creat pointer with malloc and len*/
 	int *arr = malloc(len * sizeof(int));
 	int *start = arr;
-	int i;
+	int i = 0;
 	
 	/*TO DO name more suitable*/
 	int count = 0;
@@ -61,7 +61,7 @@ int JosephusProblem(int len)
 	
 		if (1 == arr[i] && (count == 1))
 		{
-			arr[i] = -1;
+			arr[i] = 0;
 			count = 0;
 			--remain;
 		}
@@ -97,7 +97,6 @@ static void printarry(int arr[], int len)
 	}
 	printf("\n");
 }
-
 
 /*print data types*/
 void DataTypes()

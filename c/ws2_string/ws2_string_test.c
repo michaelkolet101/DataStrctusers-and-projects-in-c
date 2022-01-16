@@ -34,7 +34,7 @@ void TestSevenBoom();
 
 int main(void)
 {
-	/*TestStrCmp(); 
+	TestStrCmp(); 
 	TestStrCpy();
 	TestStrnCpy();
 	test2StrCaseCmp();
@@ -45,7 +45,7 @@ int main(void)
 	TestStrSpn();
 	TestisPalindrome();
 	TestSpace();
-	TestLen();*/
+	TestLen();
 	TestSevenBoom();
 	
     return 0;
