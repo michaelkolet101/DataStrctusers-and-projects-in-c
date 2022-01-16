@@ -30,8 +30,8 @@ void *FSPoolAlloc(fsp_ty *fs_pool)
     1. Sets a pointer and compares it to NULL for the return value "ret val".
     2. Check if there is a space that can be allocated to the user.
     3. If yes then the pointer for the return value 
-                            will point to the fs_pool + OFFSETOF[next_to_free].
-    4. The next place to release will be the 
+                            will point to the (fs_pool + OFFSETOF)[next_to_free].
+    4. The next place to FREE will be the 
                             indexing dereference of what we send to the user.
     5. free_chunks -= 1.
     6. Returns to the user a pointer to the memory he requested.
