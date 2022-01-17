@@ -87,9 +87,9 @@ static test_stat_ty TestFS_Pool(void)
 	/************************************************************************/
 	/* Test for FSPoolCountFreeChunks  */
 	
-	printf("%d",FSPoolCountFreeChunks(new_pool));
 	
-	if (50 == FSPoolCountFreeChunks(new_pool))
+	
+	if (48 == FSPoolCountFreeChunks(new_pool))
 	{
 		puts("FSPoolCountFreeChunks" GREEN " SUCCESS"WHITE);
 	}
