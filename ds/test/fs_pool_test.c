@@ -43,7 +43,7 @@ static void Welcome();
 int main(void)
 {
 	/*Welcome();*/
-	printf("\nSchduler final test result: %s\n", TestFS_Pool()?RED"FAIL\n":GREEN"PASS\n"WHITE);
+	printf("\nfix size alocator final test result: %s\n", TestFS_Pool()?RED"FAIL\n":GREEN"PASS\n"WHITE);
 	
 	
 	return 0;
@@ -66,36 +66,36 @@ static test_stat_ty TestFS_Pool(void)
 	}
 	else
 	{
-		puts("\n Your Schduler is ready to use !!!\n");
+		puts("\n Your new_pool is ready to use !!!\n");
 	}
 
 /************************************************************************/
-	/* Test for SchedulerAdd  */
-/*	
-	id1 = SchedulerAdd(new_pool, Printhello ,NULL ,2);
-	id1 = SchedulerAdd(new_pool, PrintMichael ,NULL ,2);
-	id3 = SchedulerAdd(new_pool, PrintMichael ,NULL ,2);
+	/* Test for FSPoolCalcSize  */
 	
-	if (0 == SchedulerIsEmpty(new_pool))
+	/*printf("%d",FSPoolCalcSize(50, 10));*/
+	
+	if (508 == FSPoolCalcSize(50, 10))
 	{
-		puts("SchedulerAdd" GREEN " SUCCESS" WHITE);
+		puts("FSPoolCalcSize" GREEN " SUCCESS" WHITE);
 	}
 	else
 	{
-		puts("SchedulerAdd " RED " FAIL");
+		puts("FSPoolCalcSize " RED " FAIL");
 		return TEST_FAIL;
 	}
 	
 	/************************************************************************/
-	/* Test for SchedulerSize  */
-/*	
-	if (3 == SchedulerSize(new_pool))
+	/* Test for FSPoolCountFreeChunks  */
+	
+	printf("%d",FSPoolCountFreeChunks(new_pool));
+	
+	if (50 == FSPoolCountFreeChunks(new_pool))
 	{
-		puts("SchedulerSize" GREEN " SUCCESS"WHITE);
+		puts("FSPoolCountFreeChunks" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
-		puts("SchedulerSize" RED " FAIL"WHITE);
+		puts("FSPoolCountFreeChunks" RED " FAIL"WHITE);
 		return TEST_FAIL;
 	}
 	
