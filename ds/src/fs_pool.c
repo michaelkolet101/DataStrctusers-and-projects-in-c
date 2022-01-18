@@ -47,17 +47,9 @@ fsp_ty *FSPoolInit(void *memory, size_t memory_size, size_t chunk_size)
     return ret_val;
 }
 
-
-
-
-
-
-
-
-
 void *FSPoolAlloc(fsp_ty *fs_pool)
 {
-    char *ret_val = NULL;
+    char *tmp = (char *)fs_pool;
     
 	assert(fs_pool);
 
@@ -68,16 +60,16 @@ void *FSPoolAlloc(fsp_ty *fs_pool)
     }
     
 	/*  save freelist[first_blk] address in local temp var */
-    ret_val = fs_pool + fs_pool->first_block;
+    tmp = tmp + (char)fs_pool->first_block;
 	
 	/*  copy first_blk */
-    fs_pool->first_block = *(size_t *)ret_val;
-	
+	fs_pool->first_block = *(size_t *)tmp ;
+
 	/*  progression: first_blk = next */
 
 	/*  convert copy to pointer and return */
-	
-    return runner; 
+		
+    return tmp; 
 }
  
 void FSPoolFree(fsp_ty *fs_pool, void *chunk_to_free)
@@ -104,7 +96,7 @@ void FSPoolFree(fsp_ty *fs_pool, void *chunk_to_free)
 size_t FSPoolCountFreeChunks(fsp_ty *fs_pool)
 {
 	size_t count = 0;
-	size_t next_idx = 0;
+	size_t next_idx = 1;
 	char *current = NULL;
 
 	assert(fs_pool);
@@ -114,15 +106,16 @@ size_t FSPoolCountFreeChunks(fsp_ty *fs_pool)
 	current = (char *)fs_pool + next_idx;
 	
 /*  while temp isnt containing size_t max - dereference to that address */	
-	while (ULONG_MAX != *(size_t *)current)
+	while (ULONG_MAX != next_idx)
 	{
 		/*  prgression: save temp with current address data */
-		next_idx = *(size_t *)current;
-		current = (char *)fs_pool + next_idx;
 		
+		current = (char *)fs_pool + next_idx;
+		next_idx = *(size_t *)current;
 		/*  update counter */
 		++count;
 	}
+
 /*  when while ends, return count; */    
 	return count;
 }

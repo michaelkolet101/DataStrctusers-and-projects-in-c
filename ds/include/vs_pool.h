@@ -1,18 +1,30 @@
-
-#ifndef __FS_POOL_H__
-#define __FS_POOL_H__
-
+#ifndef __VS_POOL_H__
+#define __VS_POOL_H__
+/* ------------API Updates----------------
+    -Version 1.0:Approved by mentor (Edited by : Maoz Shechtman )
+*/
 #include <stddef.h> /*size_t*/
+typedef struct vs_pool vsp_ty;
+
+/*Notes:
+  Time Complexity :
+    */
+vsp_ty *VSPoolInit(void *memory ,size_t memory_size);
+
+/*Notes:
+  Time Complexity :
+    */
+void *VSPoolAlloc(vsp_ty *vs_pool, size_t chunk_size);
+
+/*Notes:
+  Time Complexity :
+    */
+void VSPoolFree(void *chunk_to_free);
+
+/*Notes:
+  Time Complexity :
+    */
+size_t VSPoolBiggestChunk(vsp_ty *vs_pool);
 
 
-fsp_ty *FSPoolInit(void *memory);
-
-void *VSPoolAlloc(fsp_ty *vs_pool);
-
-void VSPoolFree();
-
-size_t BigPiece(fsp_ty *vs_pool);
-
-
-
-#endif /*__FS_POOL_H__*/
+#endif /*--VS_POOL_H__*/

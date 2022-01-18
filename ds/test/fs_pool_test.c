@@ -42,7 +42,7 @@ static void Welcome();
 /******************************************************************************/
 int main(void)
 {
-	/*Welcome();*/
+	Welcome();
 	printf("\nfix size alocator final test result: %s\n", TestFS_Pool()?RED"FAIL\n":GREEN"PASS\n"WHITE);
 	
 	
@@ -52,6 +52,8 @@ int main(void)
 
 static test_stat_ty TestFS_Pool(void)
 {
+	
+	void *ptr = NULL;
 	
 	void *memory = malloc(500);
 	/* Test for create a FS_Pool */
@@ -88,8 +90,7 @@ static test_stat_ty TestFS_Pool(void)
 	/* Test for FSPoolCountFreeChunks  */
 	
 	
-	
-	if (48 == FSPoolCountFreeChunks(new_pool))
+	if (49 == FSPoolCountFreeChunks(new_pool))
 	{
 		puts("FSPoolCountFreeChunks" GREEN " SUCCESS"WHITE);
 	}
@@ -100,72 +101,33 @@ static test_stat_ty TestFS_Pool(void)
 	}
 	
 	/************************************************************************/
-	/* Test for SchedulerRemove  */
-/*	SchedulerRemove(new_pool, id3);
+	/* Test for FSPoolAlloc  */
+	ptr = FSPoolAlloc(new_pool);
 	
-	if (2 == SchedulerSize(new_pool))
+	if (48 == FSPoolCountFreeChunks(new_pool))
 	{
-		puts("SchedulerRemove" GREEN " SUCCESS"WHITE);
+		puts("FSPoolAlloc" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
-		puts("SchedulerRemove" RED " FAIL"WHITE);
+		puts("FSPoolAlloc" RED " FAIL"WHITE);
 		return TEST_FAIL;
 	}
 	/************************************************************************/
-	/* Test for SchedulerRun  */
+	/* Test for FSPoolFree  */
 	
-/*	status = SchedulerRun(new_pool);
+	FSPoolFree(new_pool, ptr);
 	
-	if (0 == status)
+	if (49 == FSPoolCountFreeChunks(new_pool))
 	{
-		puts("SchedulerRun" GREEN " SUCCESS"WHITE);
+		puts("FSPoolFree" GREEN " SUCCESS"WHITE);
 	}
 	else
 	{
-		puts("SchedulerRun" RED " FAIL"WHITE);
+		puts("FSPoolFree" RED " FAIL"WHITE);
 		return TEST_FAIL;
 	}
 	
-	/************************************************************************/
-	/* Test for SchedulerClear  */
-	
-/*	SchedulerClear(new_pool);
-	
-	if (1 == SchedulerIsEmpty(new_pool))
-	{
-		puts("SchedulerClear" GREEN " SUCCESS" WHITE);
-	}
-	else
-	{
-		puts("SchedulerClear " RED " FAIL");
-		return TEST_FAIL;
-	}
-	
-	/************************************************************************/
-	/* Test for SchedulerStop  */
-	
-/*	id1 = SchedulerAdd(new_pool, Printhello ,NULL ,2);
-	id1 = SchedulerAdd(new_pool, PrintMichael ,NULL ,2);
-	id1 = SchedulerAdd(new_pool, Stop, new_pool, 3);
-	id3 = SchedulerAdd(new_pool, PrintMichael ,NULL ,2);
-	
-	status = SchedulerRun(new_pool);
-	
-	if (STOPPED == status)
-	{
-		puts("SchedulerStop" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("SchedulerStop" RED " FAIL"WHITE);
-		return TEST_FAIL;
-	}
-/************************************************************************/
-	/* Test for SchedulerDestroy  */
-/*	SchedulerClear(new_pool);
-	SchedulerDestroy(new_pool);
-	/************************************************************************/
 		
 	return TEST_PASS;
 }	
