@@ -1,4 +1,11 @@
 
+
+
+struct vs_pool
+{
+	size_t memory_size;
+};
+
 vsp_ty *VSPoolInit(void *memory ,size_t memory_size)
 {
 /*
@@ -14,25 +21,24 @@ void *VSPoolAlloc(vsp_ty *vs_pool, size_t chunk_size)
 {
 	/*
 	1. Create a pointer to the pool.
-	2. Bring him to first place after the pool
-    3. Make a reference and check what is there
+	2. Word size alignment to chunk_size
     
+    while not end of memory
+    
+    3. Make a dereference and check what is there
+     
     4. If there is a number exactly the size of the memory the user wants
     5. 		We will make the content of the pointer to negative
-    6. 		We will add another one to the pointer and give it to the user
+    6. 		We will add ptrdiff to the pointer and give it to the user
     
-	7. If there is a negative number
-	8.		We will walk this number in its positive form and add one, 
-													to get to the next metadata
+	7. If there is a negative number or the number is smaller than the requested memory size
+	8.		We will walk to the next metadata
 													
-	9. If the number is smaller than the requested memory size
-	10.		We will walk the positive number of steps and another one to meta data
-	
 	11. If the size requested by the user is smaller than the size of the memory_size
-	12. Maintains the size of the chunk at tmp
+	12. save the size of the chunk at tmp var
 	13.		Changes the value of the pointer to the complete 
 										negative value that the user requested
-	14		Advances with the pointer the amount the user wanted and one more
+	14		Advances with the pointer the amount the user wanted and ptrdiff more
 	15 		Changes the value of the pointer to be equal to the temp less than
 					 the user requested
 	16 Return the pointer ret_val
@@ -60,3 +66,55 @@ size_t VSPoolBiggestChunk(vsp_ty *vs_pool)
 	7.	return max	
 	*/
 }
+
+static vsp_ty *NextChunk(vsp_ty *curr);
+{
+/*
+	1. Defines a ret pointer
+	2. Compares ret to the pointer we got
+	3. Adds him his value
+	4. Adds to it the size of the meta data
+	5. Returns it to the user
+*/
+}
+
+static ptrdiff GetChunkSize(vsp_ty *vs_pool)
+{
+	/*
+	1.Loop to the end of the array
+	2.Take the value of the pointer, make it an absolute value and add it to SUM
+	3.Advanced to the next meta-data
+	4.Exit the loop and return the SUM
+	*/
+}
+
+vsp_ty * MemoryIntegration(vsp_ty *first, vsp_ty *seconde)
+{
+/*
+1. The value of the first voter will be equal to the value of the first and another
+2. We will return the first pointer
+*/
+}
+
+void Defragment(vsp_ty *vs_pool)
+{
+/*
+1. We will run with the pointer we got until the end of the array
+2. If the first gunk is available and also the next after its
+3. Send them to MemoryIntegration()
+4. move on to the next meta-data
+
+*/
+}
+
+
+
+
+
+
+
+
+
+
+
+
