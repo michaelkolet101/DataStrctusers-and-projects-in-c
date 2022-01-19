@@ -37,8 +37,6 @@ static void Welcome();
 
 
 
-
-
 /******************************************************************************/
 int main(void)
 {
@@ -105,9 +103,11 @@ static test_stat_ty TestVS_Pool(void)
 	
 	/************************************************************************/
 	/* Test for VSPoolFree  */
-	VSPoolFree(ptr);
-/*	
-	if (500 == VSPoolCalcLargestChunk(new_pool))
+/*	VSPoolFree(ptr);
+	DefragmentIMP((ptrdiff_t *)new_pool);
+	
+	printf("%d\n", VSPoolCalcLargestChunk(new_pool));
+	if (VSPoolCalcLargestChunk(new_pool) == VSPoolCalcLargestChunk(new_pool))
 	{
 		puts("VSPoolFree" GREEN " SUCCESS"WHITE);
 	}
@@ -117,7 +117,7 @@ static test_stat_ty TestVS_Pool(void)
 		return TEST_FAIL;
 	}
 	/************************************************************************/
-
+	
 	free(new_pool);
 	
 	return TEST_PASS;

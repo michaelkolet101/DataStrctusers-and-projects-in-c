@@ -9,7 +9,7 @@
 struct vs_pool;
 
 
-static ptrdiff_t GetMetaDataIMP(void *data);
+static ptrdiff_t GetMetaDataIMP(ptrdiff_t *data);
 
 static void DefragmentIMP(ptrdiff_t *vs_pool);
 
@@ -28,6 +28,8 @@ static ptrdiff_t *OverSupplyIMP(ptrdiff_t *ptr_to_cunk, size_t size);
 static void *MemoryExactlyIMP(void *ptr_to_cunk);
 
 static ptrdiff_t *NextChunkIMP(ptrdiff_t *curr);
+
+static void SetChunkSizeIMP(ptrdiff_t *data, ptrdiff_t new_info);
 
 /****************************************************************/
 
@@ -70,7 +72,7 @@ void *VSPoolAlloc(vs_pool_ty *vs_pool, size_t chunk_size)
     while (*ptr_to_pool != END)
     {
     	/*  If there is a number exactly the size of the memory the user wants*/
-    	if (*ptr_to_pool == chunk_size)
+    	if (GetChunkSizeIMP(ptr_to_pool) == chunk_size)
     	{
     		ret_val = MemoryExactlyIMP(ptr_to_pool);
 			 
@@ -79,7 +81,7 @@ void *VSPoolAlloc(vs_pool_ty *vs_pool, size_t chunk_size)
     	
     	/* If there is a negative number or the number is smaller
     								 than the requested memory size*/
-		if ((*ptr_to_pool < 0) || (*ptr_to_pool < (ptrdiff_t)chunk_size))
+		if ((GetChunkSizeIMP(ptr_to_pool) < 0) || (GetChunkSizeIMP(ptr_to_pool) < 					(ptrdiff_t)chunk_size))
 		{
 			/*We will walk to the next metadata*/
 			ptr_to_pool = NextChunkIMP(ptr_to_pool);
@@ -87,7 +89,7 @@ void *VSPoolAlloc(vs_pool_ty *vs_pool, size_t chunk_size)
 		
     	/*If the size requested by the user is smaller than the
     								 size of the memory_size*/
-	 	if (*ptr_to_pool > chunk_size)
+	 	if (GetChunkSizeIMP(ptr_to_pool) > chunk_size)
 	 	{
 	 		ret_val =  (char *)ptr_to_pool + sizeof(ptrdiff_t);
 	 			
@@ -111,6 +113,7 @@ void VSPoolFree(void *chunk_to_free)
 	
 	/*Makes dereference and changes the value there from negative to positive*/
 	*(char *)chunk_to_free *= -1;
+	
 }
 
 /********************************************************/
@@ -129,7 +132,7 @@ size_t VSPoolCalcLargestChunk(vs_pool_ty *vs_pool)
 	while (*runner > END)
 	{
 		/*We will check if the value of a runner is greater than the max*/
-		if ((*runner) > max)
+		if ((GetChunkSizeIMP(runner)) > max)
 		{
 			/*If yes then max will be equal to the new value*/
 			max = *runner;
@@ -157,7 +160,7 @@ static ptrdiff_t *NextChunkIMP(ptrdiff_t *curr)
 	ret_val += sizeof(ptrdiff_t);
 	
 	/*. Adds to it the size of the meta data*/
-	ret_val = ret_val + tmp;
+	ret_val = ret_val + (char)tmp;
 	
 	/*. Returns it to the user*/
 	return ret_val;
@@ -167,21 +170,7 @@ static ptrdiff_t *NextChunkIMP(ptrdiff_t *curr)
 
 static ptrdiff_t GetChunkSizeIMP(ptrdiff_t *vs_pool)
 {
-	
-	ptrdiff_t sum = 0;
-	/*1.Loop to the end of the array*/
-	while (*vs_pool =! END)
-	{
-		/*2.Take the value of the pointer, make it an AbsoluteIMP value 
-												and add it to SUM*/
-		sum += AbsoluteIMP(vs_pool);
-		
-		/*3.Advanced to the next meta-data*/
-		vs_pool = NextChunkIMP(vs_pool);
-	}
-	
-	/*4.Exit the loop and return the SUM*/
-	return sum;
+	return *vs_pool;
 }
 
 /****************************************************/
@@ -190,7 +179,7 @@ static ptrdiff_t * MemoryIntegrationIMP(ptrdiff_t *first, ptrdiff_t *seconde)
 {
 /*
 1. The value of the first voter will be equal to the value of the first and another*/
-	*first = *first + *seconde;
+	*first = GetChunkSizeIMP(first) + GetChunkSizeIMP(seconde);
 /*2. We will return the first pointer*/
 	return first;
 }
@@ -200,10 +189,10 @@ static ptrdiff_t * MemoryIntegrationIMP(ptrdiff_t *first, ptrdiff_t *seconde)
 static void DefragmentIMP(ptrdiff_t *vs_pool)
 {
 /*1. We will run with the pointer we got until the end of the array*/
-	while (END != *vs_pool)
+	while (END != GetChunkSizeIMP(vs_pool))
 	{
 		/*2. If the first gunk is available and also the next after its*/
-		if ((0 < *vs_pool) && (0 < *NextChunkIMP(vs_pool)))
+		if ((0 < GetChunkSizeIMP(vs_pool)) && (0 < *NextChunkIMP(vs_pool)))
 		{
 			/*3. Send them to MemoryIntegrationIMP()*/
 			MemoryIntegrationIMP(vs_pool, NextChunkIMP(vs_pool));
@@ -243,9 +232,7 @@ void InitEndIMP(void *mem, size_t size)
 {
 	char *ptr = NULL;  
 	
-	ptr = (char *)mem + size;
-	
-	ptr -= sizeof(ptrdiff_t);
+	ptr = (char *)mem + size - sizeof(ptrdiff_t);
 	
 	*(ptrdiff_t *)ptr = END;
 }
@@ -257,7 +244,7 @@ static void *MemoryExactlyIMP(void *ptr_to_cunk)
 	ptrdiff_t *curr = (ptrdiff_t *)ptr_to_cunk;
 	
 	/*We will make the content of the pointer to negative*/
-	*curr= -(*curr);
+	SetChunkSizeIMP(curr, (GetChunkSizeIMP(curr) * (-1)));
 	
 	/* We will add ptrdiff to the pointer and give it to the user*/
 	curr = curr + sizeof(ptrdiff_t);
@@ -270,36 +257,46 @@ static void *MemoryExactlyIMP(void *ptr_to_cunk)
 static ptrdiff_t *OverSupplyIMP(ptrdiff_t *ptr_to_cunk, size_t size)
 {
 	/*save the size of the chunk at tmp var*/
-	ptrdiff_t tmp = *ptr_to_cunk - (ptrdiff_t)size;
+	ptrdiff_t tmp = GetChunkSizeIMP(ptr_to_cunk) - (ptrdiff_t)size;
 	char *ret = NULL; 
-	/*Changes the value of the pointer to the complete 
-									negative value that the user requested*/
-	
 	ret = (char *)ptr_to_cunk + sizeof(ptrdiff_t);
 	
-	*ptr_to_cunk = -size;
+	/*Changes the value of the pointer to the complete 
+									negative value that the user requested*/
+	SetChunkSizeIMP(ptr_to_cunk, (size * -1));
 	
 	/*Advances with the pointer the amount the user wanted and ptrdiff more*/
 	ptr_to_cunk = NextChunkIMP(ptr_to_cunk);
 	
-	/*Changes the value of the pointer to be equal to the temp less than
+	/*Changes the value of the pointer to be equal to the tmp less than
 												 the user requested*/
-	*ptr_to_cunk = tmp;
+	SetChunkSizeIMP(ptr_to_cunk, tmp);
 	
 	return (ptrdiff_t *)ret;
 }
 
-static ptrdiff_t GetMetaDataIMP(void *data)
+static ptrdiff_t GetMetaDataIMP(ptrdiff_t *data)
 {
 	/*Sets a pointer to a char*/
 	char *curr = NULL;
+	
 	/*Makes him point to the address we got*/
 	curr = (char *)data;
+	
 	/*Going back makes a dereference and returns to the user*/
 	curr = curr - sizeof(ptrdiff_t);
 	
 	return *curr;
 }
+
+static void SetChunkSizeIMP(ptrdiff_t *data, ptrdiff_t new_info)
+{
+/*Put the new value inside the pointer*/
+	*data = new_info;
+}
+
+
+
 
 
 
