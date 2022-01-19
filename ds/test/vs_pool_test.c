@@ -42,7 +42,7 @@ static void Welcome();
 /******************************************************************************/
 int main(void)
 {
-	Welcome();
+	/*Welcome();*/
 	printf("\nVS_Pool alocator final test result: %s\n", TestVS_Pool()?RED"FAIL\n":GREEN"PASS\n"WHITE);
 	
 	
@@ -58,7 +58,7 @@ static test_stat_ty TestVS_Pool(void)
 	void *memory = malloc(500);
 	/* Test for create a FS_Pool */
 	
-	vsp_ty *new_pool = VSPoolInit(memory, 500);
+	vs_pool_ty *new_pool = VSPoolInit(memory, 500);
 	
 	if(NULL == new_pool)
 	{
@@ -70,65 +70,56 @@ static test_stat_ty TestVS_Pool(void)
 	{
 		puts("\n Your new_pool is ready to use !!!\n");
 	}
+	
+	
+/*************1***********************************************************/
+	/* Test for VSPoolAlloc  */
+	
+	ptr = VSPoolAlloc(new_pool, 10);
+	
+	
+	
+	if (NULL != ptr)
+	{
+		puts("VSPoolAlloc" GREEN " SUCCESS" WHITE);
+	}
+	else
+	{
+		puts("VSPoolAlloc " RED " FAIL");
+		return TEST_FAIL;
+	}
+	
+	/************************************************************************/
+	/* Test for VSPoolCalcLargestChunk  */
+	
+	
+	if (484 == VSPoolCalcLargestChunk(new_pool))
+	{
+		puts("VSPoolCalcLargestChunk" GREEN " SUCCESS"WHITE);
+	}
+	else
+	{
+		puts("VSPoolCalcLargestChunk" RED " FAIL"WHITE);
+		return TEST_FAIL;
+	}
+	
+	/************************************************************************/
+	/* Test for VSPoolFree  */
+	VSPoolFree(ptr);
+/*	
+	if (500 == VSPoolCalcLargestChunk(new_pool))
+	{
+		puts("VSPoolFree" GREEN " SUCCESS"WHITE);
+	}
+	else
+	{
+		puts("VSPoolFree" RED " FAIL"WHITE);
+		return TEST_FAIL;
+	}
+	/************************************************************************/
 
-/************************************************************************/
-	/* Test for FSPoolCalcSize  */
+	free(new_pool);
 	
-	/*printf("%d",FSPoolCalcSize(50, 10));*/
-/*	
-	if (508 == FSPoolCalcSize(50, 10))
-	{
-		puts("FSPoolCalcSize" GREEN " SUCCESS" WHITE);
-	}
-	else
-	{
-		puts("FSPoolCalcSize " RED " FAIL");
-		return TEST_FAIL;
-	}
-	
-	/************************************************************************/
-	/* Test for FSPoolCountFreeChunks  */
-	
-/*	
-	if (49 == FSPoolCountFreeChunks(new_pool))
-	{
-		puts("FSPoolCountFreeChunks" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("FSPoolCountFreeChunks" RED " FAIL"WHITE);
-		return TEST_FAIL;
-	}
-	
-	/************************************************************************/
-	/* Test for FSPoolAlloc  */
-/*	ptr = FSPoolAlloc(new_pool);
-	
-	if (48 == FSPoolCountFreeChunks(new_pool))
-	{
-		puts("FSPoolAlloc" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("FSPoolAlloc" RED " FAIL"WHITE);
-		return TEST_FAIL;
-	}
-	/************************************************************************/
-	/* Test for FSPoolFree  */
-/*
-	FSPoolFree(new_pool, ptr);
-	
-	if (49 == FSPoolCountFreeChunks(new_pool))
-	{
-		puts("FSPoolFree" GREEN " SUCCESS"WHITE);
-	}
-	else
-	{
-		puts("FSPoolFree" RED " FAIL"WHITE);
-		return TEST_FAIL;
-	}
-	
-*/		
 	return TEST_PASS;
 }	
 
