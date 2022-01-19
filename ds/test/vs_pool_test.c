@@ -1,9 +1,14 @@
 
+#include <unistd.h>/* sleep */
 #include <stdio.h> /* printf */
 #include <stdlib.h>
 #include <stddef.h> /* size_t*/
 
-#include "fs_pool.h" 
+#include <time.h> /*time_t*/
+#include <sys/types.h>
+
+
+#include "vs_pool.h" 
 #include "utils.h" 
 
 
@@ -23,7 +28,7 @@ typedef enum test_stat
 
 /**********************************Declarations********************************/
 
-static test_stat_ty TestFS_Pool(void);
+static test_stat_ty TestVS_Pool(void);
 
 
 static void Welcome();
@@ -38,14 +43,14 @@ static void Welcome();
 int main(void)
 {
 	Welcome();
-	printf("\nfix size alocator final test result: %s\n", TestFS_Pool()?RED"FAIL\n":GREEN"PASS\n"WHITE);
+	printf("\nVS_Pool alocator final test result: %s\n", TestVS_Pool()?RED"FAIL\n":GREEN"PASS\n"WHITE);
 	
 	
 	return 0;
 }
 /**********************************Definitions*********************************/
 
-static test_stat_ty TestFS_Pool(void)
+static test_stat_ty TestVS_Pool(void)
 {
 	
 	void *ptr = NULL;
@@ -53,11 +58,11 @@ static test_stat_ty TestFS_Pool(void)
 	void *memory = malloc(500);
 	/* Test for create a FS_Pool */
 	
-	fsp_ty *new_pool = FSPoolInit(memory, 500, 10);
+	vsp_ty *new_pool = VSPoolInit(memory, 500);
 	
 	if(NULL == new_pool)
 	{
-		puts("Failed to create a Schduler");
+		puts("Failed to create a VS_Pool");
 		
 		return TEST_FAIL;
 	}
@@ -70,7 +75,7 @@ static test_stat_ty TestFS_Pool(void)
 	/* Test for FSPoolCalcSize  */
 	
 	/*printf("%d",FSPoolCalcSize(50, 10));*/
-	
+/*	
 	if (508 == FSPoolCalcSize(50, 10))
 	{
 		puts("FSPoolCalcSize" GREEN " SUCCESS" WHITE);
@@ -84,7 +89,7 @@ static test_stat_ty TestFS_Pool(void)
 	/************************************************************************/
 	/* Test for FSPoolCountFreeChunks  */
 	
-	
+/*	
 	if (49 == FSPoolCountFreeChunks(new_pool))
 	{
 		puts("FSPoolCountFreeChunks" GREEN " SUCCESS"WHITE);
@@ -97,7 +102,7 @@ static test_stat_ty TestFS_Pool(void)
 	
 	/************************************************************************/
 	/* Test for FSPoolAlloc  */
-	ptr = FSPoolAlloc(new_pool);
+/*	ptr = FSPoolAlloc(new_pool);
 	
 	if (48 == FSPoolCountFreeChunks(new_pool))
 	{
@@ -110,7 +115,7 @@ static test_stat_ty TestFS_Pool(void)
 	}
 	/************************************************************************/
 	/* Test for FSPoolFree  */
-	
+/*
 	FSPoolFree(new_pool, ptr);
 	
 	if (49 == FSPoolCountFreeChunks(new_pool))
@@ -123,7 +128,7 @@ static test_stat_ty TestFS_Pool(void)
 		return TEST_FAIL;
 	}
 	
-		
+*/		
 	return TEST_PASS;
 }	
 

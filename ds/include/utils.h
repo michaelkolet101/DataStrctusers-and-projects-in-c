@@ -38,6 +38,8 @@
 #define MAX2(x, y) (x > y ? x : y) 
 #define MIN2(x ,y) (x < y ? x : y)
 
+#define END ULONG_MAX
+#define WORD 8
 
 #define RESET   "\033[0m" 	/*	Reset Color */
 #define BLACK   "\033[30m"      /* Black */
