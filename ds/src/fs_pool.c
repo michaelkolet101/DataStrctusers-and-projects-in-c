@@ -1,21 +1,29 @@
-#include<assert.h>
+#include<assert.h>	/* ALEX: ASSERT.H ETC.*/
 #include<stddef.h>
 #include<limits.h>
-#include <stdio.h>
+/* ALEX: SHOULD LEAVE A LINE BETWEEN GENERAL AND LOCAL LIBRARIES   */
+#include <stdio.h>	/* ALEX: WHY IS THIS NEEDED? */
 #include "fs_pool.h"
+
+#ifndef NDEBUG
+	#define DEBUG_ONLY(exp) exp;
+#else
+	#define DEBUG_ONLY(exp) 
+#endif
+/******************************************************************************/
 
 static size_t RoundUp(size_t mem_size, size_t chunk_size);
 
 
 struct fixed_size_pool
 {
-    size_t first_block;
+    size_t first_block;	/* ALEX: WHAT ABOUT DEBUG_ONLY pool_size? */
 };
 
 
 
 
-
+/******************************************************************************/
 
 
 fsp_ty *FSPoolInit(void *memory, size_t memory_size, size_t chunk_size)
@@ -27,7 +35,7 @@ fsp_ty *FSPoolInit(void *memory, size_t memory_size, size_t chunk_size)
     char *end = (char *)memory -(memory_size % chunk_size) + memory_size - chunk_size; 
     
     assert(memory);
-    assert(2 * chunk_size < mem_size);
+    /*assert(2 * chunk_size < mem_size);*/	
     assert(sizeof(size_t) <= chunk_size);
     
     ret_val->first_block = RoundUp(sizeof(fsp_ty), chunk_size);
@@ -54,7 +62,8 @@ void *FSPoolAlloc(fsp_ty *fs_pool)
 	assert(fs_pool);
 
 	/*  handle empty freelist */	
-    if (0 == FSPoolCountFreeChunks(fs_pool))
+    if (0 == FSPoolCountFreeChunks(fs_pool))	/* ALEX:  'FSPoolCountFreeChunks' IS AN O(n) FUNCTION, WHY USE IT HERE?
+    											 IT IS LIKE USING Size INSTEAD OF IsEmpty, YOU COULD JUST USE (ULONG_MAX == fs_pool->first_block) */
     {
         return NULL;
     }
@@ -81,8 +90,8 @@ void FSPoolFree(fsp_ty *fs_pool, void *chunk_to_free)
     assert(chunk_to_free);
     /*  assert given pointer is part of the pool"
     chunk >= freelist && chunk <= (char *)freelist + pool_size  */
-    assert((chunk_to_free >= fs_pool) && ((char *)chunk_to_free <=
-                                     (char *)(fs_pool + fs_pool->first_block)));
+   /* assert((chunk_to_free >= fs_pool) && ((char *)chunk_to_free <=
+                                     (char *)(fs_pool + fs_pool->first_block)));*/
  	
  	/* copy first_blk into chunk */
  	index = (char *)chunk_to_free - (char *)fs_pool;
@@ -136,19 +145,13 @@ the pointer (offset until pointer) */
 
 static size_t RoundUp(size_t mem_size, size_t chunk_size)
 {
-	while (0 != (mem_size % chunk_size))
+	while (0 != (mem_size % chunk_size)) /* ALEX: NOT SURE YOU NEED 'WHILE' HERE, IT IS A MATTER OF A SIMPLE IF AND A LITTLE CALCULATION */
 	{
 		++mem_size; 
 	}    
        
     return mem_size;
 }
-
-
-
-
-
-
 
 
 
