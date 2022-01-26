@@ -2,6 +2,21 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+size_t SumOfArry(size_t *arr, size_t size);
+size_t SumMissingElements(size_t *arr, size_t size, size_t num_of_missing);
+size_t GetAvg(size_t sum, size_t count);
+size_t FindMissingElements(size_t *arr, size_t size);
+size_t IsInArr(size_t *arr, size_t size, size_t num_to_find);
+
+int main ()
+{
+	size_t arr[] = {1,3,4,5,7};
+	size_t size = 5;
+	
+	FindMissingElements(arr, size);
+	printf("%ld\n", IsInArr(arr, size, 8 ));
+	return 0;
+}
 
 
 size_t SumOfArry(size_t *arr, size_t size)
@@ -15,8 +30,6 @@ size_t SumOfArry(size_t *arr, size_t size)
 	
 	return sum;
 }
-
-
 
 size_t SumMissingElements(size_t *arr, size_t size, size_t num_of_missing)
 {
@@ -57,12 +70,14 @@ size_t FindMissingElements(size_t *arr, size_t size)
 	return 1;
 }
 
-int main ()
+size_t IsInArr(size_t *arr, size_t size, size_t num_to_find)
 {
-	size_t arr[] = {1,3,4,5,7};
-	size_t size = 5;
+	size_t i = 0;
+	size_t ret_val = 0;
+	for (i = 0; i < size; ++i)
+	{
+		ret_val += !(arr[i]^num_to_find);
+	}
 	
-	FindMissingElements(arr, size);
-	
-	return 0;
+	return ret_val;
 }
