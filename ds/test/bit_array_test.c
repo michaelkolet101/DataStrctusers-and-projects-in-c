@@ -1,6 +1,6 @@
 #include <stdio.h>/*printf*/
 #include <stdlib.h>/*sprintf*/
-
+/* */
 #include "bit_arry.h"
 
 /*****************************************************************************/
