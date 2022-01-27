@@ -14,7 +14,7 @@ int main ()
 	size_t size = 5;
 	
 	FindMissingElements(arr, size);
-	printf("%ld\n", IsInArr(arr, size, 8 ));
+	printf("%ld\n", IsInArr(arr, size, 4 ));
 	return 0;
 }
 

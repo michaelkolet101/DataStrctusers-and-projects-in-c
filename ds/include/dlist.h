@@ -15,13 +15,13 @@
 #define __DLIST_H__
 
 #include <stddef.h> /*size_t*/
-
+/*
 #ifndef NDEBUG
 	#define DEBUG_ONLY(exp) exp;
 #else
 	#define DEBUG_ONLY(exp) 
 #endif
-
+*/
 
 
 typedef struct dlist dlist_ty;
@@ -33,7 +33,7 @@ typedef struct iterator iterator_ty;
 struct iterator
 {
 	node_ty *dlist_node;
-	DEBUG_ONLY(dlist_ty *list)
+	/*DEBUG_ONLY(dlist_ty *list)*/
 };
 
 /*DlistForEach && DlistFind & DlistMultiFind*/

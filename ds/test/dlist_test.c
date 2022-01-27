@@ -19,7 +19,7 @@ typedef enum test_stat
 static void Welcome();
 
 /*Service functions*/
-static test_stat_ty TestSortList(void);
+static test_stat_ty TestDlist(void);
 int IsMatch(const void *data, void *param);
 
 
@@ -29,7 +29,7 @@ int main(void)
 {
 	
 	/*Welcome();*/
-	printf("\nDLIST final test result: %s\n", TestSortList()?RED"FAIL\n":GREEN"PASS\n");
+	printf("\nDLIST final test result: %s\n", TestDlist()?RED"FAIL\n":GREEN"PASS\n");
 	
 	return 0;
 }
@@ -69,7 +69,7 @@ static test_stat_ty TestDlist(void)
 
 /************************************************************************/
 	/* Test for DlistSize  */
-/*	
+	
 	if (0 == DlistSize(p_dlist))
 	{
 		puts("DlistSize" GREEN " SUCCESS" WHITE);
@@ -84,7 +84,7 @@ static test_stat_ty TestDlist(void)
 	
 	/************************************************************************/
 	/* Test for DlistIsEmpty  */
-/*	
+	
 	if (1 == DlistIsEmpty(p_dlist))
 	{
 		puts("DlistIsEmpty" GREEN " SUCCESS"WHITE);
@@ -99,7 +99,7 @@ static test_stat_ty TestDlist(void)
 	
 	/************************************************************************/
 	/* Test for DlistPushFront  */
-/*	
+	
 	DlistPushFront(p_dlist, elem );
 	DlistPushFront(p_dlist, elem1);
 	DlistPushFront(p_dlist, num_to_find);

@@ -139,7 +139,7 @@ iterator_ty DlistBegin(const dlist_ty *dlist)
 
 	iter.dlist_node = dlist -> head -> next;
 	
-	DEBUG_ONLY(iter.list = (dlist_ty *)dlist);
+	/*DEBUG_ONLY(iter.list = (dlist_ty *)dlist);*/
 	
 	return iter;
 }
@@ -156,7 +156,7 @@ iterator_ty DlistEnd(const dlist_ty *dlist)
 	iter.dlist_node = dlist->tail;
 	
 	/*DEBUG_ONLY */
-	DEBUG_ONLY(iter->list = (dlist_ty *)dlist);
+	/*DEBUG_ONLY(iter->list = (dlist_ty *)dlist);*/
 	
 	return iter;
 }
@@ -174,7 +174,7 @@ iterator_ty DlistNext(iterator_ty current)
 	iterator_to_next.dlist_node = iterator_to_next.dlist_node->next;
 	
 	/*	assigning iterator with next address and dlist (in debug mode) */
-	DEBUG_ONLY(next->list = iterator_to_next->list);
+	/*DEBUG_ONLY(next->list = iterator_to_next->list);*/
 	 
 	return iterator_to_next;
 }
@@ -190,7 +190,7 @@ iterator_ty DlistPrev(iterator_ty current)
 	iterator_to_back.dlist_node = iterator_to_back.dlist_node->prev;
 	
 		/*assigning iterator with next address and dlist (in debug mode) */
-	DEBUG_ONLY(back->list = iterator_to_back->list);
+	/*DEBUG_ONLY(back->list = iterator_to_back->list);*/
 	 
 	return iterator_to_back;
 }
@@ -470,6 +470,7 @@ static int IsDummy(iterator_ty iterator)
 	return (iterator.dlist_node -> next == NULL || 
 								iterator.dlist_node -> prev == NULL);
 }
+
 
 
 
