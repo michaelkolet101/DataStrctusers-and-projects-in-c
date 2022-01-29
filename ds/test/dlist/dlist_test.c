@@ -2,7 +2,7 @@
 #include <stddef.h> /* size_t*/
 #include <unistd.h>/* sleep */
 
-#include "sorted_list.h"
+#include "dlist.h"
 #include "utils.h"
 
 #define SUCCESS 0
