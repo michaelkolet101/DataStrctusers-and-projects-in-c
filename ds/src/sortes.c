@@ -25,6 +25,19 @@ void SelectionSort(size_t *arr, size_t size)
 /*Increases IDX*/
 
 }
+
+void InsertionSort(size_t *arr, size_t size)
+{
+	/*Defines variables i tmp current prev*/
+	/*A loop that ran from first place in the array to size*/
+	/*Checks if current is smaller than prev*/
+	/*Copies current to tmp*/
+	/*As long as the value in prev is greater than tmp*/
+	/*Passes the value in prev to current*/
+	/*current minus one*/
+	/*Exits the loop and copies the tmp into the current*/
+}
+
 size_t GetMinimum(size_t first, size_t second)
 {
 /*ruturn thr nim number*/
