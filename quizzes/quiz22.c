@@ -1,9 +1,14 @@
 #include<stdio.h>
 #include<string.h>
 
-
+int Increment(int num);
 int Atoi(char *string);
 int ChToNum(char ch);
+
+
+
+
+
 
 
 int main()
@@ -12,6 +17,9 @@ int main()
     int num = 0;
 
     num = Atoi(str);
+
+    num = Increment(num);
+
     printf("%d\n", num);
     
     return 0;
@@ -38,10 +46,12 @@ int ChToNum(char ch)
 }
 
 
+int Increment(int num)
+{
+    num =-~num;
 
-
-
-
+    return num;
+}
 
 
 
