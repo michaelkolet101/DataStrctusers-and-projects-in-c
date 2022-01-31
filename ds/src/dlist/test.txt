@@ -1,0 +1,10 @@
+
+ Your dlist is ready to use !!!
+
+DlistSize[32m SUCCESS[37m
+DlistIsEmpty[32m SUCCESS[37m
+DlistPushFront[32m SUCCESS[37m
+DlistPushFront[32m SUCCESS[37m
+
+DLIST final test result: [32mPASS
+

@@ -7,4 +7,6 @@
 !*.hpp
 !*.md
 !*.sh
+!*makefile
+!*.txt
 
