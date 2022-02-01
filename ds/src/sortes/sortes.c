@@ -3,9 +3,12 @@
 #include <stdio.h>
 
 
+/*1 if first is minimum*/
+int IsMinimum(int first, int second);
 
-int GetMinimum(int first, int second);
-int MinOfArr(int *arr, int size);
+/*return pointer to the minimum of arr*/
+int *MinOfArr(int *arr, int size, int *ret_val)
+
 void Swap(int *first, int *second);
 
 
@@ -56,14 +59,14 @@ void InsertionSort(size_t *arr, size_t size)
 }
 
 
-int GetMinimum(int first, int second)
+int IsMinimum(int first, int second)
 {
-	/*ruturn thr nim number*/
-	return first > second ? second : first;
+	/*chack if the first is minimum and return*/
+	return first < second ? 1 : 0;
 }
 
 
-int MinOfArr(int *arr, int size)
+int *MinOfArr(int *arr, int size, int *ret_val)
 {
 	/*def Min -> arr first place*/
 	int min = *arr;
@@ -82,13 +85,14 @@ int MinOfArr(int *arr, int size)
 		{
 			/*If yes we will update Min and idx*/
 			min = *arr;
+			ret_val = arr;
 		}
 		
 		++arr;
 	}
 	
 	/*return idx*/
-	return min;
+	return ret_val;
 }
 
 void Swap(int *first, int *second)
