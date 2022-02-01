@@ -11,27 +11,28 @@ void Swap(int *first, int *second);
 
 void BubbleSort(size_t *arr, size_t size)
 {
-/*We will define a variable is sorted*/
+/*We will define a variable is sorted - flag*/
 
-/*We will define I*/
+/*We will define end, current and next as pointers*/
 
-/* LOOP As long as the array is not sorted*/
+/* LOOP As long as the array is not sorted -> flag = 0*/
 
-/*A loop that runs through the entire array from 1*/
+/*while loop until next = end*/
 
-/*If the current index is the minimum or idx -1 
- if our idx then we will switch between them */
+/*If next < current, will switch between them and flag = 1 */
 }
 
 void SelectionSort(size_t *arr, size_t size)
 {
-/*def idx 0*/
+/*def minimum ,start and end  as pointers */
 
-/*loop while idx < s	ize*/
+/*loop while start not end*/
 
-/*The SWAP function sends what is obtained to MINOFARR and IDX*/
+/*find minimum, use the function for it*/
 
-/*Increases IDX*/
+/*swap minimum and start*/
+
+/*Increases start*/
 
 }
 
