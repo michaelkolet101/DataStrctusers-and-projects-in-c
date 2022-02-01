@@ -38,13 +38,20 @@ void SelectionSort(size_t *arr, size_t size)
 
 void InsertionSort(size_t *arr, size_t size)
 {
-	/*Defines variables i tmp current prev*/
-	/*A loop that ran from first place in the array to size*/
+	/*Defines variables tmp ,current end  prev as pointers*/
+	
+	/*A loop while current not end*/
+	
 	/*Checks if current is smaller than prev*/
+	
 	/*Copies current to tmp*/
+	
 	/*As long as the value in prev is greater than tmp*/
+	
 	/*Passes the value in prev to current*/
 	/*current minus one*/
+	/*prev minus one*/
+	
 	/*Exits the loop and copies the tmp into the current*/
 }
 
