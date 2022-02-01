@@ -14,27 +14,34 @@ void Swap(int *first, int *second);
 
 void BubbleSort(int *arr, int size)
 {
+	
 	/*We will define a variable is sorted - flag*/
-	int is_sorted = 1;
+	int is_sorted = 0;
 
 	/*We will define end, current and next as pointers*/
-	int *current = arr;
-	int *next = arr + 1;
+	int *current = NULL;
+	int *next = NULL;
 	int *end = arr + size;
 
 	/* LOOP As long as the array is not sorted -> flag = 0*/
 	while (0 == is_sorted)
 	{
 		is_sorted = 1;
+		current = arr;
+		next = current + 1;
+
 		/*while loop until next = end*/
-		while (next != end)
+		while (current != (end - 1))
 		{
 			/*If next < current, will switch between them and flag = 0 */
-			if (IsMinimum(*next, *current))
+			if (1 == IsMinimum(*next, *current))
 			{
 				Swap(next, current);
 				is_sorted = 0;
 			}
+		
+			++next;
+			++current;	
 		}
 	}
 	
