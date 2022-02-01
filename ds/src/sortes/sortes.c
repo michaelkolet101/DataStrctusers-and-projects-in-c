@@ -7,25 +7,43 @@
 int IsMinimum(int first, int second);
 
 /*return pointer to the minimum of arr*/
-int *MinOfArr(int *arr, int size, int *ret_val)
+int *MinOfArr(int *arr, int size, int *ret_val);
 
 void Swap(int *first, int *second);
 
 
-void BubbleSort(size_t *arr, size_t size)
+void BubbleSort(int *arr, int size)
 {
-/*We will define a variable is sorted - flag*/
+	/*We will define a variable is sorted - flag*/
+	int is_sorted = 1;
 
-/*We will define end, current and next as pointers*/
+	/*We will define end, current and next as pointers*/
+	int *current = arr;
+	int *next = arr + 1;
+	int *end = arr + size;
 
-/* LOOP As long as the array is not sorted -> flag = 0*/
+	/* LOOP As long as the array is not sorted -> flag = 0*/
+	while (0 == is_sorted)
+	{
+		is_sorted = 1;
+		/*while loop until next = end*/
+		while (next != end)
+		{
+			/*If next < current, will switch between them and flag = 0 */
+			if (IsMinimum(*next, *current))
+			{
+				Swap(next, current);
+				is_sorted = 0;
+			}
+		}
+	}
+	
 
-/*while loop until next = end*/
 
-/*If next < current, will switch between them and flag = 1 */
+
 }
 
-void SelectionSort(size_t *arr, size_t size)
+void SelectionSort(int *arr, int size)
 {
 /*def minimum ,start and end  as pointers */
 
@@ -36,26 +54,28 @@ void SelectionSort(size_t *arr, size_t size)
 /*swap minimum and start*/
 
 /*Increases start*/
-
+;
 }
 
-void InsertionSort(size_t *arr, size_t size)
+void InsertionSort(int *arr, int size)
 {
 	/*Defines variables tmp ,current end  prev as pointers*/
 	
 	/*A loop while current not end*/
 	
-	/*Checks if current is smaller than prev*/
-	
-	/*Copies current to tmp*/
-	
-	/*As long as the value in prev is greater than tmp*/
-	
-	/*Passes the value in prev to current*/
-	/*current minus one*/
-	/*prev minus one*/
-	
-	/*Exits the loop and copies the tmp into the current*/
+		/*Checks if current is smaller than prev*/
+		
+			/*Copies current to tmp*/
+		
+			/*loop As long as the value in prev is greater than tmp*/
+			
+				/*Passes the value in prev to current*/
+			
+				/*current minus one*/
+			
+				/*prev minus one*/
+;			
+		/*Exits the loop and copies the tmp into the current*/
 }
 
 
@@ -73,8 +93,6 @@ int *MinOfArr(int *arr, int size, int *ret_val)
 	int *end = arr + size;
 	
 	/*def idx = 0*/
-	
-	int *ret_val = NULL;
 	
 	/* loop from 1 to size*/
 	while (arr != end)

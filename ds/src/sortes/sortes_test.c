@@ -51,41 +51,19 @@ static test_stat_ty Testsortes(void)
 {
 	
 	int arr[] = {4, 6, 8, 7, 2};
-	
-	
-	printf("%d\n",GetMinimum(5,3));	
-	
-	printf("%d\n",MinOfArr(arr, 5));
-	/*if(NULL == new_pool)
+	int size = 5, i = 0;
+
+	BubbleSort(arr, size);
+
+	for ( i = 0; i < size; ++i)
 	{
-		puts("Failed to create a sortes");
-		
-		return TEST_FAIL;
-	}
-	else
-	{
-		puts("\n Your new_pool is ready to use !!!\n");
+		printf("%d ,",arr[i]);
 	}
 	
-	
+
+
 /*************1***********************************************************/
-	/* Test for VSPoolAlloc  */
-	/*
-	ptr = VSPoolAlloc(new_pool, 10);
-	
-	
-	
-	if (NULL != ptr)
-	{
-		puts("VSPoolAlloc" GREEN " SUCCESS" WHITE);
-	}
-	else
-	{
-		puts("VSPoolAlloc " RED " FAIL");
-		return TEST_FAIL;
-	}
-	
-	*/
+
 	return TEST_PASS;
 }	
 
