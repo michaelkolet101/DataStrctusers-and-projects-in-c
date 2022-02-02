@@ -1,58 +1,57 @@
-NAME = $(notdir $(PWD))
+INCL := -I../../include/
+LIBPATH = ../../lib/
+CC := gcc
+CFLAGS  := -ansi -pedantic-errors -Wall -Wextra -g -fpic
+CPPFLAGS := $(INCL)
+LDFLAGS= -lm
+VPATH = ../src ../../test ../../include ../../include/utils $(LIBPATH)
+ARCH = $(LIBPATH)libilrdds.a
 
-TARGET= lib$(NAME).so
+.PHONY: clean all run_test add_to_ar
+################################################################################
+#                       folder-scpecific variables                             #
+################################################################################
 
-OBJ= $(NAME).o
+DIRNAME = $(notdir $(PWD))
+SOURCES = $(wildcard *.c)
+DEPS = $(DIRNAME).d
+OBJS = $(SOURCES:.c=.o)
+SHARED_OBJ = $(LIBPATH)lib$(DIRNAME).so
+TEST = $(DIRNAME)_test
+TEST_SRC = $(TEST).c
+TEST_OBJ = $(TEST).o
+ALL_LIBS = $(filter-out $(SHARED_OBJ),$(wildcard $(LIBPATH)*.so))
 
-OBJS= $(NAME).o  $(NAME)_test.o
+################################################################################
+#                                  recipes                                     #
+################################################################################
 
-SRC1 = $(NAME).c 
-SRC2 = $(NAME)_test.c
-SRC3 = $(NAME).h
+$(SHARED_OBJ): $(OBJS) 
+	$(CC) -shared -o  $(SHARED_OBJ) $(OBJS) $(ALL_LIBS)
 
-LIB_LOCATION = ../../lib/
-
-STATIC_LIB=libilrdds.a
-
-CC= gcc
-
-CFLAGS= -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3
-
-INCLUDE = ../../include/
-
-#****************************************************************
-
-
-$(TARGET) : $(OBJ)
-	$(CC) $(CFLAGS) -shared -o $(LIB_LOCATION)$(TARGET) $(OBJ) 
-		
-
-$(OBJ) : $(SRC1) $(SRC3)
-	$(CC) $(CFLAGS) -fpic $(SRC1) $(SRC3) 
-
-$(NAME)_run : $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME)_run $(OBJS)   
-
-$(NAME).o : $(SRC1) $(INCLUDE) 
-	$(CC) $(CFLAGS) -c $(SRC1) $(INCLUDE)
-
-$(NAME)_test.o :  $(SRC1) $(SRC2) $(INCLUDE) 
-	$(CC) $(CFLAGS) -c $(SRC2) $(SRC1) -I $(INCLUDE)
-
-
-
-#***********************************************************************
-		                                 
-run_test :
-	$(CC) -L $(LIB_LOCATION) -Wl,-rpath=$(LIB_LOCATION) -o $(NAME)_run \
-	 $(SRC1) $(SRC2) -I $(INCLUDE) -l$(NAME); ./$(NAME)_run
+$(TEST): $(SHARED_OBJ) $(TEST_OBJ)
+	$(CC) -o $(TEST) $(TEST_OBJ) $(SHARED_OBJ) $(ALL_LIBS) $(INCL)
 	
-insert_test:
-	./$(NAME)_run > test.txt
+add_to_ar: $(OBJS)
+	ar -rcs $(ARCH) $(OBJS)
 
-clean :
-	rm *.o 
-	
-Add_to_archive:	
-	ar r $(LIB_LOCATION)$(STATIC_LIB) $(OBJ)
+run_test: $(TEST) 
+	@./$(TEST) > /dev/null
+	@echo -e "\e[1;32m $(TEST) SUCCESS\e[1;0m"
 
+all: $(TEST)
+	./$(TEST)
+	@echo SUCCESS, PROCEEDING	
+	ar -rcs $(ARCH) $(OBJS)
+	$(CC) -shared -o  $(SHARED_OBJ) -fpic $(OBJS)
+
+clean:
+	rm -f *.o *.d $(SHARED_OBJ) $(TEST)
+	ar -d $(ARCH) $(OBJS)
+
+################################################################################
+#                            writing dependencies                              #
+################################################################################
+include $(DEPS)
+$(DEPS): $(SOURCES)
+	$(CC) -MM $(SOURCES) > $(DEPS) $(INCL)

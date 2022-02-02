@@ -55,7 +55,7 @@ static test_stat_ty Testsortes(void)
 	int arr2[] = {400, 600, 900, 700, 200};
 
 	int big_arr[5000] = {0};
-	int n = srand(time(NULL));/**/
+
 	int size = 5;
 	
 	puts(GREEN"BubbleSort"WHITE);
@@ -83,7 +83,6 @@ static test_stat_ty Testsortes(void)
 	puts(BLUE"after"WHITE);
 	PrintArr(arr2, size);					
 
-	printf("%d\n",n);
 	return TEST_PASS;
 }	
 

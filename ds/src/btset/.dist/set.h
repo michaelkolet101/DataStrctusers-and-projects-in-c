@@ -1,12 +1,4 @@
 
-
-
-
-
-
-
-
-
 #ifndef __SET_H__
 #define __SET_H__
 
@@ -23,11 +15,12 @@ struct iterator
 
 iterator_ty SetInsert(set_ty *set ,int(*cmp_func)(const void *data1, const void *data2));
 
-void OutFromSet(set_ty *set, iterator_ty to_delete);
+/*return the next*/
+iterator_ty RmoveFromSet(set_ty *set, iterator_ty to_delete);
 
-iterator_ty Next(iterator_ty current);
+iterator_ty Next(iterator_ty itr);
 
-iterator_ty Prev(iterator_ty current);
+iterator_ty Prev(iterator_ty itr);
 
 iterator_ty Begin(set_ty *set);
 
