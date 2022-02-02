@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <assert.h>
-#include "sortes.h"
+#include "cmp_sort.h"
 
 /*************************************************************/
 

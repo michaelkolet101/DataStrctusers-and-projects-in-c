@@ -7,7 +7,7 @@
 #include <sys/types.h>
 
 
-#include "sortes.h" 
+#include "cmp_sort.h" 
 #include "utils.h" 
 #include <unistd.h>/* sleep */
 
