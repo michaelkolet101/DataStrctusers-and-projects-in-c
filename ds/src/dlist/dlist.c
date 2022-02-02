@@ -62,8 +62,6 @@ dlist_ty *DlistCreate(void)
     	return NULL;
     }	
     
-    
-   
     dummy1->data = new_list;
     dummy1->next = dummy2;
     dummy1->prev = NULL;

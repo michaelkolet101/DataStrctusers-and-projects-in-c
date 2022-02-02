@@ -1,7 +1,9 @@
 #include <stddef.h>
-#include "sortes.h"
 #include <stdio.h>
+#include <assert.h>
+#include "sortes.h"
 
+/*************************************************************/
 
 /*1 if first is minimum*/
 int IsMinimum(int first, int second);
@@ -11,10 +13,10 @@ int *MinOfArr(int *arr, int size, int *ret_val);
 
 void Swap(int *first, int *second);
 
+/************************************************************/
 
 void BubbleSort(int *arr, int size)
 {
-	
 	/*We will define a variable is sorted - flag*/
 	int is_sorted = 0;
 
@@ -44,47 +46,76 @@ void BubbleSort(int *arr, int size)
 			++current;	
 		}
 	}
-	
-
-
-
 }
 
 void SelectionSort(int *arr, int size)
 {
-/*def minimum ,start and end  as pointers */
+	/*def minimum ,start and end  as pointers */
+	int *minimum = arr;
+	int *start = arr;
+	int *end = start + size - 1;
+	int count = 0;
 
-/*loop while start not end*/
-
-/*find minimum, use the function for it*/
-
-/*swap minimum and start*/
-
-/*Increases start*/
-;
+	assert(arr);
+	
+	/*loop while start not end*/
+	while (start != end - 1)
+	{
+		/*find minimum, use the function for it*/
+		minimum = MinOfArr(start, size - count, minimum);
+	
+		/*swap minimum and start*/
+		Swap(minimum, start);
+			
+		/*Increases start*/
+		++start;
+		++count;		
+	}
 }
 
 void InsertionSort(int *arr, int size)
 {
 	/*Defines variables tmp ,current end  prev as pointers*/
-	
-	/*A loop while current not end*/
-	
+	int tmp = 0;
+	int *current = arr + 1;
+	int *prev = current - 1;
+	int *end = current + size - 1;
+	int *runner = arr;
+
+	assert(arr);
+
+	/* loop while runner not end*/
+	while (runner + 1 != end)
+	{
+		current = runner + 1;
+		prev = current - 1;
+
 		/*Checks if current is smaller than prev*/
-		
+		if (*current < *prev)
+		{
 			/*Copies current to tmp*/
-		
+			tmp = *current;
+
 			/*loop As long as the value in prev is greater than tmp*/
-			
+			while ((*prev > tmp) && (prev >= arr))
+			{
 				/*Passes the value in prev to current*/
-			
+				*current = *prev;
+
 				/*current minus one*/
-			
+				--current;
+
 				/*prev minus one*/
-;			
-		/*Exits the loop and copies the tmp into the current*/
+				--prev;
+			}
+			/*Exits the loop and copies the tmp into the current*/
+			*current = tmp;
+		}
+		++runner;
+	}																								
 }
 
+/****************************************************************/
 
 int IsMinimum(int first, int second)
 {
@@ -99,24 +130,20 @@ int *MinOfArr(int *arr, int size, int *ret_val)
 	int min = *arr;
 	int *end = arr + size;
 	
-	/*def idx = 0*/
-	
-	/* loop from 1 to size*/
+	/* loop arr to end */
 	while (arr != end)
 	{
 		/*Check if the current is smaller than the previous one*/
-		
 		if ((*arr) < min)
 		{
-			/*If yes we will update Min and idx*/
+			/*If yes we will update Min*/
 			min = *arr;
 			ret_val = arr;
 		}
 		
 		++arr;
 	}
-	
-	/*return idx*/
+	/*return ret val*/
 	return ret_val;
 }
 

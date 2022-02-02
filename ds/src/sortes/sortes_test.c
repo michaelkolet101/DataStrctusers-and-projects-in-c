@@ -9,7 +9,7 @@
 
 #include "sortes.h" 
 #include "utils.h" 
-
+#include <unistd.h>/* sleep */
 
 
 #define INT_ARRAY_SIZE 9
@@ -29,7 +29,7 @@ typedef enum test_stat
 
 static test_stat_ty Testsortes(void);
 
-
+void PrintArr(int *arr, int size);
 static void Welcome();
 
 /***************************service function definitions***********************/
@@ -40,7 +40,7 @@ static void Welcome();
 int main(void)
 {
 	/*Welcome();*/
-	printf("\nsortes alocator final test result: %s\n", Testsortes()?RED"FAIL\n":GREEN"PASS\n"WHITE);
+	printf("\nsortes  final test result: %s\n", Testsortes()?RED"FAIL\n":GREEN"PASS\n"WHITE);
 	
 	
 	return 0;
@@ -50,23 +50,39 @@ int main(void)
 static test_stat_ty Testsortes(void)
 {
 	
-	int arr[] = {4, 6, 8, 7, 2};
-	int size = 5, i = 0;
-
-	BubbleSort(arr, size);
-
-	for ( i = 0; i < size; ++i)
-	{
-		printf("%d ,",arr[i]);
-	}
+	int arr[] = {5, 3, 1, 7, 2};
+	int arr1[] = {40, 60, 80, 70, 20};
+	int arr2[] = {400, 600, 900, 700, 200};
 	
+	int size = 5;
+	
+	puts(GREEN"BubbleSort"WHITE);
+	puts(YELLOW"befor"WHITE);
+	PrintArr(arr, size);
+	
+	BubbleSort(arr, size);
+	
+	puts(BLUE"after"WHITE);
+	PrintArr(arr, size);
 
+	puts(GREEN"SelectionSort"WHITE);
+	puts(YELLOW"befor"WHITE);
+	PrintArr(arr1, size);
 
-/*************1***********************************************************/
+	SelectionSort(arr1, size);
+	
+	puts(BLUE"after"WHITE);
+	PrintArr(arr1, size);
+
+	puts(GREEN"InsertionSort"WHITE);
+	puts(YELLOW"befor"WHITE);
+	PrintArr(arr2, size);
+	InsertionSort(arr2, size);
+	puts(BLUE"after"WHITE);
+	PrintArr(arr2, size);					
 
 	return TEST_PASS;
 }	
-
 
 static void Welcome()
 {
@@ -92,14 +108,15 @@ static void Welcome()
 	}
 }
 
-
-
-
-
-
-
-
-
+void PrintArr(int *arr, int size)
+{
+	int i = 0;
+	for ( i = 0; i < size; ++i)
+	{
+		printf("%d ,",arr[i]);
+	}
+	printf("\n\n");
+}
 
 
 
