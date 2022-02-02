@@ -7,7 +7,7 @@
 #include <sys/types.h>
 
 
-#include "cmp_sort.h" 
+#include "sortes.h" 
 #include "utils.h" 
 #include <unistd.h>/* sleep */
 
@@ -133,7 +133,6 @@ static void FillArrayWithRand(int *arr_, size_t size_arr_)
 		++arr_;
 	}
 }
-
 
 
 

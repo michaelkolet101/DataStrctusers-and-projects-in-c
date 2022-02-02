@@ -45,13 +45,13 @@ $(NAME)_test.o :  $(SRC1) $(SRC2) $(INCLUDE)
 		                                 
 run_test :
 	$(CC) -L $(LIB_LOCATION) -Wl,-rpath=$(LIB_LOCATION) -o $(NAME)_run \
-	 $(SRC2) -I $(INCLUDE) -l$(NAME); ./$(NAME)_run
+	 $(SRC1) $(SRC2) -I $(INCLUDE) -l$(NAME); ./$(NAME)_run
 	
 insert_test:
 	./$(NAME)_run > test.txt
 
 clean :
-	rm *.o
+	rm *.o 
 	
 Add_to_archive:	
 	ar r $(LIB_LOCATION)$(STATIC_LIB) $(OBJ)

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "cmp_sort.h"
+#include "sortes.h"
 
 /*************************************************************/
 
@@ -158,7 +158,6 @@ void Swap(int *first, int *second)
 	*first = *second;
 	*second = tmp; 
 }
-
 
 
 
