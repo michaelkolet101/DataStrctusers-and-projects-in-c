@@ -17,7 +17,41 @@ struct binary_tree_node
     void *data; 
 };
 
+btset_iter_ty BTSetInsert(btset_ty *set, void *element
+{
+/*We will define an iterator and a status equal to 0*/
 
+/*Loop that ran until status equals 1*/
+
+    /*We will check if the place is available */
+
+    /*If yes: we will insert the new node and status equals 1 */
+        /*Values ​​are given to the various pointers at the node*/
+        
+
+    /*if not: We will check if the value at the inserted node is
+                         greater than the value at the current node*/
+                         /*We will progress to the next child accordingly*/
+
+/*return iterator*/
+}
+
+
+/* Return value: iterator to the next element */
+btset_iter_ty BTSetRemove(btset_ty *set, btset_iter_ty where)
+{
+    /*if Node to be deleted is the leaf  or without chiled: 
+        Simply remove from the tree. */
+
+    /*if Node to be deleted has only one child: 
+    Copy the child to the node and delete the child */
+
+    /*if Node to be deleted has two children:*/
+    /* Find the next of the node. */
+    /* Copy contents of the next to the node*/
+    /* delete the next.*/
+    
+}
 
 btset_iter_ty BTSetEnd(btset_ty *set)
 {
