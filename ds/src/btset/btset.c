@@ -17,21 +17,39 @@ struct binary_tree_node
     void *data; 
 };
 
+void BTSetDestroy(btset_ty *set)
+{
+    /*As long as the tree is not empty*/
+    /*iterator to end*/
+    /*Moves to the prev one*/
+    /*Releases his next*/
+}
+
+
+btset_ty *BTSetCreate(bts_cmp_fnc_ty cmp_fnc, const void *cmp_param)
+{
+    /*A memory will be assigned to a tree*/
+    /*We will initialize the members of the struct*/
+    /*We will return the pointer to the root    */
+}
+
 btset_iter_ty BTSetInsert(btset_ty *set, void *element
 {
 /*We will define an iterator and a status equal to 0*/
+/*We will allocate space for a new node*/
 
 /*Loop that ran until status equals 1*/
 
     /*We will check if the place is available */
 
-    /*If yes: we will insert the new node and status equals 1 */
+    /*If yes: 
+        we will insert the new node and status equals 1 */
         /*Values ​​are given to the various pointers at the node*/
         
-
-    /*if not: We will check if the value at the inserted node is
-                         greater than the value at the current node*/
-                         /*We will progress to the next child accordingly*/
+    /*if not: 
+        We will check if the value at the inserted node is
+        greater than the value at the current node*/
+            /*We will progress to the next child accordingly*/
 
 /*return iterator*/
 }
