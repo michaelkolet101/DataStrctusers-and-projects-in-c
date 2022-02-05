@@ -39,6 +39,9 @@ run_test: $(TEST)
 	@./$(TEST) > /dev/null
 	@echo -e "\e[1;32m $(TEST) SUCCESS\e[1;0m"
 
+show_test:
+	./$(TEST)
+
 all: $(TEST)
 	./$(TEST)
 	@echo SUCCESS, PROCEEDING	
