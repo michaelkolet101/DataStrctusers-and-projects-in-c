@@ -1,438 +1,443 @@
+#include <stdlib.h> /*malloc , free*/
+#include <assert.h> /* assert */
 
-#include <stdlib.h>/*malloc free*/
 #include "btset.h"
+#include "utils.h"
 
-
-
-struct binary_tree_set
-{
-    bt_node_ty *root;
-    bts_cmp_fnc_ty cmp_func;
-    void *param;
-};
+/* psudocode */
 
 struct binary_tree_node
 {
-    bt_node_ty *right;
-    bt_node_ty *left;
-    bt_node_ty *perrent;
-    void *data; 
+    bt_node_ty *family[3]; /*family[0]=LEFT ,family[1]=RIGHT ,family[2]=PARENT*/
+    void *m_data;
 };
 
-
-/****************************************************/
-static bt_node_ty *MoveToPerntIMP(bt_node_ty *child);
-static bt_node_ty *LeftChildIMP(bt_node_ty *perrent);
-static bt_node_ty *RightChildIMP(bt_node_ty *perrent);
-
-static bt_node_ty *NextIsDownIMP(bt_node_ty *runner);
-static bt_node_ty *NextIsUpIMP(bt_node_ty *runner);
-
-static bt_node_ty *CreatNodeIMP();
-static bt_node_ty *InsertNodeIMP(bt_node_ty *perent, void *data);
-
-static void *GetDataIMP(bt_node_ty *node);
-static bt_node_ty *FindIMP(btset_ty *set, void *elem);
-/**************************************************/
-
-void BTSetDestroy(btset_ty *set)
+struct binary_tree_set
 {
-    /*As long as the tree is not empty*/
-    /*iterator to end*/
-    /*Moves to the prev one*/
-    /*Releases his next*/
-}
+    bt_node_ty *m_root;
+    bts_cmp_fnc_ty m_cmp_dunc;
+    void *m_cmp_param;
+};
+
+enum
+{
+    EQUAL = -1,
+    LEFT = 0,
+    RIGHT = 1,
+    PARENT = 2
+};
+
+typedef struct return_place_and_side
+{
+    bt_node_ty *m_parent;
+    int m_left_or_right;       
+}r_p_side_ty;
+
+
+/**************************************************************************/
+/* service functions */
+static bt_node_ty *CreateChildNodeIMP(bt_node_ty *parent_,void *data_);
+
+static void ClearTreeIMP(btset_ty *set_);
+
+/* return as a struct */
+static r_p_side_ty FindIMP(btset_ty *set_, const void *key_element_);
+
+static int ThereIsChildIMP(bt_node_ty *parent_, int left_or_right_);
+
+static bt_node_ty *GetChildIMP(bt_node_ty *where_ , int left_or_right_);
+
+static bt_node_ty *GetParentsIMP(bt_node_ty *child_node_);
+
+static bt_node_ty *GetChildIMP(bt_node_ty *where_ , int left_or_right_);
+
+static bt_node_ty *GetChildUntilEndIMP(bt_node_ty *where_, int left_or_right_);
+
+static bt_node_ty *AttachChildIMP(bt_node_ty *where_, bt_node_ty *parent_);
+
+static bt_node_ty *AttachParentIMP(bt_node_ty *parent_,bt_node_ty *child_ ,int left_or_right_);
+
+static int IsChildFromSideIMP(bt_node_ty *child_, 
+                              bt_node_ty *parent_
+                             ,int left_or_right_);
+
+static int HasNoChildrenIMP(bt_node_ty *where_);
+
+static int HasTwoChildrenIMP(bt_node_ty *where_);
+
+static int WhatSideIsValidIMP(bt_node_ty *where_);
+
+
+/**************************************************************************/
 
 btset_ty *BTSetCreate(bts_cmp_fnc_ty cmp_fnc, const void *cmp_param)
 {
-    
-    /*A memory will be assigned to a tree*/
-    btset_ty *new_set = (btset_ty *)malloc(sizeof(btset_ty)); 
-    bt_node_ty* dummy = CreatNodeIMP();
+    /* create the metadata and the dummy */
+    btset_ty *ret = (btset_ty *)malloc(sizeof(btset_ty));
+	ret->m_root = CreateChildNodeIMP(NULL, NULL);
+	
+    /* check alloctions if fail */
+   if ((ret == NULL ||& ret->m_root == NULL))
+   {
+		free(ret);
+		free(ret->m_root);
+		
+		return NULL;
+   }
 
-    if ((NULL == new_set) || (NULL == dummy))
-    {
-        free(new_set);
-        free(dummy);
-        return NULL;
-    }
-    
-    dummy->data = NULL;
+    /* init struct members */
+   
+    /* Spacial case which ill be using the AttachParentIMP func to dummy */
+    AttachParentIMP((bt_node_ty *)ret, ret->m_root, RIGHT);
 
-    /*We will initialize the members of the struct*/
-    new_set->root = dummy;
-    new_set->cmp_func = cmp_fnc;
-    new_set->param = (void *)cmp_param;
+    ret->m_cmp_dunc = cmp_fnc;
+    ret->m_cmp_param = (void *)cmp_param;
 
-    /*We will return the pointer to the root    */
-    return new_set;
+    /* return ret */
+    return ret;
+}
+
+void BTSetDestroy(btset_ty *set)
+{
+    /* assert user input */
+    assert(set);
+
+    /* ClearTree(set) */
+
+    /* free(metadata) */
+    free(set);        
 }
 
 btset_iter_ty BTSetInsert(btset_ty *set, void *element)
 {
-    /* is_add equal to 0*/
-    int is_add = 0;
-    btset_iter_ty itr_ret_val;
-    bt_node_ty *runner = set->root;
-    bt_node_ty *save_place = runner;
+    btset_iter_ty ret = {NULL};
 
-    /*We will allocate space for a new node*/
-    bt_node_ty *new_node = CreatNodeIMP();
-    new_node->data = element;
+    r_p_side_ty get_info = {NULL};
+    
+    assert(set);
+    
+    get_info = FindIMP(set, element);
 
-    /*if is the first node in set*/
-    if (1 == BTSetIsEmpty(set) && NULL != new_node)
+    if(EQUAL == get_info.m_left_or_right)
     {
-        set->root->left = new_node;
-        new_node->perrent = set->root;
-        itr_ret_val.node = new_node;
-
-        /*printf("src 108 %d\n", *(int*)runner->data);*/
-        return itr_ret_val;
+        return BTSetEnd(set);
     }
 
-    /*Loop that ran until is_add equals 1*/
-    while (0 == is_add)
+    /* create child node and attach parent */
+    ret.node = CreateChildNodeIMP(get_info.m_parent, element); 
+
+    /* attach parent to child */          
+    AttachParentIMP(get_info.m_parent, ret.node, get_info.m_left_or_right);
+
+    return ret;    
+}
+
+btset_iter_ty BTSetRemove(btset_ty *set, btset_iter_ty where)
+{
+    bt_node_ty *parent = NULL;
+
+    assert(set);
+    assert(where.node);
+
+    /* no child at any side */
+    if(HasNoChildrenIMP(where.node))
     {
+        parent = GetParentsIMP(where.node);
 
-        if ((set->cmp_func(GetDataIMP(runner) , element, set->param)) > 0)
-        {
-            runner = LeftChildIMP(runner);
-            runner->perrent = save_place;
-             /*We will check if the place is available */
-            if (NULL == runner)
-            {
-                /*If yes: 
-                    we will insert the new node and status equals 1 */
-                /*Values ​​are given to the various pointers at the node*/
-                is_add = 1;
-                runner->data = element;
-                new_node = runner;
-                 
-            }    
-        }
+        free(where.node);
 
-        /*if not: 
-        We will check if the value at the inserted node is
-        greater than the value at the current node*/
-         /*We will progress to the next child accordingly*/
-
-        if ((set->cmp_func(GetDataIMP(runner) , element, set->param)) < 0)
-        {
-            runner = RightChildIMP(runner);
-            runner->perrent = save_place;
-             /*We will check if the place is available */
-             if (NULL == runner)
-            {
-                /*If yes: 
-                    we will insert the new node and status equals 1 */
-                /*Values ​​are given to the various pointers at the node*/
-                is_add = 1;
-                runner->data = element;
-                new_node = runner; 
-            }    
-            
-        }
-        
-        if ((set->cmp_func(GetDataIMP(runner) , element, set->param)) == 0)
-        {
-            itr_ret_val.node = NULL;
-        }
+        where.node = parent;
     }
-    itr_ret_val.node = new_node;
+    
+    if(!HasTwoChildrenIMP(where.node) && !HasNoChildrenIMP(where.node))
+    { 
+        /* save the node */
+        parent = where.node;
 
-/*return iterator*/
-    return itr_ret_val;
+        /* copy the child data to the node and remove the child */
+        where.node = GetChildIMP(where.node, WhatSideIsValidIMP(where.node));
+        parent->m_data = where.node->m_data;
+
+
+        /*remove the child */
+        free(where.node);
+
+        /* return the same node */ 
+        where.node = parent;       
+    }
+    if(HasTwoChildrenIMP(where.node))
+    {
+        /* save the node */
+        parent = where.node;
+
+        /* copy the child data from the left most right child*/
+        where.node = GetChildIMP(where.node, RIGHT);
+        where.node = GetChildUntilEndIMP(where.node, LEFT);
+
+        parent->m_data = where.node->m_data;
+
+
+        /*remove the child */
+        free(where.node);
+
+        /* return the same node */ 
+        where.node = parent;
+
+    }
+
+    return where;              
+}
+
+btset_iter_ty BTSetFind(btset_ty *set, const void *key_element)
+{
+    btset_iter_ty ret = {NULL};
+    r_p_side_ty get_info = {NULL};
+
+    assert(set);
+
+    get_info = FindIMP(set, key_element);     
+
+    if(EQUAL == get_info.m_left_or_right)
+    {
+        ret.node = get_info.m_parent;
+
+        return ret;
+    }
+
+    /*RETURN DUMMY IF FAIL*/
+    return BTSetEnd(set); 
 }
 
 size_t BTSetSize(const btset_ty *set)
 {
-    btset_iter_ty runner = {NULL};
-    size_t count = 0;
+    btset_iter_ty curr_iter = BTSetBegin((btset_ty *)set);
+    size_t counter = 0;
 
-    if (!BTSetIsEmpty(set))
+    /* assert user input */
+    assert(set);
+
+    while(BTSetIsSameIter(curr_iter, BTSetEnd((btset_ty *)set)))
     {
-        count = 1;
+        ++counter;
+        curr_iter = BTSetNext(curr_iter);        
     }
     
-    runner = BTSetBegin((btset_ty *)set);
+    /* return counter */
+    return counter;
+}
+
+btset_iter_ty BTSetBegin(btset_ty *set)
+{
+    btset_iter_ty ret = {NULL};
+
+    /* assert user input */
+    assert(set);
+    assert(!BTSetIsEmpty(set));
     
-    while ((NULL != LeftChildIMP(runner.node)) && (NULL != RightChildIMP(runner.node)))
+    ret.node = set->m_root;
+
+    while(ThereIsChildIMP(ret.node, LEFT))
     {
-        ++count;
-        runner = BTSetNext(runner);    
+        ret.node = GetChildIMP(ret.node, LEFT);
     }
-    
-    return count;
-}
 
-
-btset_iter_ty BTSetFind(btset_ty *set, const void *key_element)
-{
-    btset_iter_ty ret_itr;
-
-    ret_itr.node = FindIMP(set, (void *)key_element);
-
-    return ret_itr;
-}
-
-/* Return value: iterator to the next element */
-btset_iter_ty BTSetRemove(btset_ty *set, btset_iter_ty where)
-{
-    /*if Node to be deleted is the leaf  or without chiled: 
-        Simply remove from the tree. */
-
-    /*if Node to be deleted has only one child: 
-    Copy the child to the node and delete the child */
-
- ;   /*if Node to be deleted has two children:*/
-    /* Find the next of the node. */
-    /* Copy contents of the next to the node*/
-    /* delete the next.*/
-    
+    return ret;
 }
 
 btset_iter_ty BTSetEnd(btset_ty *set)
 {
-    /* We will set an iterator for SET */
-    btset_iter_ty ret_itr = {NULL};
-    ret_itr.node = set->root->left;
-    /* As long as the next step to the right is not NULL we will go right */
-    while (NULL == RightChildIMP(ret_itr.node))
-    {
-        ret_itr.node = RightChildIMP(ret_itr.node);
-    }
-    
-    /* We return the iterator and up to one step to the right */
-    return ret_itr;
+    btset_iter_ty ret = {NULL};
+
+    /* assert user input */
+    assert(set);
+
+    ret.node = set->m_root;
+
+    return ret;
 }
-
-
-btset_iter_ty BTSetBegin(btset_ty *set)
-{
-    btset_iter_ty ret_itr;
-
-    ret_itr.node = set->root->left;
-
-    while (LeftChildIMP(ret_itr.node) != NULL)
-    {
-      
-        ret_itr.node = LeftChildIMP(ret_itr.node);
-    }
-
-    return ret_itr;    
-}
-
 
 btset_iter_ty BTSetNext(btset_iter_ty iterator_to_inc)
 {
-    bt_node_ty *runner = iterator_to_inc.node;
-    
-    /* We will go right one step */
-    if (NULL != RightChildIMP(runner))
+    if(ThereIsChildIMP(iterator_to_inc.node, RIGHT))
     {
-        runner = NextIsDownIMP(runner);
+        iterator_to_inc.node = GetChildIMP(iterator_to_inc.node, RIGHT);
+        iterator_to_inc.node = GetChildUntilEndIMP(iterator_to_inc.node, LEFT);
+
+        return iterator_to_inc;          
     }
-    else
-    {    
-        runner = NextIsUpIMP(runner);
+    /* go until child is no longer the right son of parent */
+    while(IsChildFromSideIMP(iterator_to_inc.node, 
+                                    GetParentsIMP(iterator_to_inc.node), RIGHT))
+    {
+        iterator_to_inc.node = GetParentsIMP(iterator_to_inc.node);        
     }
 
-    iterator_to_inc.node = runner;
+    return iterator_to_inc;
 
-   /* We will exit the loop and return an iterator */
-   return iterator_to_inc;
 }
 
 btset_iter_ty BTSetPrev(btset_iter_ty iterator_to_dec)
 {
-    /* We will take one step left */
-    bt_node_ty *runner = iterator_to_dec.node;
-
-/* We will check if there is a right value */
-    if (NULL != RightChildIMP(runner))
+    if(ThereIsChildIMP(iterator_to_dec.node, LEFT))
     {
-        runner = NextIsDownIMP(runner);
+        iterator_to_dec.node = GetChildIMP(iterator_to_dec.node, LEFT);
+        iterator_to_dec.node = GetChildUntilEndIMP(iterator_to_dec.node, RIGHT);
+
+        return iterator_to_dec;          
     }
-    else
-    {    
-        runner = NextIsUpIMP(runner);
+    /* go until child is no longer the left son of parent */
+    while(IsChildFromSideIMP(iterator_to_dec.node, 
+                                    GetParentsIMP(iterator_to_dec.node), LEFT))
+    {
+        iterator_to_dec.node = GetParentsIMP(iterator_to_dec.node);        
     }
+
+    return iterator_to_dec;
 }
+
 
 int BTSetIsSameIter(btset_iter_ty first, btset_iter_ty second)
 {
-    /* We will check if the iterators are equal and we will 
-                            return 1 otherwise we will return 0 */
-    return (first.node->left == second.node->left) && (first.node->right == second.node->right);
-}
-
-void *BTSetGetData(btset_iter_ty where)
-{
-/* We will return the information through the iterator */
-    return GetDataIMP(where.node);
+    return first.node == second.node;
 }
 
 int BTSetIsIterBad(btset_iter_ty check)
 {
-    
-    return MoveToPerntIMP(check.node) == NULL;
+    return GetParentsIMP(check.node) == NULL; 
+}
+
+void *BTSetGetData(btset_iter_ty where)
+{
+    return where.node->m_data;
 }
 
 int BTSetIsEmpty(const btset_ty *set)
 {
-/* If the value of SET NULL it is dummy and 
-                    we return 1 otherwise we return 0 */
-    return set->root->left == NULL; 
+    return !ThereIsChildIMP(set->m_root, LEFT);
 }
 
-/**********************************************************************************/
-
-static bt_node_ty *CreatNodeIMP()
+/* check every time you call this func if alloc fail */
+static bt_node_ty *CreateChildNodeIMP(bt_node_ty *parent_,void *data_)
 {
-    bt_node_ty *Node = (bt_node_ty *)malloc(sizeof(bt_node_ty));
-    if (NULL == Node)
-    {
-        return NULL;
-    }
+    bt_node_ty *ret = (bt_node_ty *)malloc(sizeof(bt_node_ty));
+	
+	if (ret == NULL)
+	{
+		return NULL;
+	}
+	
+    ret->m_data = data_;
+    ret->family[PARENT] = parent_;
+
+    ret->family[LEFT] = NULL;       
+    ret->family[RIGHT] = NULL;        
+
+    return ret;
+}
+
+static void ClearTreeIMP(btset_ty *set_)
+{
+  
+}
+
+static r_p_side_ty FindIMP(btset_ty *set_, const void *key_element_)
+{
+    btset_iter_ty curr = {NULL};
     
-    Node->perrent = NULL;
-    Node->right = NULL;
-    Node->left = NULL;
-    Node->data = NULL;
+    /* to save the parent of the child and the side  */
+    r_p_side_ty ret = {NULL};   
 
-    return Node;
-} 
+    /* curr.node start in root */
+    curr.node = set_->m_root->family[LEFT];
 
-static bt_node_ty *MoveToPerntIMP(bt_node_ty *child)
-{
-    return child->perrent;
-}
+    /* start in root */
+    ret.m_parent = set_->m_root;
+    ret.m_left_or_right = LEFT;
 
-static bt_node_ty *LeftChildIMP(bt_node_ty *perrent)
-{
-    return perrent->left;
-}
-
-static bt_node_ty *RightChildIMP(bt_node_ty *perrent)
-{
-    return perrent->right;
-}
-
-static void *GetDataIMP(bt_node_ty *node)
-{
-    return node->data;
-}
-
-static bt_node_ty *NextIsUpIMP(bt_node_ty *runner)
-{
-    bt_node_ty *perent = runner->perrent;
-    bt_node_ty *child = runner;
-
-    while (perent->right = child)
+    while(NULL != curr.node)
     {
-       child = perent;
-       perent = child->perrent;
-    }
-    
-    return perent;
-}  
- 
-static bt_node_ty *NextIsDownIMP(bt_node_ty *runner)
-{
-     runner = RightChildIMP(runner);
-
-    /* We will check if there is a left value */   
-    /* If yes, then loop as long as the value is not NULL */
-    /* We will step left IN LOOP */
-    while (NULL != LeftChildIMP(runner))
-    {
-         /* We will step left */
-        runner = LeftChildIMP(runner);
-    }
-
-    return runner;
-}
-
-static bt_node_ty *PrevIsUpIMP(bt_node_ty *runner)
-{
-    bt_node_ty *perent = runner->perrent;
-    bt_node_ty *child = runner;
-
-    while (perent->left = child)
-    {
-       child = perent;
-       perent = child->perrent;
-    }
-    
-    return perent;
-}  
- 
-static bt_node_ty *PrevIsDownIMP(bt_node_ty *runner)
-{
-     
-     if (NULL != LeftChildIMP(runner))
-     {
-         runner = LeftChildIMP(runner);
-     }
-     
-    /* We will check if there is a right value */   
-    /* If yes, then loop as long as the value is not NULL */
-    /* We will step right IN LOOP */
-    while (NULL != RightChildIMP(runner))
-    {
-         /* We will step right */
-        runner = RightChildIMP(runner);
-    }
-
-    return runner;
-}
-
-static bt_node_ty *InsertNodeIMP(bt_node_ty *perent, void *data)
-{
-    /*creat a new node*/
-    bt_node_ty *new_node = CreatNodeIMP();
-
-    /*new node perent equal to perent*/
-    new_node->perrent = perent;
-
-    /*new node data equal to data*/
-    new_node->data = data;
-
-    /*return new node*/
-    return new_node;
-}
-
-static bt_node_ty *FindIMP(btset_ty *set, void *elem)
-{
-    /*def node to return equal to the root - not dummy*/
-    bt_node_ty *ret_node = set->root->left;
-
-    /*As long as the node is not equal to NULL*/
-    while (NULL != ret_node)
-    {
-        /*def ret_from_cmp_func the parmetes are root->data, elem, NULL*/
-        int ret_from_cmp_func = set->cmp_func(set->param, elem, NULL);
-
-        /*if ret_from_cmp_func equal to 0 then return*/
-        if (0 == ret_from_cmp_func)
+         ret.m_parent = curr.node;
+         
+        if(0 == set_->m_cmp_dunc(curr.node->m_data, key_element_, set_->m_cmp_param))
         {
-            return ret_node;
-        }
+            ret.m_left_or_right = EQUAL;
 
-        /*if big from 0 move to right child*/
-        if (0 < ret_from_cmp_func)
-        {
-            ret_node = RightChildIMP(ret_node);
-        }
+            return ret;       
+        } 
 
-        /*if small from 0 move to left child*/
-        if (0 > ret_from_cmp_func)
-        {
-            ret_node = LeftChildIMP(ret_node);
-        }
-                
-        /*return the node to return*/   
-        return ret_node;
+        ret.m_left_or_right = (set_->m_cmp_dunc(curr.node->m_data, key_element_, set_->m_cmp_param) > 0);
+        curr.node = GetChildIMP(curr.node, ret.m_left_or_right);        
     }
+
+    return ret;        
+}
+
+static int ThereIsChildIMP(bt_node_ty *parent_, int left_or_right_)
+{
+    return parent_->family[left_or_right_] != NULL;       
+}
+
+static bt_node_ty *GetChildIMP(bt_node_ty *where_ , int left_or_right_)
+{
+    return where_->family[left_or_right_];
+}
+
+static bt_node_ty *GetParentsIMP(bt_node_ty *child_node_)
+{
+    return child_node_->family[2];    
+}
+
+static bt_node_ty *GetChildUntilEndIMP(bt_node_ty *where_, int left_or_right_)
+{
+    bt_node_ty *curr = where_;
+
+    while(ThereIsChildIMP(where_, left_or_right_))
+    {
+        curr = GetChildIMP(curr, left_or_right_);
+    }
+
+    return curr;
+}
+
+static int IsChildFromSideIMP(bt_node_ty *child_, 
+                              bt_node_ty *parent_
+                             ,int left_or_right_)
+{
+    return (parent_ + left_or_right_ == child_ ); 
+}
+
+static int HasNoChildrenIMP(bt_node_ty *where_)
+{
+    return !ThereIsChildIMP(where_, RIGHT) && 
+           !ThereIsChildIMP(where_, LEFT); 
+}
+
+static int HasTwoChildrenIMP(bt_node_ty *where_)
+{
+    return ThereIsChildIMP(where_, RIGHT) && 
+           ThereIsChildIMP(where_, LEFT); 
+}
+
+static int WhatSideIsValidIMP(bt_node_ty *where_)
+{
+    if(ThereIsChildIMP(where_, RIGHT))
+    {
+        return RIGHT;
+    }  
+
+    return LEFT;
+}
+
+static bt_node_ty *AttachChildIMP(bt_node_ty *where_, bt_node_ty *parent_)
+{
+    where_->family[PARENT] = parent_;
+
+    return where_;     
+}
+
+static bt_node_ty *AttachParentIMP(bt_node_ty *parent_,bt_node_ty *child_ , int left_or_right_)
+{
+    parent_->family[left_or_right_] = child_;
+
+    return parent_;    
 }
