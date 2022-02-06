@@ -14,7 +14,7 @@ struct binary_tree_node
 
 struct binary_tree_set
 {
-    bt_node_ty *m_root;
+    bt_node_ty *m_root; /* TODO change it to be not a pointer*/
     bts_cmp_fnc_ty m_cmp_dunc;
     void *m_cmp_param;
 };
@@ -36,35 +36,21 @@ typedef struct return_place_and_side
 
 /**************************************************************************/
 /* service functions */
+
 static bt_node_ty *CreateChildNodeIMP(bt_node_ty *parent_,void *data_);
-
 static void ClearTreeIMP(btset_ty *set_);
-
 /* return as a struct */
 static r_p_side_ty FindIMP(btset_ty *set_, const void *key_element_);
-
 static int ThereIsChildIMP(bt_node_ty *parent_, int left_or_right_);
-
 static bt_node_ty *GetChildIMP(bt_node_ty *where_ , int left_or_right_);
-
 static bt_node_ty *GetParentsIMP(bt_node_ty *child_node_);
-
 static bt_node_ty *GetChildIMP(bt_node_ty *where_ , int left_or_right_);
-
 static bt_node_ty *GetChildUntilEndIMP(bt_node_ty *where_, int left_or_right_);
-
 static bt_node_ty *AttachChildIMP(bt_node_ty *where_, bt_node_ty *parent_);
-
 static bt_node_ty *AttachParentIMP(bt_node_ty *parent_,bt_node_ty *child_ ,int left_or_right_);
-
-static int IsChildFromSideIMP(bt_node_ty *child_, 
-                              bt_node_ty *parent_
-                             ,int left_or_right_);
-
+static int IsChildFromSideIMP(bt_node_ty *child_, bt_node_ty *parent_ ,int left_or_right_);
 static int HasNoChildrenIMP(bt_node_ty *where_);
-
 static int HasTwoChildrenIMP(bt_node_ty *where_);
-
 static int WhatSideIsValidIMP(bt_node_ty *where_);
 
 
@@ -99,10 +85,18 @@ btset_ty *BTSetCreate(bts_cmp_fnc_ty cmp_fnc, const void *cmp_param)
 
 void BTSetDestroy(btset_ty *set)
 {
+   bt_node_ty *curr = NULL;
+   bt_node_ty *tmp_node = NULL;
+   bt_node_ty *last_visit = NULL;
     /* assert user input */
     assert(set);
 
-    /* ClearTree(set) */
+   if (BTSetIsEmpty(set))
+   {
+       return;
+   }
+   
+   
 
     /* free(metadata) */
     free(set);        
@@ -337,7 +331,7 @@ static bt_node_ty *CreateChildNodeIMP(bt_node_ty *parent_,void *data_)
 
 static void ClearTreeIMP(btset_ty *set_)
 {
-  
+  ;
 }
 
 static r_p_side_ty FindIMP(btset_ty *set_, const void *key_element_)
@@ -434,6 +428,8 @@ static bt_node_ty *AttachChildIMP(bt_node_ty *where_, bt_node_ty *parent_)
 
     return where_;     
 }
+
+
 
 static bt_node_ty *AttachParentIMP(bt_node_ty *parent_,bt_node_ty *child_ , int left_or_right_)
 {
