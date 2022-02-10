@@ -84,7 +84,7 @@ double Calculate(const char *exp_)
     }
     
     /*while exp not '\0'*/
-    while (curr_state != BAD || curr_state == EXP_END)
+    while ('\0' != *exp)
     {
         /*calculator-> curr_token = *exp */
         calc->m_curr_token = *exp;
@@ -195,5 +195,18 @@ static int IsBadOperatorIMP(calc_ty *calc)
 
 }
 
+static void BadFuncIMP()
+{
 
+}
+
+static void AddOpIMP(calc_ty *calc_)
+{
+
+}
+
+static void AddNumIMP(calc_ty *calc_)
+{
+
+}
 
