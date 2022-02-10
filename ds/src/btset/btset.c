@@ -52,7 +52,7 @@ static int IsChildFromSideIMP(bt_node_ty *child_, bt_node_ty *parent_ ,int left_
 static int HasNoChildrenIMP(bt_node_ty *where_);
 static int HasTwoChildrenIMP(bt_node_ty *where_);
 static int WhatSideIsValidIMP(bt_node_ty *where_);
-
+static bt_node_ty *MostLeftSide(bt_node_ty *node);
 
 /**************************************************************************/
 
@@ -95,11 +95,29 @@ void BTSetDestroy(btset_ty *set)
    {
        return;
    }
+
+   curr = BTSetBegin(set).node;
    
+   while (curr != set->m_root)
+   {
+       if( NULL == curr->family[RIGHT] || last_visit == curr->family[RIGHT])
+       {
+           tmp_node = curr->family[PARENT];
+           free(curr);
+           last_visit = curr;
+           curr = tmp_node;
+       }
+       else
+       {
+           curr = curr->family[RIGHT];
+           curr = MostLeftSide(curr);
+       }
+   }
    
 
     /* free(metadata) */
-    free(set);        
+    free(set->m_root);   
+    free(set);     
 }
 
 btset_iter_ty BTSetInsert(btset_ty *set, void *element)
@@ -436,4 +454,13 @@ static bt_node_ty *AttachParentIMP(bt_node_ty *parent_,bt_node_ty *child_ , int 
     parent_->family[left_or_right_] = child_;
 
     return parent_;    
+}
+
+static bt_node_ty *MostLeftSide(bt_node_ty *node)
+{
+    while (node->family[LEFT] != NULL)
+    {
+        node = node->family[LEFT];
+    }
+    return node;
 }

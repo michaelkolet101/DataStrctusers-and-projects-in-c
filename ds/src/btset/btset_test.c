@@ -118,15 +118,10 @@ puts("here 60");
 	BTSetIsIterBad(BTSetFind(my_set, &data_arr1[3])) ?
 			printf("Bad iter returned for not found value. \tTestPassed\n") :
 			printf("Not a Bad iter. \t\t\tTest Failed\n");
+
+	BTSetDestroy(my_set);
 }
 
- static void Scenario_2_Tests(void)
-{
-	/* Count elements */
-/*	BTSetSize(my_set) == 0 ?
-			printf("Counted 0 nodes in my_set. \t\tTest Passed\n") :
-			printf("Wrong count. \t\tTest Failed!!\n");	*/
-}
 
 /****************************Helpers Implementation****************************/
 
