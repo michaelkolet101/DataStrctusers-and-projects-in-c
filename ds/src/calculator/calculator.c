@@ -84,7 +84,7 @@ double Calculate(const char *exp_)
     }
     
     /*while exp not '\0'*/
-    while (curr_state != BAD)
+    while (curr_state != BAD || curr_state == EXP_END)
     {
         /*calculator-> curr_token = *exp */
         calc->m_curr_token = *exp;
