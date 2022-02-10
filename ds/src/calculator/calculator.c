@@ -71,7 +71,7 @@ double Calculate(const char *exp_)
     /*chack alloc*/
     if (NULL == state_mach)
     {
-        return FAILl
+        return FAIL;
     }
     
     /*initCalc(calc)*/
@@ -84,7 +84,7 @@ double Calculate(const char *exp_)
     }
     
     /*while exp not '\0'*/
-    while ('\0' == *exp)
+    while (curr_state != BAD)
     {
         /*calculator-> curr_token = *exp */
         calc->m_curr_token = *exp;
@@ -96,14 +96,16 @@ double Calculate(const char *exp_)
         /*++exp*/
         ++exp;
         
+        /*chaek the status of SM*/
+        /*if we are in state BAD*/
+        if (curr_state == BAD)
+        {
+            return FAIL;
+        }
+        
+        /*return FAIL*/
     }
     
-
-    /*chaek the status of SM*/
-
-    /*if we are in state BAD*/
-
-    /*return FAIL*/
 
     /*return result*/
 }   
@@ -193,7 +195,5 @@ static int IsBadOperatorIMP(calc_ty *calc)
 
 }
 
-static void InitCalc(calc_ty *calc_)
-{
 
-}
+
