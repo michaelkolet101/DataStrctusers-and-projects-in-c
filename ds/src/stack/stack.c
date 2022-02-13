@@ -35,13 +35,7 @@ stack_ty *StackCreate(size_t element_size, size_t capacity)
     	return NULL;
     }
     
-    new_stack->arr = (char *)malloc(capacity * element_size * sizeof(char));
-    
-    if (NULL == new_stack->arr)
-    {
-    	free(new_stack);
-    	return NULL;
-    }
+    new_stack->arr = (char *)(new_stack + 1) ;
     
     new_stack->capacity = capacity;
     new_stack->elem_size = element_size;

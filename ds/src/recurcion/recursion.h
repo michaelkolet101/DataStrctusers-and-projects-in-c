@@ -22,5 +22,10 @@ int StrCmp(char *str1, char *str2);
 
 
 
+char *strcpy(char *dest, const char *src);
+
+
+
+
 #endif /*__RECURSION_H__*/
 

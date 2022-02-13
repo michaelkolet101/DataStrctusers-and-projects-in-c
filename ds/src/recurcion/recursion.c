@@ -56,3 +56,18 @@ int StrCmp(char *str1, char *str2)
     
     StrCmp(++str1, ++str2);
 }
+
+
+char *StrCpy(char *dest, const char *src)
+{
+    char *runner = dest;  
+
+    if ('\0' == *src)
+    {
+        *runner == *src;
+        return dest;
+    }
+    *runner == *src;
+
+    return StrCpy(++runner, ++src);
+}

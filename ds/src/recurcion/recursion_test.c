@@ -13,12 +13,11 @@ int main()
     int res4 = StrCmp(string, str);
     int res5 = strcmp(string, str);
 
-    if (res4 == res5)
-    {
-        puts("SUCSSES");
-    }
+
+
+
     
     printf("my %d\n" ,res5);
-    printf("lib %d\n" ,res4);
+    printf(" %d\n" ,res4);
     return 0;
 }
