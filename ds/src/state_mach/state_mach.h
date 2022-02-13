@@ -13,29 +13,7 @@
 
 #include <stddef.h>
 
-/******************************************************************************/
-/* this should be moved to the source file */
-struct state_machine
-{
-    const state_n_func_ty *states; 
-    size_t num_states; 
-    size_t num_events;
-};
 
-static const state_n_func_ty sm_table[]{ {MIDDLE, log}, {BAD, Msg}, {BAD, nothing}.......};
-
-/******************************************************************************/
-
-/******************************************************************************/
-/*	This Should be in test file (?) */
-double calculate(const char *exp)
-{
-	/*	Create SM */
-	
-	/*	Use SM */
-	
-	/*	... */
-}
 /******************************************************************************/
 
 typedef struct state_machine state_mach_ty;

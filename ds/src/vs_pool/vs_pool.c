@@ -109,7 +109,7 @@ void *VSPoolAlloc(vs_pool_ty *vs_pool, size_t chunk_size)
 void VSPoolFree(void *chunk_to_free)
 {
 	/*Going a step back*/
-	chunk_to_free = (char *)chunk_to_free - sizeof(ptrdiff_t);
+	chunk_to_free = (ptrdiff_t *)chunk_to_free - sizeof(ptrdiff_t);
 	
 	/*Makes dereference and changes the value there from negative to positive*/
 	*(char *)chunk_to_free *= -1;
