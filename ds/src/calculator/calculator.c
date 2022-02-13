@@ -40,7 +40,7 @@ typedef struct operator_struct operator_ty;
 
 
 
-static void AddNumIMP(calc_ty *calc_);
+static void AddNumIMP(void *calc_);
 static char *PeekAndPop(stack_ty *stack);
 double CharToDouble(char ch);
 static void PopOperIMP(calc_ty *calc);
@@ -62,13 +62,13 @@ static int IsBadOperatorIMP(calc_ty *calc_);
 
 
 static void BadFuncIMP();
-static void AddOpIMP(calc_ty *calc_);
+static void AddOpIMP(void *calc_);
 
 
 static double FinalCalcIMP(calc_ty *calc_);
 static const operator_ty *Token2OperIMP(const char *token_);
 
-static double CalcIMP(calc_ty *calc_);
+static double CalcIMP(void *calc_);
 
 
 
@@ -92,7 +92,7 @@ double Calculate(const char *exp)
     double ret = 0; 
 
     /*creat state machin SMcreat(InitStaets(), NUM STATES, NUM EVENT)*/
-    state_mach = SMCreate(&sm_table, 
+    state_mach = SMCreate(sm_table, 
                             CALC_NUM_STATES, 
                             NUM_EVENTS);
     /*chack alloc*/
@@ -111,7 +111,7 @@ double Calculate(const char *exp)
     }
 
     /*calculator-> curr_token = *exp */
-    calc->m_curr_token = *exp;
+    calc->m_curr_token = (char *)exp;
 
 
     /*while exp not '\0'*/
@@ -120,7 +120,7 @@ double Calculate(const char *exp)
          /*curr_state = SMTriggerEvent(state_mach, curr_state, 
                         Token2Event(calculator->curr_token, calc))*/
                         /*TODO chang the op to func!*/
-        curr_state = SMTriggerEvent(state_mach, curr_state, event, NULL);
+        curr_state = SMTriggerEvent(state_mach, curr_state, event, calc);
 
         /*++calc->m_curr_token*/
         ++calc->m_curr_token;
@@ -269,30 +269,32 @@ static int IsBadOperatorIMP(calc_ty *calc)
 }
 
 /*print errow*/
-static void BadFuncIMP()
+static void BadFuncIMP(void *p)
 {
     printf("Error");
 }
 
 /*add oprator to stack and chack if need to do calculet befor */
-static void AddOpIMP(calc_ty *calc_)
+static void AddOpIMP(void *calc_)
 {
-    char *oper_to_insert = calc_->m_curr_token;
-    char *oper_in_stack = (char *)StackPeek(calc_->m_op_stack);
+    calc_ty *calc = (calc_ty *)calc_;
+    char *oper_to_insert = calc->m_curr_token;
+    char *oper_in_stack = (char *)StackPeek(calc->m_op_stack);
 
     if (IsOpStrongerIMP(oper_in_stack, oper_to_insert))
     {
         double ret = CalcIMP(calc_);
         const void *to_push = (void *)&ret;
         /*to do the calc and remove from stack*/
-        StackPush(calc_->m_num_stack, to_push);
+        StackPush(calc->m_num_stack, to_push);
     }
     
-    StackPush(calc_->m_op_stack, (void *)(calc_->m_curr_token));
+    StackPush(calc->m_op_stack, (void *)(calc->m_curr_token));
 }
 
-static double CalcIMP(calc_ty *calc_)
+static double CalcIMP(void *calc_)
 {
+    calc_ty *calc = (calc_ty *)calc_; 
     double res = 0;
 
     double num1 = CharToDouble(*(PeekAndPop(calc_->m_num_stack))) ;
@@ -305,9 +307,9 @@ static double CalcIMP(calc_ty *calc_)
 } 
 
 /* add number to number stack*/
-static void AddNumIMP(calc_ty *calc_)
+static void AddNumIMP(void *calc_)
 {
-     StackPush(calc_->m_num_stack, (void *)(calc_->m_curr_token));
+     StackPush(((calc_ty *)calc_)->m_num_stack,(((calc_ty *)calc_)->m_curr_token));
 }
 
 static char *PeekAndPop(stack_ty *stack)
