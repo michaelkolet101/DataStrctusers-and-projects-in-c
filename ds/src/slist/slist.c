@@ -273,13 +273,13 @@ iterator_ty SlistFind(iterator_ty start, iterator_ty end, match_func_ty op_func,
 																    void *param)
 {
 	int status = 0;
+	iterator_ty where = start;
 	
 	assert(start);
 	assert(end);
 	assert(op_func);
 	assert(param);
-	
-	
+	 
 	while (start.slist_node != end.slist_node)
 	{
 		if (op_func(start.slist_node->data, param) == SUCCESS) 
@@ -292,9 +292,9 @@ iterator_ty SlistFind(iterator_ty start, iterator_ty end, match_func_ty op_func,
 	
 	if (status == 0)
 	{
-		while (where.dlist_node->next != NULL)
+		while (where.slist_node->next != NULL)
 		{
-			where = DlistNext(where);
+			where = SlistNext(where);
 		}
 		
 		return where;

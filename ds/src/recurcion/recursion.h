@@ -20,12 +20,14 @@ size_t StrLen(char *string);
 
 int StrCmp(char *str1, char *str2);
 
-
-
 char *strcpy(char *dest, const char *src);
 
+char *StrCat(char *dest, const char *src);
+
+char *StrCat2(char *dest, const char *src);
 
 
+char *StrStr( char *haystack,  char *needle);
 
 #endif /*__RECURSION_H__*/
 
