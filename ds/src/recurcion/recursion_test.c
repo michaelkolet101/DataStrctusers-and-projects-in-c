@@ -17,12 +17,12 @@ int main()
     char *X = "ddddddddddddgggddddddd";
     char *Y = "ggg";
  
-    char *a = "michael";
-    char *b = " kolet";
+    char a[50] = "michael";
+    char b[50] = " kolet";
 
     printf("%s\n", StrStr(X, Y));
 
-    printf("%s\n", StrCat2(a, b));
+    printf("TEST TO STRCAT: %s\n", StrCat(a, b));
 
     
    /* printf("my %d\n" ,res);*/

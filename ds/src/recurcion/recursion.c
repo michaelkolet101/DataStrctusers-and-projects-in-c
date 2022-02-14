@@ -66,27 +66,33 @@ char *StrCpy(char *dest, const char *src)
     assert(dest);
     assert(src);   
     
-    *dest == *src;  
+    *dest = *src;  
 
     if ('\0' == *src)
     {
         return dest;
     }
-    
 
-    return StrCpy((++dest), (++src));
+    StrCpy((dest + 1), (src + 1));
+    
+    return dest;
 }
+
 
 char *StrCat(char *dest, const char *src)
 {
+    char *dest_end = NULL;
+    
     assert(dest);
     assert(src);
 
     /*We will proceed with the pointer to the end of the original string*/
-    dest += StrLen(dest);
+    dest_end = dest + StrLen(dest);
 
     /*We will copy to this place and beyond the string we want*/
-    StrCpy(dest, src);
+    StrCpy(dest_end, src);
+
+    return dest;
 }
 
 
@@ -167,7 +173,7 @@ node_ty *FlipList(node_ty *node)
 
     return haed;
 }
-
+/*
 void SortedInsert( stack_ty *stack, void *data )
 {
     void *tmp = NULL;
@@ -210,4 +216,4 @@ void SortStack(stack)
 
 
 
-
+*/
