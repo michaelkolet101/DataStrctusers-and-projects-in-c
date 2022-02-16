@@ -72,8 +72,8 @@ void CountSort( int src_[],
         --src_end;
     }
 
-    PrintArrIMP(dest_,  size_);
     
+
 }
 
 
