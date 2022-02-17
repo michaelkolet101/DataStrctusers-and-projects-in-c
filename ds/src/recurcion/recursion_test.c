@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "recursion.h"
+#include "stack.h"
 
 int main()
 {
@@ -23,12 +24,13 @@ int main()
     printf("%s\n", StrStr(X, Y));
 
     printf("TEST TO STRCAT: %s\n", StrCat(a, b));
+    
 
     
    /* printf("my %d\n" ,res);*/
         
     printf("no recu %d\n" ,res);
-    printf("with recu %d\n" ,res2);
+    printf("with recu %d\n" ,res4);
     
     return 0;
 }

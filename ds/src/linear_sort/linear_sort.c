@@ -73,7 +73,7 @@ static void LutArrayFilling(int *src, int *arr_to_fill, int len_src)
     }   
 }
 
-/*TODO find the problem and fix it!*/
+
 static void Array2Index(int *array_to_sort_, int *lut_, int *ret_, int len_)
 {
     int *end = array_to_sort_ + len_;

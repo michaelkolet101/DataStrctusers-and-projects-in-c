@@ -4,10 +4,14 @@
 #ifndef __RECURSION_H__
 #define __RECURSION_H__
 
-/*typedef struct node node_ty ;*/
+struct node
+{
+	void *data;
+	struct node *next;
+} ;
 
 
-
+typedef struct node node_ty;
 
 
 
@@ -24,7 +28,7 @@ char *strcpy(char *dest, const char *src);
 
 char *StrCat(char *dest, const char *src);
 
-char *StrCat2(char *dest, const char *src);
+/*char *StrCat2(char *dest, const char *src);*/
 
 
 char *StrStr( char *haystack,  char *needle);

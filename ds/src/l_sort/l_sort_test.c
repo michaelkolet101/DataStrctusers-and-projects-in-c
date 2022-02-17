@@ -1,5 +1,3 @@
-/* CountSort
-RadixSort */
 
 
 #include <stdio.h>
@@ -36,10 +34,11 @@ int TestLSort(void)
     int sorted[10] = {0};   /* 0 1 2 3 4 5 6 7 8 9 */
     int data_set[LOAD_SIZE] = {0};
     int data_set_output[LOAD_SIZE] = {0};
-    int histogram[16] = {0};
+    size_t histogram[16] = {0};
     char *dest = calloc(100, 1);
     
- 
+  PrintIntArr(to_sort, 10, dest);
+  puts("\n");
     CountSort(to_sort, sorted, 10, 0, 4, histogram);
     PrintIntArr(sorted, 10, dest);
     puts(dest);
@@ -47,7 +46,14 @@ int TestLSort(void)
     RadixSort(to_sort, sorted, 10, 3, 0, 4, histogram);
     PrintIntArr(sorted, 10, dest);
     puts(dest);
-  
+
+    /* srand(1);
+    FillArrRandIMP(data_set, data_set + LOAD_SIZE);
+
+    RadixSort(data_set, data_set_output, LOAD_SIZE, 4, 0, 7, histogram);
+    PrintIntArr(data_set_output, LOAD_SIZE, dest);
+    puts(dest);
+ */
     free(dest);
     return result;
 }

@@ -52,7 +52,7 @@ char *ToString(bit_array_ty data, char *dest)
 	char *start = dest;
 	size_t i = 0;
 	
-	assert(NULL != dest);
+	assert(dest);
 	
 	for (i = 0; i < BITS_IN_WORD; ++i)
 	{

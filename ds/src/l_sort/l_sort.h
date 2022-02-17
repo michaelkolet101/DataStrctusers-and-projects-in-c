@@ -11,7 +11,7 @@ void CountSort( int src_[],
                 size_t size_, 
                 int digit_lsb_idx_, 
                 int num_bits_in_digit_, 
-                int histogram_[]);
+                size_t histogram_[]);
 
 
 
@@ -22,7 +22,7 @@ void RadixSort( int src[],
                 int num_bits_in_digit,
                 int lsb_idx,
                 int num_significant_bits, 
-                int histogram[]);
+                size_t histogram[]);
 
 
 

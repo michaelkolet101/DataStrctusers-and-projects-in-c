@@ -1,98 +1,101 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <stack.h>
-struct node
-{
-	void *data;
-	struct node *next;
-} ;
+#include "stack.h"
 
-typedef struct node node_ty;
+#include "recursion.h"
 
 
-int FibonaciiNotRec(int element)
+
+
+
+
+
+
+
+
+int FibonaciiNotRec(int element_)
 {
     int curr = 1, prev = 1;
     
 
-    while (0 <= element - 2)
+    while (0 <= element_ - 2)
     {
         curr = curr + prev;
         prev = curr - prev;
 
-        --element;
+        --element_;
     }
     
     return curr;
 }
 
-int FibonaciiWithRec(int element)
+int FibonaciiWithRec(int element_)
 {
-    if (element == 0 || element == 1)
+    if (element_ == 0 || element_ == 1)
     {
         return 1;
     }
     
-return (FibonaciiWithRec(element - 1) + FibonaciiWithRec(element - 2));
+return (FibonaciiWithRec(element_ - 1) + FibonaciiWithRec(element_ - 2));
 }
 
 size_t StrLen(char *string)
 {
-    static size_t count = 0;
+    
 
     if (*string == '\0')
     {
-        return count;
+        return 0;
     }
 
-    ++count; 
-    return StrLen(++string);
+     
+    return 1 + StrLen(++string);
 }
 
-int StrCmp(char *str1, char *str2)
+int StrCmp(char *str1_, char *str2_)
 {
-    if ((*str1 != *str2) || (*str1 == '\0') )
+    if ((*str1_ != *str2_) || (*str1_ == '\0') )
     {
-        return ((*str1) - (*str2));
+        return ((*str1_) - (*str2_));
     }
     
-    StrCmp(++str1, ++str2);
+    StrCmp(++str1_, ++str2_);
 }
 
 
-char *StrCpy(char *dest, const char *src)
+char *StrCpy(char *dest_, const char *src_)
 {
     assert(dest);
     assert(src);   
     
-    *dest = *src;  
+    *dest_ = *src_;  
 
-    if ('\0' == *src)
+    if ('\0' == *src_)
     {
-        return dest;
+        return dest_;
     }
 
-    StrCpy((dest + 1), (src + 1));
+    StrCpy((dest_ + 1), (src_ + 1));
     
-    return dest;
+    return dest_;
 }
 
 
-char *StrCat(char *dest, const char *src)
+char *StrCat(char *dest_, const char *src_)
 {
     char *dest_end = NULL;
     
-    assert(dest);
-    assert(src);
+    assert(dest_);
+    assert(src_);
 
     /*We will proceed with the pointer to the end of the original string*/
-    dest_end = dest + StrLen(dest);
+    dest_end = dest_ + StrLen(dest_) - 1;
 
     /*We will copy to this place and beyond the string we want*/
-    StrCpy(dest_end, src);
+    StrCpy(dest_end, src_);
 
-    return dest;
+    return dest_;
 }
 
 
@@ -128,7 +131,7 @@ char* StrCat2(char *dest,char *src)
 
 char *StrStr( char *haystack,  char *needle)
 {
-    int i = 0;
+    size_t i = 0;
 
     if ('\0' == *needle  )
     {
