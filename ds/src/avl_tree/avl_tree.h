@@ -11,10 +11,11 @@ typedef enum
 }tree_travel_ty;
 
 typedef struct avl_tree avl_tree_ty;
+typedef struct avl_node avl_node_ty;
 
-typedef void(*op_func_ty)(void *);
+typedef void(*op_func_ty)(void *param);
 
-typedef int(*is_mach_ty)(void* , void *);
+typedef int(*is_mach_ty)(void *elem1 , void *elem2);
 
 typedef int(*avl_cmp_fnc_ty)(const void *elem1,
                              const void *elem2,
@@ -38,7 +39,7 @@ int AVLIsEmpty(const avl_tree_ty *tree);
 void *AVLFind(const avl_tree_ty *tree, const void *key);
 
 int AVLForEach(avl_tree_ty *tree,
-					   op_func_ty,
+					   op_func_ty op_func,
 					   void *op_param,
 					   tree_travel_ty travel_type);
 
