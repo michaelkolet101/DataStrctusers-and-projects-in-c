@@ -35,7 +35,8 @@ struct avl_tree
 
 static size_t MaxIMP(size_t num1, size_t num2);
 static avl_node_ty *MakeNewNodeIMP();
-void *FindIMP(const avl_tree_ty *tree ,avl_node_ty *node, void *key);
+
+avl_node_ty *FindIMP(const avl_tree_ty *tree ,avl_node_ty *node, void *key);
 
 
 
@@ -69,38 +70,33 @@ avl_tree_ty *AVLCreate(avl_cmp_fnc_ty cmp_fnc, const void *cmp_param)
 
 int AVLRemove(avl_tree_ty *tree, const void *key_to_remove)
 {
-    /* Find the node that needs to be removed funcIMP*/
+    avl_node_ty *node_to_delet = NULL;
 
-    /*Removal of the node funcIMP*/
+    /* Find the node that needs to be removed funcIMP*/
+    node_to_delet = FindIMP(tree, tree->m_root->m_kids[LEFT], key_to_remove);
+
+    if (NULL == node_to_delet->m_kids[LEFT] && NULL == node_to_delet->m_kids[RIGHT])
+    {
+    /*Removal of the node */
+        free(node_to_delet);
+        return 0;
+    } 
+
+    node_to_delet->m_data = node_to_delet->m_kids[(NULL != node_to_delet->m_kids[RIGHT])]->m_data;
+    free(node_to_delet->m_kids[(NULL != node_to_delet->m_kids[RIGHT])]);      
 
     /*Balance the tree funcIMP*/
-
+    return 0;
 }
 
 
-void AVLInsert(avl_tree_ty *tree,  void *element_to_insert)
+int AVLInsert(avl_tree_ty *tree_,  void *element_to_insert_)
 {
-    /*if the node key is larger than the key you want to insert into the tree*/
 
-        /*if there is a son left to the junction*/
+    AVLInsertIMP(tree_,  tree_->m_root->m_kids[LEFT], element_to_insert_ );
 
-            /*perform the test for the sub-tree beginning with that son recutsiv.*/
+    /*Balance the tree if needed*/
 
-            /* Otherwise, the new node will be the left son of the node.*/
-
-        /*if the node key is smaller than the key you want to insert into the tree.*/
-
-            /* if there is a right-hand son to the junction*/ 
-                /*perform the test for the sub-tree beginning with that son.*/
-
-            /* Otherwise, the new node will be the right-hand son of the node.*/
-
-
-    /*we need to check the route from the new node up to the root*/
-
-    /*if there is a node whose balance factor has been disturbed */
-
-        /* Balance the tree funcIMP */
 }
 
 void *AVLFind(const avl_tree_ty *tree, const void *key)
@@ -123,38 +119,30 @@ int AVLForEach(avl_tree_ty *tree,
    
 }
 
-static avl_node_ty *MakeNewNodeIMP()
-{
-    avl_node_ty *new_node = (avl_node_ty *)malloc(sizeof(avl_node_ty));
-    new_node->m_kids[RIGHT] = NULL;
-    new_node->m_kids[LEFT] = NULL;
-
-    return new_node;
-}
 
 
-static void AVLInsertIMP(avl_tree_ty *tree_, avl_node_ty **sub_tree_, void *elem_to_insert_ )
+static int AVLInsertIMP(avl_tree_ty *tree_, avl_node_ty **sub_tree_, void *elem_to_insert_ )
 {
     /*assert sub tree and tree*/
     assert(tree_);
     assert(sub_tree_);
 
+
     /*if *sub tree == NULL*/
     if (NULL == *sub_tree_)
     {
+    /* assert not equal to this one */
         /*insert here*/
-        *sub_tree_= MakeNewNodeIMP();
-        *sub_tree_->data = elem_to_insert_;
+        *sub_tree_= MakeNewNodeIMP(elem_to_insert_);
+        if (NULL == *sub_tree_)
+        {
+            return 1; /*fail*/
+        }
+        return 0; /*success*/
     }
     
-    /* assert not equal to this one */
-    assert()
-
     /*AVLInsertIMP()*/     
-    AVLInsertIMP(...);
-
-    /*if there is a node whose balance factor has been disturbed */
-    /* Balance the tree funcIMP */
+    AVLInsertIMP(tree_, *sub_tree_, elem_to_insert_);
 }
 
 size_t AVLHeight(const avl_tree_ty *tree)
@@ -192,14 +180,45 @@ static size_t MaxIMP(size_t num1, size_t num2)
     return num1 >= num2 ? num1 : num2;
 }
 
-void *FindIMP(const avl_tree_ty *tree ,avl_node_ty *node, void *key)
+void AVLDestroy(avl_tree_ty *avl_tree)
 {
-    int res = tree->m_cmp_func(tree->m_root->m_data, key, tree->m_param); /*-1, 0, 1*/ 
+    if (NULL != avl_tree->m_root->m_kids[LEFT])
+    {
+        AVLDestroy(avl_tree->m_root->m_kids[LEFT]);
+        AVLDestroy(avl_tree->m_root->m_kids[RIGHT]);
+        free(avl_tree->m_root->m_kids[LEFT]);
+
+    }
+    
+}
+
+
+
+
+avl_node_ty *FindIMP(const avl_tree_ty *tree ,avl_node_ty *node, void *key)
+{
+    int res = tree->m_cmp_func(tree->m_root->m_kids[LEFT]->m_data, key, tree->m_param); /*-1, 0, 1*/ 
     /* If the node key matches the requested key - return it  */
     if ( 0 ==  res)
     {
-        return tree->m_root->m_data;
+        return tree->m_root->m_kids[LEFT];
     }
     /*call to find with the left or right chiled*/
     return AVLFind(tree->m_root->m_kids[(res > 0)], key); /*res > 0 it's 0 or 1 left or right*/
+}
+
+static avl_node_ty *MakeNewNodeIMP(void *elem)
+{
+    avl_node_ty *new_node = (avl_node_ty *)malloc(sizeof(avl_node_ty));
+
+    if (NULL == new_node )
+    {
+        return NULL;
+    }
+    
+    new_node->m_kids[RIGHT] = NULL;
+    new_node->m_kids[LEFT] = NULL;
+    new_node->m_data = elem;
+
+    return new_node;
 }

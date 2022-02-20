@@ -28,7 +28,8 @@ void AVLDestroy(avl_tree_ty *avl_tree);
 
 int AVLRemove(avl_tree_ty *tree, const void *key_to_remove);
 
-void AVLInsert(avl_tree_ty *tree,  void *element_to_insert);
+
+int AVLInsert(avl_tree_ty *tree_,  void *element_to_insert_);
 
 size_t AVLHeight(const avl_tree_ty *tree);
 
