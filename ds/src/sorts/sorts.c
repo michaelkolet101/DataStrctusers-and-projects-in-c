@@ -85,7 +85,16 @@ void Qsort(void *base,
 
 int MeargSort(int arr_to_sort_[], int num_elements_)
 {
+    int *res = NULL;
 
+    res = MeargSortIMP(arr_to_sort_, num_elements_);
+
+    if (NULL == res)
+    {
+        return FAIL;
+    }
+    
+    return SUCCSES;  
 }
   
 static int *MeargSortIMP(int arr_to_sort_[], int num_elements_)
@@ -106,17 +115,16 @@ static int *MeargSortIMP(int arr_to_sort_[], int num_elements_)
          /*return m*/
         return 1;
     }
-    
-
      /*else*/
      else
      {
         /*middle = length(m) / 2*/
         middle = num_elements_ / 2;
+
+        /*befor the center*/
         InsertLeftRightIMP(arr_to_sort_, left, middle);
-            
-            /*  for each element in arr_to_sort_ after middle*/
-               /* add element to right*/
+         
+        /* after the center*/
         InsertLeftRightIMP((arr_to_sort_ + middle), right, middle);
 
             /*left = mergesort(left)*/
@@ -131,9 +139,7 @@ static int *MeargSortIMP(int arr_to_sort_[], int num_elements_)
          /*   return result*/
          return res;
      }
-
 }
-
 
 static void InsertLeftRightIMP(int *arr_, int *side_, size_t len_)
 {
@@ -155,7 +161,6 @@ static int *CreatIntArrIMP(size_t size_)
 
     return new_arr;
 }
-
 
 static int *Mearg(int *left_, int *right_)
 {
