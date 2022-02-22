@@ -1,6 +1,8 @@
+/*Michael kolet*/
 #include <limits.h>
 #include "knight_walk.h"
 #include "utils.h"
+
 
 #define ROWS 8
 #define COLUMNS 8
@@ -28,8 +30,8 @@ static move_ty NextStepIMP(int direction_, move_ty position);
 static void UpdateVisitedIMP(move_ty position, route_ty *visited, int visited_count);
 static size_t Coord2MaskIMP(move_ty position);
 static size_t UpdateTheBordIMP(size_t board, move_ty position);
-static IsBadMoveIMP(size_t board, move_ty position);
-
+static int IsBadMoveIMP(size_t board, move_ty position);
+int Solution(size_t board, move_ty position, route_ty *visited, int visited_count);
 
 int KnightProblem(move_ty position , route_ty *visited)
 {
@@ -51,24 +53,23 @@ int KnightProblem(move_ty position , route_ty *visited)
 
 int Solution(size_t board, move_ty position, route_ty *visited, int visited_count)
 {
-    
-    size_t mask = 0; 
-
     int possible_moves = 0;
-
         /*if this tour covers all squares*/
-    if (ULONG_MAX == board)
+    if (visited_count == 64)
     {
         /*return visited*/
         return SUCCSES;
     }
 
+
     /*for all the untried tours*/
-    for (possible_moves = 0; possible_moves <= MAX_POSIALE_MOVES; ++possible_moves)
+    for (possible_moves = 0; possible_moves < MAX_POSIALE_MOVES; ++possible_moves)
     {
         /*generate the next tour */
         position = NextStepIMP(possible_moves, position);
     
+        /*printf("%d\n", visited_count);*/
+        
         /*if visited already or is not a square on board*/
         if (IsBadMoveIMP(board, position))
         {
@@ -76,14 +77,18 @@ int Solution(size_t board, move_ty position, route_ty *visited, int visited_coun
             continue;
         }
         
-    
-        board = UpdateTheBordIMP(board, position);
         
-        /*update the arr to return*/
-        UpdateVisitedIMP(position, visited, visited_count);
+        
+        if (Solution(board, position, visited, VISITED + visited_count) == SUCCSES)
+        {
+            board = UpdateTheBordIMP(board, position);
+            /*update the arr to return*/
+            UpdateVisitedIMP(position, visited, visited_count);
+            return SUCCSES;
+        }
+        
 
         /*call to recurtion func*/
-        Solution(board, position, visited, VISITED + visited_count);
     }
 
     return FAIL;
@@ -103,6 +108,7 @@ static move_ty NextStepIMP(int direction_, move_ty position)
 
 static void UpdateVisitedIMP(move_ty position, route_ty *visited, int visited_count)
 {
+    /*printf("%d\n",visited_count);*/
     visited[visited_count].x = position.x;
     visited[visited_count].y = position.y;
 }
@@ -134,7 +140,7 @@ static int IsBadMoveIMP(size_t board, move_ty position)
 {
     size_t mask = Coord2MaskIMP(position);
 
-    return ((mask == mask & board) ||
+    return ( (mask == (mask & board) ) ||
             (position.x > ROWS) ||
              (position.x < 0) ||
               (position.y < 0) ||
