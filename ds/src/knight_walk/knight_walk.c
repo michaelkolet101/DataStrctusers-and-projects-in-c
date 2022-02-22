@@ -2,7 +2,7 @@
 #include <limits.h>
 #include "knight_walk.h"
 #include "utils.h"
-
+#include <assert.h>
 
 #define ROWS 8
 #define COLUMNS 8
@@ -39,6 +39,8 @@ int KnightProblem(move_ty position , route_ty *visited)
     int ret = SUCCSES;
     size_t board = FIRST;  
 
+    assert(visited);
+
     /*initialize the board and visit where the knight starts*/
     board = UpdateTheBordIMP(board, position);
     
@@ -55,7 +57,7 @@ int Solution(size_t board, move_ty position, route_ty *visited, int visited_coun
 {
     int possible_moves = 0;
         /*if this tour covers all squares*/
-    if (visited_count == 64)
+    if (visited_count == ROWS * COLUMNS)
     {
         /*return visited*/
         return SUCCSES;
@@ -77,8 +79,6 @@ int Solution(size_t board, move_ty position, route_ty *visited, int visited_coun
             continue;
         }
         
-        
-        
         if (Solution(board, position, visited, VISITED + visited_count) == SUCCSES)
         {
             board = UpdateTheBordIMP(board, position);
@@ -87,7 +87,6 @@ int Solution(size_t board, move_ty position, route_ty *visited, int visited_coun
             return SUCCSES;
         }
         
-
         /*call to recurtion func*/
     }
 
