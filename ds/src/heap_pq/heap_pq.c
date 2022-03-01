@@ -102,7 +102,7 @@ int PQEnqueue(pq_ty *pq, const void *data)
 void *PQDequeue(pq_ty *pq)
 {    
     size_t idx = 1;
-    void *ret = VectorGetElem(pq->vector, 0);
+    void *ret = VectorGetElem(pq->vector, idx);
 
     /*We will replace the first and last  val */
     SwapIMP(VectorGetElem(pq->vector ,GetLastIdxIMP(pq)), VectorGetElem(pq->vector ,GetMaxIdxIMP(pq)));
@@ -179,11 +179,12 @@ void HeapifyUPIMP(pq_ty *pq, size_t idx)
 
 void *PQPeek(const pq_ty *pq)
 {
+    size_t idx = 1;
     /*asserts*/
     assert(pq->vector);
     assert(!PQIsEmpty(pq));
 
-    return VectorGetElem(pq->vector, 1);
+    return VectorGetElem(pq->vector, idx);
 }
 
 int PQIsEmpty(const pq_ty *pq)
@@ -198,8 +199,8 @@ size_t PQSize(const pq_ty *pq)
 {
     /*asserts*/
     assert(pq->vector);
-
-    return VectorSize(pq->vector) - 1;
+    
+    return (VectorSize(pq->vector) - 1) ;
 }
 
 void PQClear(pq_ty *pq)
