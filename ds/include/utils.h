@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 
+#define FAIL 1
+#define SUCCSES 0
+
 #define UNUSED(x) ((void)x)
 
 #define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT))

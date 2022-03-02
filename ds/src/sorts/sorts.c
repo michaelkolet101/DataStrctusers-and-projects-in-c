@@ -1,8 +1,12 @@
 #include <stdlib.h>
+#include <time.h> 
+
 #include "sorts.h"
 #include "utils.h"
 
-
+void QuickSortIMP(int arr_[], int less, int greater );
+void Swap(int *a, int* b);
+int PlacePivot(int *arr_, int less,int  greater);
 
 
 static void InsertLeftRightIMP(int *arr_, int *side_, size_t len_);
@@ -21,19 +25,24 @@ static int IsBigger (int num1, int num2);
 
 
 
+
 int *BinarySearch(int arr_[], size_t len_, int num_to_find_)
 {
     int *start = arr_;
     int *end = arr_ + len_ - 1;
-    int middle = len_ / 2;
-
+    int middle = len_;
+    
     while (0 != middle) 
     {
+        middle = middle / 2;
+        
         /* Check if num_to_find_ is present at middle*/
         if (*(start + middle) == num_to_find_)
         {
             return (start + middle);
+
         }
+
             
         /* If num_to_find_ greater, ignore left half*/
         if (*(start + middle) < num_to_find_)
@@ -47,6 +56,7 @@ int *BinarySearch(int arr_[], size_t len_, int num_to_find_)
             end -= middle - 1;
         }
     }    
+
 
     return NULL;
 }
@@ -94,33 +104,77 @@ int *BinarySearchRcur(void *base,
 void QuickSort(int arr_[], int len_)
 {
     /*var list less, greater*/
+    int less = 0;
+    int greater = len_ - 1;
+
+    QuickSortIMP(arr_, less, greater);  
+}
+
+void QuickSortIMP(int arr_[], int less, int greater )
+{
+    
+    int pivot = 0;
 
     /*if length(array) ≤ 1*/
-        /*  return */
-    
+    if (less >= greater)
+    {
+    /*  return */
+		return;
+    } 
+
     /*select and remove a pivot value*/
+    pivot = PlacePivot(arr_, less, greater); 
+    
+    QuickSortIMP(arr_, less, pivot - 1);
+    QuickSortIMP(arr_, less, pivot + 1);  
+    
+    
+}
+
+int PlacePivot(int *arr_, int less, int greater)
+{
+    int pivot = less;
+    int switch_i = 0;
+    int i = 0;
 
     /*for each idx in array*/
-        /* if idx ≤ pivot then append x to less*/
-        /* else append x to greater*/
+    for (switch_i = less + 1, i = less + 1; i <= greater; ++i)
+    {
+     
+        if (i == pivot)
+        {
+            Swap(&i, &switch_i);
+            Swap(&pivot, &switch_i);
+            ++pivot;
+            ++switch_i;
+        }
+        
+    }
 
-    /* return concatenate(quicksort(less), pivot, quicksort(greater))*/
-
+    return pivot;
 }
+
+void Swap(int *a, int* b)
+{
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
 
 int MeargSort(int arr_to_sort_[], int num_elements_)
 {
     int *res = NULL;
 
-    int *left = CreatIntArrIMP(num_elements_);
-    int *right = CreatIntArrIMP(num_elements_);
+    int *left = CreatIntArrIMP(num_elements_ + 1);
+    int *right = CreatIntArrIMP(num_elements_ + 1);
 
-    res = MeargSortIMP(arr_to_sort_, num_elements_, left, right, res);
-
-    if (NULL == res)
+    if (NULL == left || NULL == right)
     {
         return FAIL;
     }
+
+    res = MeargSortIMP(arr_to_sort_, num_elements_, left, right, res);
 
     return SUCCSES;  
 }
@@ -130,44 +184,36 @@ static int *MeargSortIMP(int arr_to_sort_[],
                          int *left_,
                          int *right_,
                          int *res)
-{
-    size_t middle = 0;  
-
-    if (NULL == left_ || NULL == right_)
-    {
-        return NULL;
-    }
-    
+{ 
     /*if length(m) ≤ 1*/
     if (len_ <= 1)
     {
          /*return m*/
         return arr_to_sort_;
     }
-     /*else*/
-     else
-     {
-        /*middle = length(m) / 2*/
-        middle = len_ / 2;
+        
+        /*len_ = length(m) / 2*/
+    len_ = len_ / 2;
 
-        /*befor the center*/
-        InsertLeftRightIMP(arr_to_sort_, left_, middle);
-         
-        /* after the center*/
-        InsertLeftRightIMP((arr_to_sort_ + middle), right_, middle);
+    /*befor the center*/
+    InsertLeftRightIMP(arr_to_sort_, left_, len_);
+        
+    /* after the center*/
+    InsertLeftRightIMP((arr_to_sort_ + len_), right_, len_);
 
-            /*left = mergesort(left)*/
-            left_ = MeargSortIMP(left_, middle, left_, right_,res);
+        /*left = mergesort(left)*/
+    left_ = MeargSortIMP(left_, len_, left_, right_,res);
 
-           /* right = mergesort(right)*/
-           right_ = MeargSortIMP(right_, middle, left_, right_, res);
+        /* right = mergesort(right)*/
+    right_ = MeargSortIMP(right_, len_, left_, right_, res);
 
-            /*result = merge(left, right)*/
-            res = Mearg(left_, right_, middle, res, len_);
+        /*result = merge(left, right)*/
+    res = Mearg(left_, right_, len_, res, len_);
 
-         /*   return result*/
-         return res;
-     }
+
+    /*   return result*/
+    return res;
+     
 }
 
 static void InsertLeftRightIMP(int *arr_, int *side_, size_t len_)
@@ -191,16 +237,17 @@ static int *CreatIntArrIMP(size_t size_)
     return new_arr;
 }
 
+
 static int *Mearg(int *left_, int *right_, size_t len, int *res, size_t len_res)
 {
     int *curr_left = left_;
     int *end_left = left_ + len;
 
-    int *curr_right = end_left + 1; 
-    int *end_right = end_left + len;
+    int *curr_right = right_; 
+    int *end_right = right_ + len;
 
     /*while length(left) > 0 and length(right) > 0*/
-    while ((curr_left <= end_left) && (curr_right <= end_right))
+    while ((curr_left < right_) && (curr_right <= end_right))
     {
         /*if first(left) ≤ first(right)*/
         if ( IsBigger(*curr_right, *curr_left) )
@@ -215,6 +262,7 @@ static int *Mearg(int *left_, int *right_, size_t len, int *res, size_t len_res)
         else
         {
             /*append first(right) to result*/
+
             Append(curr_right, res);
 
             /*right = rest(right)*/

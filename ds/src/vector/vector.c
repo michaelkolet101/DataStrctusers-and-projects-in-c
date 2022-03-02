@@ -12,7 +12,7 @@ Functions for WS
 #include <stdlib.h>	/* malloc */
 #include <string.h>	/* memcpy */
 
-#include "../includ/vector.h"
+#include "vector.h"
 
 #define GROWTH_FACTOR 2
 #define HALF 0.5
@@ -104,31 +104,35 @@ void *VectorGetElem(const vector_ty *vector, size_t idx)
 	return (vector->vector_start+ (idx * vector->element_size));
 }
 
-/*push element to the last undex of thr vectoe */
+/*push element to the last idx of thr vectoe */
 int VectorPushBack(vector_ty *vector, const void *elem)
 {
+    char *tmp_ptr = NULL;
+    
+    assert(vector);
+    assert(vector->vector_start);
+    
+    
+    if (vector->capacity == vector->vector_size)
+    {
+        tmp_ptr = (char *)realloc
+        (vector->vector_start, vector->capacity * GROWTH_FACTOR * vector->element_size);
+        /* TODO free */
+        if (NULL == tmp_ptr)
+        {
+            return 1;
+        }
+        
+        vector->vector_start = tmp_ptr;
+        vector->capacity *= GROWTH_FACTOR;
+    }
+    
+    memcpy(vector->vector_start + vector->vector_size * vector->element_size,
+          elem, vector->element_size);
 
-	assert(vector);
-	assert(elem);	
-	
-	if ((vector->vector_size) == (VectorCapacity(vector)))
-	{
-		vector->capacity = vector->capacity * GROWTH_FACTOR;
-		vector->vector_start[vector->vector_size] = *((char*)elem);
-		
-		if (vector == NULL)
-		{
-			return FAIL;
-		}
-	}
-				/*memcpy(vector-> vector_start + (vector->vector_size), elem,
-	vector-> element_size);*/
-	vector->vector_start[vector->vector_size] = *((char*)elem);
-	
-	/*what about idx 0 and the last one*/
-	++(vector->vector_size);
-		
-	return SUCCESS; 
+    ++vector->vector_size;
+    
+    return 0;
 }
 
 void VectorPopBack(vector_ty *vector)

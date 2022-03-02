@@ -53,7 +53,10 @@ void SchedulerDestroy(scheduler_ty *scheduler)
 	assert(scheduler->pq);
 	assert(0 == scheduler->should_run);
 	
+	/*clean the scheduler*/
 	SchedulerClear(scheduler);
+
+	/*clean the q*/
 	PQDestroy(scheduler->pq);
 	
 	free(scheduler);
@@ -66,6 +69,7 @@ uid_ty SchedulerAdd(scheduler_ty *scheduler,
 					void *params,
 					time_t interval)
 {
+	/*create a new task*/
 	task_ty *new_task = TaskCreate(sched_func, params, interval);
 	
 	if (new_task == NULL) /*TODO it with macro*/
@@ -77,8 +81,10 @@ uid_ty SchedulerAdd(scheduler_ty *scheduler,
 	assert(scheduler->pq);
 	assert(sched_func);
 	
+	/*add the task to the queu*/
 	PQEnqueue(scheduler->pq, new_task);
 	
+	/*return the task id*/
 	return TaskGetUid(new_task);
 }
 
@@ -90,11 +96,13 @@ int SchedulerRemove(scheduler_ty *scheduler, uid_ty uid)
 	assert(scheduler);
 	assert(scheduler->pq);
 	
+
 	if (scheduler->should_run)
 	{
 		scheduler->remove_curr = 1;
 	}
 	
+	/*remove the task from the q*/
 	task_to_delete = PQErase(scheduler->pq,
 							 (int(*)(const void *, void *))TaskMatchUID,
 							  &uid);
@@ -104,6 +112,7 @@ int SchedulerRemove(scheduler_ty *scheduler, uid_ty uid)
 		return FAIL;
 	}
 	
+	/*delete the task*/
 	TaskDestroy(task_to_delete);
 	
 	task_to_delete = NULL;
@@ -126,14 +135,17 @@ run_exec_stat_ty SchedulerRun(scheduler_ty *scheduler)
 	/*Check if the scheduler is not empty and the flag is also running*/
 	while (!SchedulerIsEmpty(scheduler) && scheduler->should_run)
 	{
+		/*peek the first task from the q*/
 		scheduler->curr_task = (task_ty *)PQDequeue(scheduler->pq);
 		
+		/*do the task func*/
 		repeat = TaskExecute(scheduler->curr_task);
 		
 		/*If the task needs to be performed again the time must be 
 		updated and re-entered the queue*/
 		if (repeat && (0 == scheduler->remove_curr))
 		{
+			
 			check = TaskUpdateTime(scheduler->curr_task);
 			
 			PQEnqueue(scheduler->pq, scheduler->curr_task);

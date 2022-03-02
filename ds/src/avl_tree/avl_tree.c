@@ -11,18 +11,11 @@ enum
 };
 
 
-typedef enum balansd {
-	LEFTHEAVY = -1,
-	BALANCED = 0,
-	RIGHTHEAVY = 1
-}balansd_ty ;
-
-
 struct avl_node 
 {
 	avl_node_ty *m_kids[CHILDEREN];	
 	void *m_data;
-    balansd_ty m_balance_factor;
+    size_t m_height;
 };
 
 
@@ -33,11 +26,16 @@ struct avl_tree
     const void *m_param;
 };
 
+
 static size_t MaxIMP(size_t num1, size_t num2);
 static avl_node_ty *MakeNewNodeIMP();
+static int GetBalansedIMP(avl_node_ty *node);
+static void *GetData(avl_node_ty *node);
 
+size_t AVLHeightIMP(const avl_node_ty *node);
 avl_node_ty *FindIMP(const avl_tree_ty *tree ,avl_node_ty *node, void *key);
-
+avl_node_ty *RotetLeft(avl_node_ty* node_);
+avl_node_ty *RotetRight(avl_node_ty* node_);
 
 
 avl_tree_ty *AVLCreate(avl_cmp_fnc_ty cmp_fnc, const void *cmp_param)
@@ -45,24 +43,19 @@ avl_tree_ty *AVLCreate(avl_cmp_fnc_ty cmp_fnc, const void *cmp_param)
     /*alloc a avl tree*/
     avl_tree_ty *new_tree = (avl_tree_ty *) malloc(sizeof(avl_node_ty));
 
-    /*alloc a node to root*/
-    avl_node_ty *new_node = MakeNewNodeIMP();
-    
     /*check allocations*/
-    if (NULL == new_node || NULL == new_tree)
+    if (NULL == new_tree)
     {
-        free(new_node);
         free(new_tree);
         return NULL;
     }
     
     /*init members is structs*/
-    new_node->m_balance_factor = 0;
-    new_node->m_data = NULL;
     
-    new_tree->m_root = new_node;
+    new_tree->m_root = NULL;
     new_tree->m_cmp_func = cmp_fnc;
     new_tree->m_param = cmp_param;
+    
 
     /*return the new tree pointer*/
     return new_tree;
@@ -73,7 +66,7 @@ int AVLRemove(avl_tree_ty *tree, const void *key_to_remove)
     avl_node_ty *node_to_delet = NULL;
 
     /* Find the node that needs to be removed funcIMP*/
-    node_to_delet = FindIMP(tree, tree->m_root->m_kids[LEFT], key_to_remove);
+    node_to_delet = FindIMP(tree, tree->m_root, key_to_remove);
 
     if (NULL == node_to_delet->m_kids[LEFT] && NULL == node_to_delet->m_kids[RIGHT])
     {
@@ -93,15 +86,38 @@ int AVLRemove(avl_tree_ty *tree, const void *key_to_remove)
 int AVLInsert(avl_tree_ty *tree_,  void *element_to_insert_)
 {
 
-    AVLInsertIMP(tree_,  tree_->m_root->m_kids[LEFT], element_to_insert_ );
+    int side = 0;
+    
+    avl_node_ty *new_node = MakeNewNodeIMP(element_to_insert_);
+    
+    if (NULL == new_node)
+    {
+        return 1;
+    }
+    
+    side = tree_->m_cmp_func(element_to_insert_, new_node->m_data, tree_->m_param) > 0;
+
+    AVLInsertIMP(tree_, &new_node->m_kids[side], element_to_insert_ );
 
     /*Balance the tree if needed*/
+    balansed = GetBalansedIMP(new_node)
+    /*Left Left Case*/
+    
+    
+    
+    
 
+    return 0;              
+}
+
+static int GetBalansedIMP(avl_node_ty *node)
+{
+    return (AVLHeightIMP(node->m_kids[LEFT]) - AVLHeightIMP(node->m_kids[RIGHT]));
 }
 
 void *AVLFind(const avl_tree_ty *tree, const void *key)
 {
-    return FindIMP(tree, tree->m_root->m_kids[LEFT], key);
+    return FindIMP(tree, tree->m_root, key);
 }
 
 
@@ -123,6 +139,9 @@ int AVLForEach(avl_tree_ty *tree,
 
 static int AVLInsertIMP(avl_tree_ty *tree_, avl_node_ty **sub_tree_, void *elem_to_insert_ )
 {
+    int balansed = 0;
+    int side = 0;
+
     /*assert sub tree and tree*/
     assert(tree_);
     assert(sub_tree_);
@@ -133,28 +152,71 @@ static int AVLInsertIMP(avl_tree_ty *tree_, avl_node_ty **sub_tree_, void *elem_
     {
     /* assert not equal to this one */
         /*insert here*/
-        *sub_tree_= MakeNewNodeIMP(elem_to_insert_);
+        (*sub_tree_)= MakeNewNodeIMP(elem_to_insert_);
+
         if (NULL == *sub_tree_)
         {
             return 1; /*fail*/
         }
-        return 0; /*success*/
     }
-    
+
+    side = tree_->m_cmp_func(elem_to_insert_, (*sub_tree_)->m_data, tree_->m_param) > 0;
+
     /*AVLInsertIMP()*/     
-    AVLInsertIMP(tree_, *sub_tree_, elem_to_insert_);
+    AVLInsertIMP(tree_, (*sub_tree_)->m_kids[side], elem_to_insert_);
+
+    /* Update height of this ancestor node */
+    (*sub_tree_)->m_height = AVLHeightIMP(*sub_tree_);
+
+     /*Get the balance factor of this ancestor node to check 
+                                whether this node became unbalanced */
+    balansed = GetBalansedIMP(*sub_tree_);
+
+     /*LL case*/
+    if ( (balansed > 1) && (side > 0) )
+    {
+        return RotetRight((*sub_tree_));
+    }
+
+     /*Right Right Case*/
+    if (( (balansed < -1) && (side < 0) ))
+    {
+        return RotetLeft((*sub_tree_));
+    }
+
+     /*Left Right Case*/
+    if (( (balansed > 1) && (side < 0) ))
+    {
+        return RotetLeft((*sub_tree_));
+    }
+
+     /*Right Left Case*/
+    if (( (balansed < -1) && (side < 0) ))
+    {
+        return RotetLeft((*sub_tree_));
+    }
+
 }
 
 size_t AVLHeight(const avl_tree_ty *tree)
 {
+    assert(tree);
+
     /* base case: empty tree has a height of 0*/
     if (AVLIsEmpty(tree))
     {
         return 0;
     }
     /*recur for the left and right subtree and consider maximum depth*/
-    return MaxIMP(AVLHeight(tree->m_root->m_kids[LEFT]), AVLHeight(tree->m_root->m_kids[RIGHT]));
+    AVLHeightIMP(tree->m_root);
 }
+
+size_t AVLHeightIMP(const avl_node_ty *node)
+{  
+    return 1 + MaxIMP(AVLHeight(node->m_kids[LEFT]), AVLHeight(node->m_kids[RIGHT]));    
+}
+
+
 
 size_t AVLSize(const avl_tree_ty *tree)
 {
@@ -187,12 +249,8 @@ void AVLDestroy(avl_tree_ty *avl_tree)
         AVLDestroy(avl_tree->m_root->m_kids[LEFT]);
         AVLDestroy(avl_tree->m_root->m_kids[RIGHT]);
         free(avl_tree->m_root->m_kids[LEFT]);
-
     }
-    
 }
-
-
 
 
 avl_node_ty *FindIMP(const avl_tree_ty *tree ,avl_node_ty *node, void *key)
@@ -211,14 +269,47 @@ static avl_node_ty *MakeNewNodeIMP(void *elem)
 {
     avl_node_ty *new_node = (avl_node_ty *)malloc(sizeof(avl_node_ty));
 
-    if (NULL == new_node )
-    {
-        return NULL;
-    }
-    
     new_node->m_kids[RIGHT] = NULL;
     new_node->m_kids[LEFT] = NULL;
     new_node->m_data = elem;
+    new_node->m_height = 0;
 
     return new_node;
+}
+
+static void *GetData(avl_node_ty *node)
+{
+    return node->m_data;
+}
+
+avl_node_ty *RotetLeft(avl_node_ty* node_)
+{
+    avl_node_ty *chile_1 = node_->m_kids[RIGHT];
+    avl_node_ty *chile_2 = node_->m_kids[LEFT];
+
+    /*Perform rotation*/
+    chile_1->m_kids[LEFT] = node_;
+    node_->m_kids[RIGHT] = chile_2;
+
+    /*Update heights*/
+    node_->m_height = AVLHeightIMP(node_);
+    chile_1->m_height = AVLHeightIMP(chile_1);
+
+    return chile_1;
+}
+
+avl_node_ty *RotetRight(avl_node_ty* node_)
+{
+    avl_node_ty *chile_1 = node_->m_kids[LEFT];
+    avl_node_ty *chile_2 = node_->m_kids[RIGHT];
+
+    /*Perform rotation*/
+    chile_1->m_kids[RIGHT] = node_;
+    node_->m_kids[LEFT] = chile_2;
+
+    /*Update heights*/
+    node_->m_height = AVLHeightIMP(node_);
+    chile_1->m_height = AVLHeightIMP(chile_1);
+
+    return chile_1;
 }

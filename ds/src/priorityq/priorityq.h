@@ -14,7 +14,7 @@
 
 #include <stddef.h> /*size_t*/
 
-#include "sorted_list.h"
+#include "vector.h"
 
 typedef struct priorityq pq_ty;
 
@@ -29,8 +29,7 @@ typedef struct priorityq pq_ty;
 
 * Time Complexity: O(1)
 *******************************************************************************/
-pq_ty *PQCreate\
-		(int(*cmp_func)(const void *data1, const void *data2));
+pq_ty *PQCreate(int(*cmp_func)(const void *data1, const void *data2));
 
 
 

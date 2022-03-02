@@ -61,7 +61,7 @@ void *StackPeek(const stack_ty *stack)
 {
 	assert(stack);
 	
-	return (void *)(stack->top - stack->elem_size);
+	return (void *)(stack->top);
 }
 
 /*delete a element from the top fo the stack */
@@ -79,6 +79,7 @@ void StackPush(stack_ty *stack, const void *elem)
 	assert(elem);
 	
 	memcpy(stack->top ,elem ,stack->elem_size);
+	
 	stack->top = stack->top + stack->elem_size;
 }
 
