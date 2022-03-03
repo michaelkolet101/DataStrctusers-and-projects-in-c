@@ -1,5 +1,7 @@
 #include <stdio.h> /*scanf*/
+#include <stdlib.h> /*system*/
 
+#define MAX_LEN 50
 
 /*LutOfFuncs{ pointers to functions };*/
 
@@ -7,16 +9,25 @@
 int SimpleSysShell(void)
 {
 	/* status = 0 */
+    int status = 0;
 
     /*char *str*/
+    char *input_commend[50] = "\0";
 
 	/* while (status != 1)*/
-
+    while (status != 1)
+    {
 		/* str = fgets input from the user */
-
+        fgets(input_commend, MAX_LEN, stdin);
 		/* status = system(str) */
-	
+        status = system
+        
+    }
+    
 	/* return status */
+
+
+	
 }
 
 
