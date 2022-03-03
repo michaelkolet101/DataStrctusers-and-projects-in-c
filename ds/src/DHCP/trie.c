@@ -52,7 +52,8 @@ static int CreateZeroesIMP(trie_ty *trie_)
 
 unsigned long int TrieNewAddressIMP(trie_ty *trie_, unsigned long int req_address_)
 {
-	/* unsigned int num_bits = trie_->m_num_bits */
+    /* unsigned int num_bits = trie_->m_num_bits */
+    
 	/* int is_free = TrieIsAddressFreeIMP(req_address_, num_bits, &trie_->m_root) */
 	/* int status = FAIL; */
 	

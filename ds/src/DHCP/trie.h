@@ -8,8 +8,13 @@ trie_ty *TrieCreate(unsigned int num_bit_address);
 
 unsigned long int TrieNewAdders(trie_ty *trie, unsigned long int req_address);
 
+unsigned long int DHCPNewAddress(trie_ty *dhcp, ip_ty req_address);
 
-void UpdateFullness(unsigned long int req_address_, unsigned int num_bits_, node_ty *node_);
+int DHCPReleaseAddress(trie_ty *dhcp, ip_ty address_to_rel);
+
+void DHCPDestroy(trie_ty *dhcp);
+
+size_t DHCPCountAvailable(trie_ty *dhcp);
 
 
 #endif /*__TRIE_H__*/
