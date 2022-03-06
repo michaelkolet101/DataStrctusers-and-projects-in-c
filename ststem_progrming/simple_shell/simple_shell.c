@@ -1,47 +1,52 @@
 #include <stdio.h> /*scanf*/
 #include <stdlib.h> 
 #include<sys/wait.h> /*system wait*/
+#include <unistd.h> /*execv*/ 
 #include <string.h>
 
 #define MAX_LEN 50
 
+
+typedef int (*op_func_ty)(void);
+
 enum{FALSE = 0, TRUE = 1};
 
 
-int SimpleForkShell(void);
-int SimpleSysShell(void);
-int Execute(char *tokens);
-int TokenToInternal(char *command);
-void Tokenizer(char *input);
-int Execute(char *tokens);
+int SimpleForkShellIMP(void);
+int SimpleSysShellIMP(void);
+int ExecuteIMP(char *tokens);
+int TokenToInternalIMP(char *command);
+void TokenizerIMP(char *input);
+int ExecuteIMP(char *tokens);
 void LogFileIMP(char *massge);
 
 
 
-
-/*func_ty internal_funcs[1] = {exit} ;*/
-
+op_func_ty internal_funcs[] = {exit};
 
 
 
 int main(int argc, char const *argv[])
 {
 	 /* result = strcmp(*(argv + 1), "fork"); */
+
 	int result = strcmp(*(argv + 1), "fork");
 	int status = 0;
 
+	char input_command[50] = {'\0'};
+	
 	 /* if 0 == result */
 	 if (0 == result)
 	 {
 	 	/* SimpleForkShell() */
-		status = SimpleForkShell();
+		status = SimpleForkShellIMP();
 	 }
 
 	 /* else */
 	 else
 	 {
 	 	/* SimpleSysShell() */
-		status = SimpleSysShell();
+		status = SimpleSysShellIMP();
 	 }
 
 	printf("%d\n", status);
@@ -49,14 +54,21 @@ int main(int argc, char const *argv[])
 	 return 0;
 }
 
-void LogFile(char *massge)
+void LogFile(char *message)
 {
 	FILE *fp; 
 
 	fp = fopen ("error.log", "w"); 
+	/*check it*/
 
-	fprintf(fp, massge);
+	fprintf(fp, message);
+
+	fclose(fp);
 }
+
+
+
+
 
 int SimpleSysShell(void)
 {
@@ -64,15 +76,15 @@ int SimpleSysShell(void)
     int status = 0;
 
     /*char *str*/
-    char *input_commend[50] = {'\0'};
+    char *input_command[50] = {'\0'};
 
 	/* while (status != 1)*/
     while (status != 1)
     {
 		/* str = fgets input from the user */
-        fgets(input_commend, MAX_LEN, stdin);
+        fgets(input_command, MAX_LEN, stdin);
 		/* status = system(str) */
-        status = system(input_commend);        
+        status = system(input_command);        
     }
 
 	/* return status */
@@ -96,32 +108,40 @@ int SimpleForkShell(void)
 		/*hendel error*/
 		if (0 > status_pid)
 		{
-			LogFileIMP();
+			LogFileIMP("fork fail");
 		}
-		else
+		 
+		else 
 		{
-
+			
 			/*str = fgets() input from the user */
 			fgets(command ,MAX_LEN ,stdin);
 
 			/* Tokenizer(str, char *tokens) */
-			Tokenizer(command);
+			TokenizerIMP(command);
 
-			/* internal = TokenToInternal(*token)*/
-			internal = TokenToInternal(command);
-
-			/* if internal != 0 */
-			if ( 0 != internal )
+			if (IsInternal(command))
 			{
-				/* InternalFuncs[internal] */
-				/*status = internal_funcs[internal];*/
+				/* internal = TokenToInternal(*token)*/
+				internal = TokenToInternalIMP(command);
+				/* InternalFuncs[internal]*/
+				status = internal_funcs[internal]();
+			}
+			else
+			{
+				/* status = Execute(tokens) */
+				status = ExecuteIMP(command);
 
-				/* continue */
-				continue;
 			}
 
-			/* status = Execute(tokens) */
-			status = Execute(command);
+			
+			
+			
+
+			
+			
+			wait(&status);
+
 
 			/* return status */
 			return status;
@@ -129,32 +149,36 @@ int SimpleForkShell(void)
 	}
 }
 
-
-int TokenToInternal(char *command)
+int TokenToInternalIMP(char *command)
 {
-	if (*command == internal_funcs[0])
-	{
-		return 0;
-	}
-
-	return -1;
-	
+	/*return a idx of a dunc from the lut*/
+	/*in idx 0 thre is "exit"*/
+	return 0;
 }
 
-
-
-void Tokenizer(char *input)
+void TokenizerIMP(char *input)
 {	
 	/* *tokens = strtok */
 	input = strtok(input, " ");
 }
 
-
-int Execute(char *tokens)
+int ExecuteIMP(char *tokens)
 {
 	/* fork */
+	int status = fork();
+	char const *argv = tokens;
+
+	if (0 > status)
+	{
+		LogFileIMP("fork fail");
+	}
+
 	/* execv(tokens) */
+
+	execvp(tokens, argv);
+
 	/* return status */
+	exit(0);
 }
 
 
