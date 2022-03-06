@@ -22,7 +22,11 @@ void LogFileIMP(char *massge);
 
 
 
-op_func_ty internal_funcs[] = {exit};
+
+
+
+
+op_func_ty internal_funcs[];
 
 
 
@@ -41,7 +45,6 @@ int main(int argc, char const *argv[])
 	 	/* SimpleForkShell() */
 		status = SimpleForkShellIMP();
 	 }
-
 	 /* else */
 	 else
 	 {
@@ -54,21 +57,17 @@ int main(int argc, char const *argv[])
 	 return 0;
 }
 
-void LogFile(char *message)
+void LogFileIMP(char *message)
 {
 	FILE *fp; 
 
 	fp = fopen ("error.log", "w"); 
-	/*check it*/
+	/*TODO check it*/
 
 	fprintf(fp, message);
 
 	fclose(fp);
 }
-
-
-
-
 
 int SimpleSysShell(void)
 {
@@ -76,15 +75,17 @@ int SimpleSysShell(void)
     int status = 0;
 
     /*char *str*/
-    char *input_command[50] = {'\0'};
+	char *str = NULL;
+    char input_command[50] = {'\0'};
 
 	/* while (status != 1)*/
     while (status != 1)
     {
 		/* str = fgets input from the user */
-        fgets(input_command, MAX_LEN, stdin);
+        str = fgets(input_command, MAX_LEN, stdin);
+
 		/* status = system(str) */
-        status = system(input_command);        
+        status = system(*input_command);        
     }
 
 	/* return status */
@@ -98,7 +99,9 @@ int SimpleForkShell(void)
 	pid_t pid = 0;
 	int status_pid = 0;
 	int internal = 0;
-	int status = 0; 
+	int status = 0;
+	/*char *str*/
+	char *str = NULL; 
 
     /* while (1)*/
 	while (TRUE)
@@ -109,13 +112,14 @@ int SimpleForkShell(void)
 		if (0 > status_pid)
 		{
 			LogFileIMP("fork fail");
+
+			return -1;
 		}
 		 
-		else 
+		else if( 0 == status_pid )
 		{
-			
 			/*str = fgets() input from the user */
-			fgets(command ,MAX_LEN ,stdin);
+			str = fgets(command ,MAX_LEN ,stdin);
 
 			/* Tokenizer(str, char *tokens) */
 			TokenizerIMP(command);
@@ -127,27 +131,31 @@ int SimpleForkShell(void)
 				/* InternalFuncs[internal]*/
 				status = internal_funcs[internal]();
 			}
-			else
+			else 
 			{
 				/* status = Execute(tokens) */
 				status = ExecuteIMP(command);
-
 			}
+		}
+		else
+		{
+			status_pid = wait(&status);
 
-			
-			
-			
+			 /* handle errors */
+    	if (-1 == status_pid)
+    	{
+    	    /* loger */
+			LogFileIMP("wait fail");
 
-			
-			
-			wait(&status);
-
-
+    	    /* return -1 ? */
+			return -1;
+		}															
 			/* return status */
 			return status;
 		}
 	}
 }
+
 
 int TokenToInternalIMP(char *command)
 {
@@ -165,18 +173,17 @@ void TokenizerIMP(char *input)
 int ExecuteIMP(char *tokens)
 {
 	/* fork */
-	int status = fork();
-	char const *argv = tokens;
-
-	if (0 > status)
-	{
-		LogFileIMP("fork fail");
-	}
+	int status = 0;
 
 	/* execv(tokens) */
 
-	execvp(tokens, argv);
+	status = execvp(tokens, tokens);
 
+	if (-1 == status)
+	{
+		LogFileIMP("execvp fail");
+	}
+	
 	/* return status */
 	exit(0);
 }
