@@ -1,191 +1,243 @@
-#include <stdio.h> /*scanf*/
-#include <stdlib.h> 
-#include<sys/wait.h> /*system wait*/
-#include <unistd.h> /*execv*/ 
-#include <string.h>
+#include <stdio.h>
+#include <sys/wait.h>   /* wait */
+#include <unistd.h>     /* execv */
+#include <stdlib.h>     /* exit */
+#include <string.h>     /* strcmp */
+#include <errno.h>      /* ernno */
+#include <time.h>      /* ctime  */
 
-#define MAX_LEN 50
+#define LOG(TYPE, M) fprintf(stderr, TYPE " Time:%s File:%s line:%d " M "\n",\
+                             NowToStringIMP(), __FILE__, __LINE__);
 
-
-typedef int (*op_func_ty)(void);
-
-enum{FALSE = 0, TRUE = 1};
-
-
-int SimpleForkShellIMP(void);
-int SimpleSysShellIMP(void);
-int ExecuteIMP(char *tokens);
-int TokenToInternalIMP(char *command);
-void TokenizerIMP(char *input);
-int ExecuteIMP(char *tokens);
-void LogFileIMP(char *massge);
+#define LOGI(M) LOG("INF", M)
+#define LOGW(M) LOG("WRN", M)
+#define LOGE(M) LOG("ERR", M)
 
 
 
+enum{
+    INTERNUL_FUNC_SIZE = 1,
+    MODE = 7,
+    NUM_ARGS = 10,
+    CMD_SIZE = 20
+    };
 
+typedef int(*mode_func)(char *);
 
+int NativeRunWait(char *input);
+int StandardRunWait(char *input_);
+int IsInternal(char *input_);
 
+void OpFuncIMP(int num_func);
+static void NewLineToNullIMP(char *str_);
+static void ParserIMP(char *str_, char **token_);
+static int GetModeIMP(char *mode_);
+static char *NowToStringIMP();
+int ChangeDirectoryIMP(char *path);
 
-op_func_ty internal_funcs[];
+/******************************************************************************/
 
-
-
-int main(int argc, char const *argv[])
+int main()
 {
-	 /* result = strcmp(*(argv + 1), "fork"); */
-
-	int result = strcmp(*(argv + 1), "fork");
-	int status = 0;
-
-	char input_command[50] = {'\0'};
-	
-	 /* if 0 == result */
-	 if (0 == result)
-	 {
-	 	/* SimpleForkShell() */
-		status = SimpleForkShellIMP();
-	 }
-	 /* else */
-	 else
-	 {
-	 	/* SimpleSysShell() */
-		status = SimpleSysShellIMP();
-	 }
-
-	printf("%d\n", status);
-	 /*return 0; */
-	 return 0;
-}
-
-void LogFileIMP(char *message)
-{
-	FILE *fp; 
-
-	fp = fopen ("error.log", "w"); 
-	/*TODO check it*/
-
-	fprintf(fp, message);
-
-	fclose(fp);
-}
-
-int SimpleSysShell(void)
-{
-	/* status = 0 */
+    char mode[MODE];
     int status = 0;
+    static mode_func func_table[] = {NativeRunWait, StandardRunWait};
+    
+    /* 0 is fork, 1 is system */
+    int mode_num = 0; 
 
-    /*char *str*/
-	char *str = NULL;
-    char input_command[50] = {'\0'};
+    /* get mode from the user - fork/system */
+    fgets(mode, MODE, stdin);
+    mode_num = GetModeIMP(mode);
 
-	/* while (status != 1)*/
-    while (status != 1)
+    /* while (1) */
+    while (1)
     {
-		/* str = fgets input from the user */
-        str = fgets(input_command, MAX_LEN, stdin);
+        /* create char *str and scan */
+        char str[CMD_SIZE];
+        int num_func_internal = 0;
+        
+        fgets(str, CMD_SIZE, stdin);
+        NewLineToNullIMP(str);
 
-		/* status = system(str) */
-        status = system(*input_command);        
+        /* translate first token to number - TokenToFuncIMP() */
+        num_func_internal = TokenToFuncIMP(str);
+        
+        /* if num_func_internal */
+        if (0 <= num_func_internal)
+        {
+            /* operation func in internal_ap */
+            OpFuncIMP(num_func_internal);
+            /* continue */
+            continue;
+        }
+        /* status = StandardRunWait() or NativeRunWait() */
+        status = func_table[mode_num](str);
+    }
+}
+
+/******************************************************************************/
+int NativeRunWait(char *input_)
+{
+    int status = 0;
+    pid_t status_pid = 0;
+    char *args[NUM_ARGS] = {0};
+
+    /* fork the proccess */ 
+    status_pid = fork();
+    /* errors */
+    if (0 > status_pid)
+    {
+        /* logger */
+        LOGE("fork failed");
+        /* return -1*/
+        return -1;
     }
 
-	/* return status */
+    /* if child */
+    if (0 == status_pid)
+    {
+        /* split the line */
+        ParserIMP(input_, args);
+         
+        /* execvp */
+        status = execvp(*args, args);
+        
+        /* handle errors */
+        if (-1 == status)
+        {
+            /* logger */
+            LOGE("execvp failed");
+        }
+        /* exit */
+        exit(errno);
+    }
+
+    /* if parent */
+    /* wait */
+    status_pid = wait(&status);
+    
+    /* handle errors */
+    if (-1 == status_pid)
+    {
+        /* logger */
+        LOGE("wait failed");
+
+        /* return -1 */
+        return -1;
+    }
+
+    /* return status */
     return status;
 }
 
-int SimpleForkShell(void)
+int StandardRunWait(char *input_)
 {
-	/*char *str = NULL*/
-	char command[MAX_LEN] = {'\0'};  
-	pid_t pid = 0;
-	int status_pid = 0;
-	int internal = 0;
-	int status = 0;
-	/*char *str*/
-	char *str = NULL; 
-
-    /* while (1)*/
-	while (TRUE)
-	{
-		status_pid = fork();
-		
-		/*hendel error*/
-		if (0 > status_pid)
-		{
-			LogFileIMP("fork fail");
-
-			return -1;
-		}
-		 
-		else if( 0 == status_pid )
-		{
-			/*str = fgets() input from the user */
-			str = fgets(command ,MAX_LEN ,stdin);
-
-			/* Tokenizer(str, char *tokens) */
-			TokenizerIMP(command);
-
-			if (IsInternal(command))
-			{
-				/* internal = TokenToInternal(*token)*/
-				internal = TokenToInternalIMP(command);
-				/* InternalFuncs[internal]*/
-				status = internal_funcs[internal]();
-			}
-			else 
-			{
-				/* status = Execute(tokens) */
-				status = ExecuteIMP(command);
-			}
-		}
-		else
-		{
-			status_pid = wait(&status);
-
-			 /* handle errors */
-    	if (-1 == status_pid)
-    	{
-    	    /* loger */
-			LogFileIMP("wait fail");
-
-    	    /* return -1 ? */
-			return -1;
-		}															
-			/* return status */
-			return status;
-		}
-	}
+    /* return status = system(input_) */
+    return system(input_);
 }
 
-
-int TokenToInternalIMP(char *command)
+/******************************************************************************/
+/* if token is not exist in internal_ap return -1 */
+int TokenToFuncIMP(char *input_)
 {
-	/*return a idx of a dunc from the lut*/
-	/*in idx 0 thre is "exit"*/
+    int i = 0;
+    /* input_ = first token of input */
+    static char *internal_ap[INTERNUL_FUNC_SIZE] = {"exit", "cd"};
+    NewLineToNullIMP(input_);
+
+    for (i = 0; i < INTERNUL_FUNC_SIZE; ++i)
+    {
+        if(!strcmp(internal_ap[i], input_))
+        {
+            return i;
+        }
+    } 
+    return -1;
+}
+
+static void ParserIMP(char *cmd_, char **args_)
+{
+    char *curr = cmd_;
+    curr = strtok(cmd_, "\n");
+    curr = strtok(cmd_, " ");
+    *args_ = curr;
+    ++args_;
+
+    /* while (curr) */
+    while (curr != NULL)
+    {
+        /* curr = strtok */
+        curr = strtok(NULL, " ");
+        *args_ = curr;
+        
+        /* ++curr */
+        ++args_;
+    }
+    *args_ = NULL;
+}   
+
+/* return 0 if fork, 1 if system , -1 if input error */
+static int GetModeIMP(char *mode_)
+{
+    NewLineToNullIMP(mode_);
+    if (!strcmp(mode_, "fork"))
+    {
+        return 0;
+    }
+    
+    if (!strcmp(mode_, "system"))
+    {
+        return 1;
+    }
+    
+    return -1;
+}
+
+void OpFuncIMP(int num_func)
+{
+    if (0 == num_func)
+    {
+        exit(0);
+    }
+}
+
+static void NewLineToNullIMP(char *str_)
+{
+    while(*str_)
+    {
+        if('\n' == *str_)
+        {
+            *str_ = '\0';
+            break;
+        }
+        ++str_;
+    }
+}
+
+static char *NowToStringIMP()
+{
+    time_t mytime = time(NULL);
+    char *time_str = ctime(&mytime);
+    time_str[strlen(time_str)-1] = '\0';
+
+    return time_str;
+}
+
+int ChangeDirectoryIMP(char *path)
+{
+	/* If we write no path (only 'cd'), then go to the home directory*/
+	if (path == NULL) {
+		chdir(getenv("HOME")); 
+		return 1;
+	}
+	/* Else we change the directory to the one specified by the*/ 
+	/* argument, if possible*/
+	else{ 
+		if (chdir(path) == -1) {
+			printf(" %s: no such directory\n", path);
+            return -1;
+		}
+	}
 	return 0;
 }
-
-void TokenizerIMP(char *input)
-{	
-	/* *tokens = strtok */
-	input = strtok(input, " ");
-}
-
-int ExecuteIMP(char *tokens)
-{
-	/* fork */
-	int status = 0;
-
-	/* execv(tokens) */
-
-	status = execvp(tokens, tokens);
-
-	if (-1 == status)
-	{
-		LogFileIMP("execvp fail");
-	}
-	
-	/* return status */
-	exit(0);
-}
-
-
