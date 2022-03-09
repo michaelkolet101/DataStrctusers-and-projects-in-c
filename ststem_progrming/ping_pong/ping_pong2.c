@@ -14,8 +14,6 @@ void ParentIMP(int child_pid);
 int main()
 {
     int child_pid = 0;
-    
-    
 
     /* get child process */
     child_pid = fork();
@@ -47,7 +45,7 @@ void ParentIMP(int child_pid)
         while (0 == signal_is_comming)
         {
             sleep(signal_is_comming);
-            fputs("too mach time", stderr);
+            /*fputs("too mach time", stderr);*/
         }
         puts("pong");
         signal_is_comming = 0;
@@ -60,25 +58,9 @@ void ParentIMP(int child_pid)
 
 void ChildIMP()
 {
-    signal(SIGUSR1, hendler);
-        
-    if (-1 == kill(getppid(), SIGUSR2))
-    {
-        fputs("kill from child fail", stderr);
-    }
-    while (1)
-    {
-        while (0 == signal_is_comming)
-        {
-            sleep(signal_is_comming);
-        }
-        puts("ping");
-        signal_is_comming = 0;
-        if (-1 == kill(getppid(), SIGUSR2))
-        {
-            fputs("kill from child fail", stderr);
-        }  
-    }
+    char *args[]={"/home/michael/michael-kolet/ststem_progrming/ping_pong/pro2", NULL};
+ 
+    execv(args[0],args);
 }
 
 void hendler(int sig)
