@@ -9,6 +9,7 @@ void StrncmpTest();
 
  int main(void) 
 { 
+ 	sleep(60);
  	StrncmpTest();
 	 return(0);
 				 
