@@ -29,18 +29,15 @@ void PrintArr(int arr[], int len)
 
 int RemoveDuplicates(int nums[], int len) 
 { 
-	int tmp = *nums;
 	int indexs = 0;
 	int i = 0;
-
 	
 	for (i = 0; i < len; ++i)
 	{
-		if (tmp != nums[i])
+		if (nums[indexs] != nums[i])
 		{
-			tmp = nums[i];
 			++indexs;
-			nums[indexs] = tmp;
+			nums[indexs] = nums[i];			
 		}
 	}
 	return indexs + 1;
