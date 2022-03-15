@@ -69,7 +69,7 @@ int TaskMatchUID(const task_ty *task, uid_ty *uid)
 	assert(task);
 	assert(uid);
 	
-	return !SimpleUIDCmp(task->uid , *uid);
+	return SimpleUIDCmp(task->uid , *uid);
 }
 
 int TaskExecute(task_ty *task)

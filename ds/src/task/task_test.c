@@ -70,7 +70,7 @@ static test_stat_ty TestTask(void)
 	
 	
 	
-	task_ty *new_task = TaskCreate(Printhellow, NULL, 10);
+	task_ty *new_task = TaskCreate(Printhellow, NULL, 3);
 	
 	task_ty *first_task = TaskCreate(Printhellow, NULL, 2);
 	task_ty *second_task = TaskCreate(Printhellow, NULL, 10);
@@ -136,7 +136,7 @@ static test_stat_ty TestTask(void)
 	/* Test for TaskGetTime */
 	
 	
-	if (time(NULL) + 10 == TaskGetTime(new_task))
+	if (time(NULL) + 3 == TaskGetTime(new_task))
 	
 	{
 		puts("TaskGetTime" GREEN " SUCCESS"WHITE);
@@ -164,7 +164,7 @@ static test_stat_ty TestTask(void)
 	/************************************************************************/
 	/* Test for TaskIsBefore */
 	
-	if (1 == TaskIsBefore(second_task, first_task))
+	if (1 == TaskIsBefore(first_task, second_task))
 	{
 		puts("TaskIsBefore" GREEN " SUCCESS"WHITE);
 	}

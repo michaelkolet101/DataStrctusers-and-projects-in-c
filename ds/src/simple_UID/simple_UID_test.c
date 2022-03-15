@@ -10,7 +10,7 @@ Tests for WS
 #include <stdio.h>	/* printf */
 #include <assert.h>	/* assert */
 
-#include "../include/simple_UID.h"
+#include "simple_UID.h"
 
 /* Typedefs: */
 typedef enum test_stat

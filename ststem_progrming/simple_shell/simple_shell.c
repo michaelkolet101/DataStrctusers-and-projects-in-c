@@ -28,12 +28,14 @@ int NativeRunWait(char *input);
 int StandardRunWait(char *input_);
 int IsInternal(char *input_);
 
-void OpFuncIMP(int num_func);
+void OpFuncIMP(int num_func, char *cmd);
 static void NewLineToNullIMP(char *str_);
 static void ParserIMP(char *str_, char **token_);
 static int GetModeIMP(char *mode_);
 static char *NowToStringIMP();
 int ChangeDirectoryIMP(char *path);
+static char *GetPathIMP(char *cmd);
+
 
 /******************************************************************************/
 
@@ -67,7 +69,7 @@ int main()
         if (0 <= num_func_internal)
         {
             /* operation func in internal_ap */
-            OpFuncIMP(num_func_internal);
+            OpFuncIMP(num_func_internal, str);
             /* continue */
             continue;
         }
@@ -138,6 +140,7 @@ int StandardRunWait(char *input_)
 }
 
 /******************************************************************************/
+
 /* if token is not exist in internal_ap return -1 */
 int TokenToFuncIMP(char *input_)
 {
@@ -194,12 +197,32 @@ static int GetModeIMP(char *mode_)
     return -1;
 }
 
-void OpFuncIMP(int num_func)
+void OpFuncIMP(int num_func, char *cmd)
 {
     if (0 == num_func)
     {
         exit(0);
     }
+
+	if (1 == num_func)
+	{
+		cmd = GetPathIMP(cmd);
+		if ( 0 != ChangeDirectoryIMP(cmd))
+		{
+			 LOGE("cd failed");
+		}
+	}
+}
+
+static char *GetPathIMP(char *cmd)
+{
+	while (" " != *cmd)
+	{
+		++cmd;
+	}
+	++cmd;
+
+	return cmd;
 }
 
 static void NewLineToNullIMP(char *str_)
@@ -217,8 +240,8 @@ static void NewLineToNullIMP(char *str_)
 
 static char *NowToStringIMP()
 {
-    time_t mytime = time(NULL);
-    char *time_str = ctime(&mytime);
+    time_t now = time(NULL);
+    char *time_str = ctime(&now);
     time_str[strlen(time_str)-1] = '\0';
 
     return time_str;
@@ -227,14 +250,17 @@ static char *NowToStringIMP()
 int ChangeDirectoryIMP(char *path)
 {
 	/* If we write no path (only 'cd'), then go to the home directory*/
-	if (path == NULL) {
+	if (path == NULL) 
+	{
 		chdir(getenv("HOME")); 
 		return 1;
 	}
 	/* Else we change the directory to the one specified by the*/ 
 	/* argument, if possible*/
-	else{ 
-		if (chdir(path) == -1) {
+	else
+	{ 
+		if (chdir(path) == -1)
+		{
 			printf(" %s: no such directory\n", path);
             return -1;
 		}

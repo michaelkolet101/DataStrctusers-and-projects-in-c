@@ -15,8 +15,6 @@
 typedef int (*cmp_func_ty)(const void *data1, const void *data2);
 
 
-
-
 struct priorityq
 {
     vector_ty *vector;
@@ -43,8 +41,6 @@ pq_ty *PQCreate(int(*cmp_func)(const void *data1, const void *data2))
 {
     pq_ty *new_queu = NULL;
 
-    
-    
     /*asserts*/
     assert(cmp_func);
 
@@ -63,7 +59,6 @@ pq_ty *PQCreate(int(*cmp_func)(const void *data1, const void *data2))
 
     /*return new_queu*/
     return new_queu;
-
 }
 
 static void InsertDummy(pq_ty *pq)
@@ -256,7 +251,6 @@ void HeapSort(pq_ty *pq)
     /*Remove the root from the pile, and place it in the largest free position in the array*/
     /*The last organ in the structure is removed and placed in place of the removed root*/
     /*Performs a Heapify operation*/
-
 }
 
 

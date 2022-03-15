@@ -17,6 +17,7 @@ typedef struct simple_uid
 } uid_ty;
 
 
+
 extern const uid_ty BadUID;
 
 /******************************************************************************

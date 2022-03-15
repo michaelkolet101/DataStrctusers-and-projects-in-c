@@ -15,11 +15,14 @@ Functions for WS
 
 /****************************************************************************/
 
+
+
 uid_ty const BadUID = {0};
 
 uid_ty SimpleUIDCreate(void)
 {
 	static size_t uid_counter = 0;
+	
 	uid_ty new_uid = {0};
 	
 	new_uid.pid = getpid();
