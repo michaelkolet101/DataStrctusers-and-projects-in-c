@@ -15,12 +15,8 @@ int main(void)
 	const char src[50] = "dfgdfgdhhgf";
    	char dest[50] = {'\0'};
    	
-   	
    	Memcpy(dest, src, strlen(src) + 1);
    	printf("After memcpy dest = %s\n", dest);
-   
-
-
 
 	return(0);			 
 }
@@ -48,8 +44,6 @@ void *Memcpy(void *dest_, const void *src_, size_t n_)
 		++src;
 		--n_;
 	}
-	
-
 
 	return ret;	
 }

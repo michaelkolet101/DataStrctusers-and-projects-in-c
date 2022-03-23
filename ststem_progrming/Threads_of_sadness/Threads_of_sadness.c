@@ -62,17 +62,20 @@ int main()
     sleep(3);
     /* Destroy attribute */
 	pthread_attr_destroy (&attr); 
+    
     PrintArr();
-    puts("\n");
+    
+    /*print the time*/
     printf(" %ld\n", end - start);
+
     return 0;
 }
 
 void *PutIdx(void *ptr)
 {
     int *data = (int *)&ptr;
+    /*UpdatDividors(*data);*/
     arr[*data] = *data;
-    UpdatDividors(*data);
 }
 
 void PrintArr()
@@ -83,6 +86,7 @@ void PrintArr()
     {
         printf("%d ,", arr[i]);
     }
+    puts("\n");
 }
 
 

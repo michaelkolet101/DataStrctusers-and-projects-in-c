@@ -61,7 +61,7 @@ void *StackPeek(const stack_ty *stack)
 {
 	assert(stack);
 	
-	return (void *)(stack->top);
+	return (void *)(stack->top - (char)stack->elem_size);
 }
 
 /*delete a element from the top fo the stack */
@@ -70,6 +70,7 @@ void StackPop(stack_ty *stack)
 	assert(stack);
 	
 	stack->top = stack->top - stack->elem_size;
+	stack->capacity -= 1;
 }
 
 /*insert a element to the stack*/
@@ -77,10 +78,12 @@ void StackPush(stack_ty *stack, const void *elem)
 {
 	assert(stack);
 	assert(elem);
+	assert(stack->capacity != 0);
 	
 	memcpy(stack->top ,elem ,stack->elem_size);
 	
 	stack->top = stack->top + stack->elem_size;
+	stack->capacity += 1;
 }
 
 /*returns the number of stacked elements */
