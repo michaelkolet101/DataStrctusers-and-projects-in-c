@@ -1,8 +1,9 @@
 #include <stdlib.h> /*malloc*/
+#include <assert.h> /* assert */
+
 #include "scheduler.h"
 #include "priorityq.h"
 #include "sorted_list.h"
-#include <assert.h> /* assert */
 
 #include "task.h"
 #include "utils.h"
