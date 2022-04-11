@@ -183,7 +183,7 @@ iterator_ty DlistPrev(iterator_ty current)
 {
 	iterator_ty iterator_to_back = current;
 	
- 	assert(iterator->dlist_node);
+ 	assert(current.dlist_node);
  	
 	iterator_to_back.dlist_node = iterator_to_back.dlist_node->prev;
 	
@@ -333,9 +333,9 @@ int DlistForEach(iterator_ty start,
 {
 	int status = SUCCESS;
 	
-	assert (start.list != end.list);
-	assert(start);
-	assert(end);
+	assert (start.dlist_node != end.dlist_node);
+	/*assert(start);
+	assert(end);*/
 	assert(op_func);
 	
 	while (start.dlist_node != end.dlist_node)
@@ -359,8 +359,8 @@ iterator_ty DlistFind(iterator_ty start,
 {
 	int status = FAIL;
 	
-	assert(start.dlist_node);
-	assert(end.list_node);
+	/*assert(start.dlist_node);
+	assert(end.list_node);*/
 	assert(op_func);
 	
 	while (start.dlist_node != end.dlist_node)
@@ -429,8 +429,8 @@ int DlistMultiFind(iterator_ty start,
 	int count = 0;
 	iterator_ty runner = {NULL};
 	
-	assert(start);
-	assert(end);
+	/*assert(start);
+	assert(end);*/
 	assert(op_func);
 	assert(param);
 	

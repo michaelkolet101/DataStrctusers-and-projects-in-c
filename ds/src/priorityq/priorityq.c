@@ -124,10 +124,9 @@ void *PQErase(pq_ty *pq,
 	assert(!PQIsEmpty(pq));
 	
 	/* find the match node */
-	match = (SortedListFindIf
-		    (SortedListBegin(pq->sortlist), 
-		   	 SortedListEnd(pq->sortlist), 
-		   	match_func, param));
+	match = (SortedListFindIf(SortedListBegin(pq->sortlist), 
+		   	 					SortedListEnd(pq->sortlist), 
+		   						match_func, param));
 	
 	if (SortedListIsSameIter(match, SortedListEnd(pq->sortlist)))
 	{

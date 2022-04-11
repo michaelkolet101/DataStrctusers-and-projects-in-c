@@ -18,7 +18,7 @@ static int CompareInt(const void *elem1, const void *elem2, const void *param);
 int main(void)
 {
 	Scenario_1_Tests_Insert_Find();
-/*	Scenario_2_Tests(); */
+	/*Scenario_2_Tests(); */
 
 
 	return 0;
@@ -67,7 +67,6 @@ static void Scenario_1_Tests_Insert_Find(void)
 
 	/* Insert second element - left son to the root*/
 	inserted_iter = BTSetInsert(my_set, (void *)&data_arr1[1]);
-puts("here 60");	
 
 	/* Check if the inserted data is correct */
 	*(int *)BTSetGetData(inserted_iter) == data_arr1[1] ? 
@@ -89,6 +88,7 @@ puts("here 60");
 
 
 /*-------------------        Find Elements     --------------------------------*/
+puts("here");	
 	/* Find data from the root */
 	find_iter = BTSetFind(my_set, &data_arr1[0]);
 

@@ -67,6 +67,7 @@ static bt_node_ty *InsertNodeIMP(bt_node_ty *perent, void *data);
 
 static void *GetDataIMP(bt_node_ty *node);
 static bt_node_ty *FindIMP(btset_ty *set, void *elem);
+static void ConcatIMP(bt_node_ty *node, bt_node_ty *parent, int side);
 /**************************************************/
 
 void BTSetDestroy(btset_ty *set)
@@ -93,7 +94,7 @@ btset_ty *BTSetCreate(bts_cmp_fnc_ty cmp_fnc, const void *cmp_param)
         return NULL;
     }
     
-    dummy->data = NULL;
+    dummy->m_data = NULL;
 
     /*We will initialize the members of the struct*/
     new_set->root = dummy;
@@ -112,44 +113,37 @@ btset_iter_ty BTSetInsert(btset_ty *set, void *element)
     bt_node_ty *runner = set->root;
     bt_node_ty *save_place = runner;
 
-    /*We will allocate space for a new node*/
-    bt_node_ty *new_node = CreatNodeIMP();
-    
     assert(set);
     assert(element);
-    
-    new_node->data = element;
-    
-    /*if is the first node in set*/
-    if (1 == BTSetIsEmpty(set) && NULL != new_node)
-    {
-       
-        set->root->left = new_node;
-        new_node->perrent = set->root;
-        itr_ret_val.node = new_node;
-
-        /*printf("src 108 %d\n", *(int*)runner->data);*/
-        return itr_ret_val;
-    }
     
     /*Loop that ran until is_add equals 1*/
     while (0 == is_add)
     {
+    
+        /*if is the first node in set*/
+        if (1 == BTSetIsEmpty(set) )
+        {
+            runner = InsertNodeIMP(set->root->family[0], element);
+            is_add = 1;
+        }
 
-        if ((set->cmp_func(runner->data , element, set->param)) > 0)
+        else if ((set->cmp_func(runner->m_data , element, set->param)) > 0)
         {
              /*We will check if the place is available */
-          
             if (NULL == LeftChildIMP(runner))
             {
                 /*If yes: 
-                    we will insert the new node and status equals 1 */
+                we will insert the new node and status equals 1 */
                 /*Values ​​are given to the various pointers at the node*/
+
+                runner = InsertNodeIMP(runner, element);
                 is_add = 1;
-                new_node->perrent = runner;
-                runner->left = new_node;
-                new_node->data = element;
             }    
+            else
+            {
+              save_place = runner; 
+              runner = RightChildIMP(runner);
+            }
         }
 
         /*if not: 
@@ -157,10 +151,9 @@ btset_iter_ty BTSetInsert(btset_ty *set, void *element)
         greater than the value at the current node*/
          /*We will progress to the next child accordingly*/
 
-        if ((set->cmp_func(GetDataIMP(runner) , element, set->param)) < 0)
+        else if ((set->cmp_func(GetDataIMP(runner) , element, set->param)) < 0)
         {
-            
-            
+    
              /*We will check if the place is available */
              if (NULL == RightChildIMP(runner))
             {
@@ -168,10 +161,13 @@ btset_iter_ty BTSetInsert(btset_ty *set, void *element)
                     we will insert the new node and status equals 1 */
                 /*Values ​​are given to the various pointers at the node*/
                 is_add = 1;
-                new_node->perrent = runner;
-                runner->right = new_node;
-                new_node->data = element;
+                runner = InsertNodeIMP(runner, element);
             }     
+            else
+            {
+                save_place = runner;
+                runner = RightChildIMP(runner);
+            }
         }
         
         if ((set->cmp_func(GetDataIMP(runner) , element, set->param)) == 0)
@@ -179,10 +175,18 @@ btset_iter_ty BTSetInsert(btset_ty *set, void *element)
             itr_ret_val.node = NULL;
         }
     }
-    itr_ret_val.node = new_node;
+    
+    itr_ret_val.node = runner;
 
-/*return iterator*/
+    /*return iterator*/
     return itr_ret_val;
+}
+
+
+static void ConcatIMP(bt_node_ty *node, bt_node_ty *parent, int side)
+{
+    parent->family[side] = node;
+    node->family[2] = parent;
 }
 
 
@@ -245,7 +249,7 @@ btset_iter_ty BTSetEnd(btset_ty *set)
 
     assert(set);
 
-    ret_itr.node = set->root->left;
+    ret_itr.node = set->root->family[0];
     /* As long as the next step to the right is not NULL we will go right */
     
     while (NULL == RightChildIMP(ret_itr.node))
@@ -264,7 +268,7 @@ btset_iter_ty BTSetBegin(btset_ty *set)
 
     assert(set);
 
-    ret_itr.node = set->root->left;
+    ret_itr.node = set->root->family[0];
 
     while (LeftChildIMP(ret_itr.node) != NULL)
     {
@@ -322,7 +326,7 @@ int BTSetIsSameIter(btset_iter_ty first, btset_iter_ty second)
     assert(second.node);
     /* We will check if the iterators are equal and we will 
                             return 1 otherwise we will return 0 */
-    return (first.node->left == second.node->left) && (first.node->right == second.node->right);
+    return (first.node->family[0] == second.node->family[0]) && (first.node->family[1] == second.node->family[1]);
 }
 
 void *BTSetGetData(btset_iter_ty where)
@@ -343,7 +347,7 @@ int BTSetIsEmpty(const btset_ty *set)
     assert(set);
 /* If the value of SET NULL it is dummy and 
                     we return 1 otherwise we return 0 */
-    return set->root->left == NULL; 
+    return set->root->family[0] == NULL; 
 }
 
 /**********************************************************************************/
@@ -356,43 +360,43 @@ static bt_node_ty *CreatNodeIMP()
         return NULL;
     }
     
-    Node->perrent = NULL;
-    Node->right = NULL;
-    Node->left = NULL;
-    Node->data = NULL;
+    Node->family[2] = NULL;
+    Node->family[1] = NULL;
+    Node->family[0] = NULL;
+    Node->m_data = NULL;
 
     return Node;
 } 
 
 static bt_node_ty *MoveToPerntIMP(bt_node_ty *child)
 {
-    return child->perrent;
+    return child->family[2];
 }
 
 static bt_node_ty *LeftChildIMP(bt_node_ty *perrent)
 {
-    return perrent->left;
+    return perrent->family[0];
 }
 
 static bt_node_ty *RightChildIMP(bt_node_ty *perrent)
 {
-    return perrent->right;
+    return perrent->family[1];
 }
 
 static void *GetDataIMP(bt_node_ty *node)
 {
-    return node->data;
+    return node->m_data;
 }
 
 static bt_node_ty *NextIsUpIMP(bt_node_ty *runner)
 {
-    bt_node_ty *perent = runner->perrent;
+    bt_node_ty *perent = runner->family[2];
     bt_node_ty *child = runner;
 
-    while (perent->right = child)
+    while (perent->family[1] = child)
     {
        child = perent;
-       perent = child->perrent;
+       perent = child->family[2];
     }
     
     return perent;
@@ -416,13 +420,13 @@ static bt_node_ty *NextIsDownIMP(bt_node_ty *runner)
 
 static bt_node_ty *PrevIsUpIMP(bt_node_ty *runner)
 {
-    bt_node_ty *perent = runner->perrent;
+    bt_node_ty *perent = runner->family[2];
     bt_node_ty *child = runner;
 
-    while (perent->left = child)
+    while (perent->family[0] = child)
     {
        child = perent;
-       perent = child->perrent;
+       perent = child->family[2];
     }
     
     return perent;
@@ -454,10 +458,10 @@ static bt_node_ty *InsertNodeIMP(bt_node_ty *perent, void *data)
     bt_node_ty *new_node = CreatNodeIMP();
 
     /*new node perent equal to perent*/
-    new_node->perrent = perent;
+    new_node->family[2] = perent;
 
     /*new node data equal to data*/
-    new_node->data = data;
+    new_node->m_data = data;
 
     /*return new node*/
     return new_node;
@@ -466,12 +470,12 @@ static bt_node_ty *InsertNodeIMP(bt_node_ty *perent, void *data)
 static bt_node_ty *FindIMP(btset_ty *set, void *elem)
 {
     /*def node to return equal to the root - not dummy*/
-    bt_node_ty *ret_node = set->root->left;
+    bt_node_ty *ret_node = set->root->family[0];
 
     /*As long as the node is not equal to NULL*/
     while (NULL != ret_node)
     {
-        /*def ret_from_cmp_func the parmetes are root->data, elem, NULL*/
+        /*def ret_from_cmp_func the parmetes are root->m_data, elem, NULL*/
         int ret_from_cmp_func = set->cmp_func(set->param, elem, NULL);
 
         /*if ret_from_cmp_func equal to 0 then return*/

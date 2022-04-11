@@ -43,6 +43,7 @@ sortlist_ty *SortedListCreate(cmp_func_ty cmp_func)
 	ALLOC_CHK(new_list, NULL, NULL);
 	
 	new_list->dlist = DlistCreate();
+
 	if (new_list->dlist == NULL)
 	{
 		free(new_list);
@@ -99,7 +100,7 @@ srt_iter_ty SortedListBegin(const sortlist_ty *sortlist)
 	assert(sortlist->dlist);
 	
 	/*DEBUG_ONLY*/
-	DEBUG_ONLY(iter->list = (sortlist_ty *)sortlist);
+	/*DEBUG_ONLY(iter->list = (sortlist_ty *)sortlist);*/
 	
 	current.iterator = DlistBegin(sortlist->dlist);
 	
@@ -116,7 +117,7 @@ srt_iter_ty SortedListEnd(const sortlist_ty *sortlist)
 	assert(sortlist->dlist);
 	
 	/*DEBUG_ONLY */
-	DEBUG_ONLY(iter->list = (dlist_ty *)dlist);
+	/*DEBUG_ONLY(iter->list = (dlist_ty *)dlist);*/
 	
 	current.iterator = DlistEnd(sortlist->dlist);
 	
@@ -149,8 +150,6 @@ srt_iter_ty SortedListPrev(srt_iter_ty current)
 
 int SortedListIsSameIter(srt_iter_ty first, srt_iter_ty second)
 {
-	/*DEBUG_ONLY */
-	DEBUG_ONLY(iter->list = (dlist_ty *)dlist);
 	
 	return first.iterator.dlist_node == second.iterator.dlist_node;
 }
@@ -234,9 +233,7 @@ int SortedListForEach(srt_iter_ty start,
 				 void *param)
 {
 	assert (start.list != end.list);
-	assert(start);
-	assert(end);
-	assert(op_func);
+	assert(op_func_ty);
 
 	return DlistForEach(start.iterator, end.iterator, op_func_ty, param);
 }
