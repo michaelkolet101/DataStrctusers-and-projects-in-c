@@ -35,7 +35,12 @@ stack_ty *StackCreate(size_t element_size, size_t capacity)
     	return NULL;
     }
     
-    new_stack->arr = (char *)(new_stack + 1) ;
+    new_stack->arr = (char *)malloc(element_size * capacity * sizeof(char));
+    
+    if (NULL == new_stack->arr)
+    {
+    	return NULL;
+    }
     
     new_stack->capacity = capacity;
     new_stack->elem_size = element_size;
@@ -90,7 +95,7 @@ void StackPush(stack_ty *stack, const void *elem)
 size_t StackSize(const stack_ty *stack)
 {
 	assert(stack);
-	
+	assert(stack->top);
 	return ((size_t)(stack->top - stack->arr) / (stack->elem_size));
 }
 
