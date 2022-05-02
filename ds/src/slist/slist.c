@@ -29,7 +29,7 @@ Functions for WS
 }
 
 
- 
+
  
 /* Structs: */
 
@@ -48,6 +48,8 @@ struct slist
 };
 
 static int AddCount(void *data, void *count);
+static iterator_ty GetDummyNode(iterator_ty where);
+
 
 /******************************************************************************/
 
@@ -107,33 +109,28 @@ int SlistIsEmpty(const slist_ty *slist)
 
 iterator_ty SlistInsertBefore(iterator_ty where, const void *data)
 {
+	/*start change*/
 	
 	node_ty *new_node = NULL;
 	slist_ty *tmp = NULL;
+	
+	/* creat a new node */
+	new_node = (node_ty *)malloc(sizeof(slist_ty));
+	
+	ALLOC_CHK(new_node, NULL, GetDummyNode(where))
+	
 	
 	/* check if where is dummy */
 	if(NULL == where.slist_node->next)
 	{
 	 	tmp = where.slist_node->data;
 	}
-	
-	/*    allocate new node */
-	new_node = (node_ty *)malloc(sizeof(slist_ty));
-	
-	if (new_node == NULL)
+	else
 	{
-		while(where.slist_node->next)
-		{
-			where = SlistNext(where);
-		}
-		return where;
+		tmp = (void *)data;
 	}
 	
-	tmp = (slist_ty *)(where.slist_node->data); 
-	
-	/*DEBUG_ONLY*/
-	DEBUG_ONLY(return where.list->tail);
-	
+		
 	assert(where.slist_node);
 	assert(data);
 	
@@ -150,6 +147,7 @@ iterator_ty SlistInsertBefore(iterator_ty where, const void *data)
 		tmp->tail = new_node;/* if the insertion was before the end - update 
 																	  the tail*/
 	}
+	
 	
 	return where;
 }
@@ -237,7 +235,7 @@ iterator_ty SlistNext(const iterator_ty iterator)
 	
 	assert(iterator.slist_node);
 	/*	assigning iterator with next address and slist (in debug mode) */
-	DEBUG_ONLY(next.list = iterator_to_next.list);
+	/*DEBUG_ONLY(next.list = iterator_to_next.list);*/
 	 
 	return iterator_to_next;
 }
@@ -249,9 +247,9 @@ int SlistForEach(iterator_ty start,
 {
 	int status = SUCCESS;
 	
-	assert (start.list != end.list);
-	assert(start);
-	assert(end);
+	assert (start.list <= end.list);
+	assert(start.list);
+	assert(end.list);
 	assert(op_func);
 	assert(param);
 	
@@ -275,8 +273,8 @@ iterator_ty SlistFind(iterator_ty start, iterator_ty end, match_func_ty op_func,
 	int status = 0;
 	iterator_ty where = start;
 	
-	assert(start);
-	assert(end);
+	assert(start.list);
+	assert(end.list);
 	assert(op_func);
 	assert(param);
 	 
@@ -361,6 +359,16 @@ static int AddCount(void *data, void *count)
 	return SUCCESS;
 }
 
+static iterator_ty GetDummyNode(iterator_ty where)
+{
+	while (NULL != where.slist_node->next)
+	{
+		where.slist_node = where.slist_node->next;
+	}
+	
+	return where;
+
+}
 
 
 
